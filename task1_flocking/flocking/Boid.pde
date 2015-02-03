@@ -53,9 +53,7 @@ class Boid {
 
     for (Boid other : boids) {
       PVector distance = PVector.sub(other.position, position);
-      //float d = PVector.dist(position, other.position);      
       distance.normalize();
-      //distance.div(d);
       sep.add(distance);
     }
             
@@ -78,8 +76,8 @@ class Boid {
     
     if (boids.size() > 0) {
        align.div(boids.size());
-    }
-    align.normalize();
+       align.normalize();
+    }    
     
     return align;
   }
