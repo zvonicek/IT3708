@@ -21,3 +21,9 @@ void draw() {
   background(50);
   flock.run();
 }
+
+void mousePressed() {
+  if (mouseY < height - 70) {
+    flock.addObstacle(mouseX, mouseY);
+  } 
+}
