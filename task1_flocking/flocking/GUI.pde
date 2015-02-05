@@ -16,7 +16,7 @@ void drawGUI() {
   sepSl.setShowTicks(true); 
   sepSl.setEasing(1.0); 
   sepSl.setLimits(0, 2);
-  sepSl.setValue(1); 
+  sepSl.setValue(separationWeight); 
   
   alignLab = new GLabel(this, 230, height - 60, 110, 20);
   alignLab.setText("Alignment");
@@ -28,7 +28,7 @@ void drawGUI() {
   alignSl.setShowTicks(true); 
   alignSl.setEasing(1.0); 
   alignSl.setLimits(0, 2);
-  alignSl.setValue(1);   
+  alignSl.setValue(alignmentWeight);   
   
   cohLab = new GLabel(this, 440, height - 60, 110, 20);
   cohLab.setText("Cohesion");
@@ -40,7 +40,7 @@ void drawGUI() {
   cohSl.setShowTicks(true); 
   cohSl.setEasing(1.0); 
   cohSl.setLimits(0, 2);
-  cohSl.setValue(1);     
+  cohSl.setValue(cohesionWeight);     
 }
 
 public void handleSliderEvents(GValueControl slider, GEvent event) {
