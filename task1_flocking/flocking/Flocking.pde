@@ -8,10 +8,10 @@ float cohesionWeight = 1;
 float avoidanceWeight = 1.1;
 
 void setup() {
-  size(640, 480);
+  size(1000, 600);
   flock = new Flock();
   
-  for (int i = 0; i < 150; i++) {
+  for (int i = 0; i < 300; i++) {
     flock.addBoid(new Boid(random(width),random(height)));
   }  
   

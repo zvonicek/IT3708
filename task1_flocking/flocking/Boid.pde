@@ -1,5 +1,6 @@
 final float BOID_RADIUS = 2.0;
-final float VICINITY = 20.0;
+final float BOID_VICINITY = 25.0;
+final float OBSTACLE_LOOKAHEAD = 20.0;
 
 class Boid {  
   PVector position;
@@ -38,12 +39,12 @@ class Boid {
     velocity.add(avoid);
   } 
   
-  // finds all neighbours closer than VICINITY
+  // finds all neighbours closer than BOID_VICINITY
   ArrayList<Boid> findNeighbors(ArrayList<Boid> boids) {
     ArrayList<Boid> neighbors = new ArrayList<Boid>();
     for (Boid other : boids) {
       float d = PVector.dist(position, other.position);
-      if ((d > 0) && (d < VICINITY)) {     
+      if ((d > 0) && (d < BOID_VICINITY)) {     
         neighbors.add(other);  
       }  
     }
@@ -67,7 +68,7 @@ class Boid {
     }     
    
     sep.normalize(); 
-            
+    
     return sep;
   }
   
@@ -101,7 +102,7 @@ class Boid {
   }  
   
   PVector calculateAvoidanceForce(ArrayList<Obstacle> obstacles) {
-    PVector ahead = PVector.add(position, PVector.mult(velocity, VICINITY));
+    PVector ahead = PVector.add(position, PVector.mult(velocity, 20.0));
     Obstacle closest = getClosestObstacle(ahead, obstacles);
     
     if (closest == null) {
@@ -109,18 +110,17 @@ class Boid {
     }    
         
     PVector avoid = PVector.sub(ahead, closest.position);
-    avoid.normalize();
-    avoid.mult(0.9);
+    avoid.normalize();    
         
     return avoid;    
   }  
   
   Obstacle getClosestObstacle(PVector ahead, ArrayList<Obstacle> obstacles) {    
     Obstacle closest = null;
-        
+    
     for (Obstacle obstacle : obstacles) {
       float distance = obstacle.position.dist(ahead);
-      if (distance <= obstacle.radius && 
+      if (distance <= obstacle.radius &&
          (closest == null || obstacle.position.dist(position) < closest.position.dist(position))) {
           closest = obstacle;
       }           

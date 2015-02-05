@@ -15,7 +15,7 @@ void drawGUI() {
   sepSl.setShowValue(true); 
   sepSl.setShowTicks(true); 
   sepSl.setEasing(1.0); 
-  sepSl.setLimits(0, 2);
+  sepSl.setLimits(0.7, 1.3);
   sepSl.setValue(separationWeight); 
   
   alignLab = new GLabel(this, 230, height - 60, 110, 20);
@@ -27,7 +27,7 @@ void drawGUI() {
   alignSl.setShowValue(true); 
   alignSl.setShowTicks(true); 
   alignSl.setEasing(1.0); 
-  alignSl.setLimits(0, 2);
+  alignSl.setLimits(0.7, 1.3);
   alignSl.setValue(alignmentWeight);   
   
   cohLab = new GLabel(this, 440, height - 60, 110, 20);
@@ -39,7 +39,7 @@ void drawGUI() {
   cohSl.setShowValue(true); 
   cohSl.setShowTicks(true); 
   cohSl.setEasing(1.0); 
-  cohSl.setLimits(0, 2);
+  cohSl.setLimits(0.7, 1.3);
   cohSl.setValue(cohesionWeight);     
 }
 
