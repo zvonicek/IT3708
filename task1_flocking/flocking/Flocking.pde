@@ -2,9 +2,10 @@ import g4p_controls.*;
 
 Flock flock;
 
-float separationWeight = 1;
+float separationWeight = 1.01;
 float alignmentWeight = 1;
 float cohesionWeight = 1;
+float avoidanceWeight = 1.1;
 
 void setup() {
   size(640, 480);

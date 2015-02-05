@@ -1,22 +1,20 @@
 
 class Flock {
   ArrayList<Boid> boids;
-  ArrayList<PVector> obstacles;
-  
-  float obstacleRadius = 30;
-  
+  ArrayList<Obstacle> obstacles;
+    
   Flock() {
     boids = new ArrayList<Boid>();
-    obstacles = new ArrayList<PVector>();
+    obstacles = new ArrayList<Obstacle>();
   }
   
   void run() {
     for (Boid b: boids) {
-       b.run(boids);
+       b.run(boids, obstacles);
     } 
     
-    for (PVector o: obstacles) {
-       ellipse(o.x, o.y, obstacleRadius, obstacleRadius);      
+    for (Obstacle o: obstacles) {
+       ellipse(o.position.x, o.position.y, o.radius, o.radius);      
     }
   }
   
@@ -25,14 +23,14 @@ class Flock {
   }
   
   void addObstacle(int x, int y) {
-    for (PVector o: obstacles) {
-      if (inCircle(x, y, o.x, o.y, obstacleRadius)) {
+    for (Obstacle o: obstacles) {
+      if (inCircle(x, y, o.position.x, o.position.y, o.radius)) {
         obstacles.remove(o);
         return;
       }
     }
     
-    obstacles.add(new PVector(x,y));    
+    obstacles.add(new Obstacle(new PVector(x,y)));    
   }
   
   boolean inCircle( float mx, float my, float cx, float cy, float circleDia ) {

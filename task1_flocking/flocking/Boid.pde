@@ -12,27 +12,30 @@ class Boid {
      velocity = PVector.random2D();     
   }
   
-  void run(ArrayList<Boid> boids) {
-    updateBoid(boids);
+  void run(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
+    updateBoid(boids, obstacles);
     move();
     borders();
     render();    
   }
   
-  void updateBoid(ArrayList<Boid> boids) {
+  void updateBoid(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
     ArrayList<Boid> neighbors = findNeighbors(boids);
     
     PVector sep = calculateSeparationForce(neighbors);
     PVector align = calculateAlignmentForce(neighbors);
     PVector coh = calculateCohesionForce(neighbors);
+    PVector avoid = calculateAvoidanceForce(obstacles);
     
     sep.mult(separationWeight);
     align.mult(alignmentWeight);
     coh.mult(cohesionWeight);
+    avoid.mult(avoidanceWeight);
     
     velocity.add(sep);
     velocity.add(align);
     velocity.add(coh);
+    velocity.add(avoid);
   } 
   
   // finds all neighbours closer than VICINITY
@@ -46,7 +49,7 @@ class Boid {
     }
     
     return neighbors;
-  }
+  }  
   
   PVector calculateSeparationForce(ArrayList<Boid> boids) {
     PVector sep = new PVector(0,0);
@@ -96,6 +99,35 @@ class Boid {
         
     return coh;
   }  
+  
+  PVector calculateAvoidanceForce(ArrayList<Obstacle> obstacles) {
+    PVector ahead = PVector.add(position, PVector.mult(velocity, VICINITY));
+    Obstacle closest = getClosestObstacle(ahead, obstacles);
+    
+    if (closest == null) {
+      return new PVector(0,0);
+    }    
+        
+    PVector avoid = PVector.sub(ahead, closest.position);
+    avoid.normalize();
+    avoid.mult(0.9);
+        
+    return avoid;    
+  }  
+  
+  Obstacle getClosestObstacle(PVector ahead, ArrayList<Obstacle> obstacles) {    
+    Obstacle closest = null;
+        
+    for (Obstacle obstacle : obstacles) {
+      float distance = obstacle.position.dist(ahead);
+      if (distance <= obstacle.radius && 
+         (closest == null || obstacle.position.dist(position) < closest.position.dist(position))) {
+          closest = obstacle;
+      }           
+    }      
+    
+    return closest;
+  }
   
   // Wraparound
   void borders() {
