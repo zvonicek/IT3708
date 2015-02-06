@@ -14,6 +14,8 @@ class Flock {
     } 
     
     for (Obstacle o: obstacles) {
+       fill(200, 100);
+       stroke(255);      
        ellipse(o.position.x, o.position.y, o.radius, o.radius);      
     }
   }

@@ -102,7 +102,7 @@ class Boid {
   }  
   
   PVector calculateAvoidanceForce(ArrayList<Obstacle> obstacles) {
-    PVector ahead = PVector.add(position, PVector.mult(velocity, 20.0));
+    PVector ahead = PVector.add(position, PVector.mult(velocity, OBSTACLE_LOOKAHEAD));
     Obstacle closest = getClosestObstacle(ahead, obstacles);
     
     if (closest == null) {
@@ -127,28 +127,28 @@ class Boid {
     }      
     
     return closest;
-  }
-  
-  // Wraparound
-  void borders() {
-    if (position.x < -BOID_RADIUS) position.x = width+BOID_RADIUS;
-    if (position.y < -BOID_RADIUS) position.y = height-70+BOID_RADIUS;
-    if (position.x > width+BOID_RADIUS) position.x = -BOID_RADIUS;
-    if (position.y > height-70+BOID_RADIUS) position.y = -BOID_RADIUS;
   }  
     
   void move() {    
     velocity.limit(maxSpeed);    
     position.add(velocity);
   }
+  
+  // GUI Rendering
+  
+  void borders() {
+    if (position.x < -BOID_RADIUS) position.x = width+BOID_RADIUS;
+    if (position.y < -BOID_RADIUS) position.y = height-70+BOID_RADIUS;
+    if (position.x > width+BOID_RADIUS) position.x = -BOID_RADIUS;
+    if (position.y > height-70+BOID_RADIUS) position.y = -BOID_RADIUS;
+  }    
  
   void render() {
     // Draw a triangle rotated in the direction of velocity
     float theta = velocity.heading2D() + radians(90);
     // heading2D() above is now heading() but leaving old syntax until Processing.js catches up
     
-    fill(200, 100);
-    stroke(255);
+    setColors();
     pushMatrix();
     translate(position.x, position.y);
     rotate(theta);
@@ -158,6 +158,11 @@ class Boid {
     vertex(BOID_RADIUS, BOID_RADIUS*2);
     endShape();
     popMatrix();   
+  }
+  
+  void setColors() {
+    fill(200, 100);
+    stroke(255);    
   }
   
   String toString() {

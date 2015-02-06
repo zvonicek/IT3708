@@ -1,9 +1,7 @@
-GSlider sepSl; 
-GSlider alignSl;
-GSlider cohSl;
-GLabel sepLab;
-GLabel alignLab;
-GLabel cohLab;
+GSlider sepSl, alignSl, cohSl;
+GLabel sepLab, alignLab, cohLab;
+GToggleGroup dropGroup;
+GOption dropObstacle, dropPredator;
 
 void drawGUI() {
   sepLab = new GLabel(this, 10, height - 60, 110, 20);
@@ -40,7 +38,27 @@ void drawGUI() {
   cohSl.setShowTicks(true); 
   cohSl.setEasing(1.0); 
   cohSl.setLimits(0.7, 1.3);
-  cohSl.setValue(cohesionWeight);     
+  cohSl.setValue(cohesionWeight);   
+
+  dropGroup = new GToggleGroup();
+  
+  dropObstacle = new GOption(this, 650, height-40, 120, 20);
+  dropObstacle.setTextAlign(GAlign.LEFT, GAlign.MIDDLE);
+  dropObstacle.setText("Obstacle");  
+  dropObstacle.setLocalColorScheme(4);
+  dropObstacle.tag = "obstacle";
+  dropObstacle.tagNo = 1;
+  dropGroup.addControl(dropObstacle);
+  
+  dropPredator = new GOption(this, 650, height-20, 120, 20);
+  dropPredator.setTextAlign(GAlign.LEFT, GAlign.MIDDLE);
+  dropPredator.setText("Predator");  
+  dropPredator.setLocalColorScheme(4);
+  dropPredator.tag = "predator";
+  dropPredator.tagNo = 2;  
+  dropGroup.addControl(dropPredator);
+  
+  dropObstacle.setSelected(true);
 }
 
 public void handleSliderEvents(GValueControl slider, GEvent event) {
@@ -52,3 +70,8 @@ public void handleSliderEvents(GValueControl slider, GEvent event) {
     cohesionWeight = slider.getValueF();    
   }
 }
+
+public void handleToggleControlEvents(GToggleControl option, GEvent event) {
+ selectedDropItem = option.tagNo; 
+}
+

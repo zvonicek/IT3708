@@ -7,6 +7,8 @@ float alignmentWeight = 1;
 float cohesionWeight = 1;
 float avoidanceWeight = 1.1;
 
+int selectedDropItem = 1;
+
 void setup() {
   size(1000, 600);
   flock = new Flock();
@@ -25,6 +27,10 @@ void draw() {
 
 void mousePressed() {
   if (mouseY < height - 70) {
-    flock.addObstacle(mouseX, mouseY);
+    if (selectedDropItem == 1) {
+      flock.addObstacle(mouseX, mouseY);
+    } else if (selectedDropItem == 2) {
+      flock.addBoid(new Predator(mouseX, mouseY));
+    }  
   } 
 }
