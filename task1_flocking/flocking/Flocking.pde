@@ -6,6 +6,7 @@ float separationWeight = 1.01;
 float alignmentWeight = 1;
 float cohesionWeight = 1;
 float avoidanceWeight = 1.1;
+float escapeWeight = 10;
 
 int selectedDropItem = 1;
 
