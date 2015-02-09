@@ -7,7 +7,7 @@ class Predator extends Boid {
   }
   
   void updateBoid(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
-    ArrayList<Boid> neighbors = findNeighbors(boids, 60.0);
+    ArrayList<Boid> neighbors = findNeighbors(boids, 100.0);
     
     PVector coh = calculateCohesionForce(neighbors);
     PVector avoid = calculateAvoidanceForce(obstacles);   
