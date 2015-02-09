@@ -6,7 +6,7 @@ class Boid {
   PVector position;
   PVector velocity;
 
-  float maxSpeed = 1;
+  float maxSpeed = 2;
 
   Boid(float x, float y) {
     position = new PVector(x, y);
@@ -166,8 +166,9 @@ class Boid {
     return escape;
   }
 
-  void move() {    
-    velocity.limit(maxSpeed);    
+  void move() {   
+    velocity.normalize();
+    velocity.mult(maxSpeed);    
     position.add(velocity);
   }
 
