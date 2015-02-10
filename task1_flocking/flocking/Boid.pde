@@ -1,12 +1,12 @@
 final float BOID_RADIUS = 2.0;
 final float BOID_VICINITY = 25.0;
-final float OBSTACLE_LOOKAHEAD = 20.0;
 
 class Boid {  
   PVector position;
   PVector velocity;
 
   float maxSpeed = 2;
+  float obstacleLookahead = 20.0;
 
   Boid(float x, float y) {
     position = new PVector(x, y);
@@ -116,13 +116,13 @@ class Boid {
       coh.div(boids.size());
       coh = PVector.sub(coh, position);
       coh.normalize();
-    }        
+    }            
 
     return coh;
   }  
 
   PVector calculateAvoidanceForce(ArrayList<Obstacle> obstacles) {
-    PVector ahead = PVector.add(position, PVector.mult(velocity, OBSTACLE_LOOKAHEAD));    
+    PVector ahead = PVector.add(position, PVector.mult(velocity, obstacleLookahead));    
     Obstacle closest = getClosestObstacle(ahead, obstacles);
     if (closest == null) {
       return new PVector(0, 0);
@@ -137,8 +137,8 @@ class Boid {
   Obstacle getClosestObstacle(PVector ahead, ArrayList<Obstacle> obstacles) {    
     Obstacle closest = null;
     // use second ahead vector with half lokahead to improve collision detection accuracy on short distances
-    PVector ahead2 = PVector.add(position, PVector.mult(velocity, OBSTACLE_LOOKAHEAD * 0.5));
-
+    PVector ahead2 = PVector.add(position, PVector.mult(velocity, obstacleLookahead * 0.5));
+  
     for (Obstacle obstacle : obstacles) {
       float distance = obstacle.position.dist(ahead);
       float distance2 = obstacle.position.dist(ahead2);
