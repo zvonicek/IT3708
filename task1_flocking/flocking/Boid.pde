@@ -138,16 +138,13 @@ class Boid {
 
   Obstacle getClosestObstacle(PVector ahead, ArrayList<Obstacle> obstacles) {    
     Obstacle closest = null;
-    // use second ahead vector with half lokahead to improve collision detection accuracy on short distances
-    PVector ahead2 = PVector.add(position, PVector.mult(velocity, obstacleLookahead * 0.5));
   
     for (Obstacle obstacle : obstacles) {
       float distance = obstacle.position.dist(ahead);
-      float distance2 = obstacle.position.dist(ahead2);
-      if (((distance <= obstacle.radius) || (distance2 <= obstacle.radius)) &&
-        (closest == null || obstacle.position.dist(position) < closest.position.dist(position))) {
+      if (circleLineIntersect(position.x, position.y, ahead.x, ahead.y, obstacle.position.x, obstacle.position.y, obstacle.radius) && 
+         (closest == null || obstacle.position.dist(position) < closest.position.dist(position))) {
         closest = obstacle;
-      }
+      }      
     }             
 
     return closest;
@@ -209,6 +206,6 @@ class Boid {
 
   String toString() {
     return "position: " + position + ", velocity: " + velocity;
-  }
+  }  
 }
 
