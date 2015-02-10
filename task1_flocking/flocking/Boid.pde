@@ -14,13 +14,16 @@ class Boid {
   }
 
   void run(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
-    updateBoid(boids, obstacles);
+    PVector vel = updateBoid(boids, obstacles);
+    vel.normalize();
+    velocity.add(vel);
+    
     move();
     borders();
     render();
   }
 
-  void updateBoid(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
+  PVector updateBoid(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
     ArrayList<Boid> neighbors = findNeighbors(boids, BOID_VICINITY);
     ArrayList<Predator> closePredators = findClosePredators(boids);
 
@@ -42,9 +45,8 @@ class Boid {
     vel.add(coh);
     vel.add(avoid);
     vel.add(escape);    
-    vel.normalize();
     
-    velocity.add(vel);
+    return vel;   
   } 
 
   // finds all neighbours closer than BOID_VICINITY

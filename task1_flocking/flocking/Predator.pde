@@ -6,7 +6,7 @@ class Predator extends Boid {
      maxSpeed = 2.5;
   }
   
-  void updateBoid(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
+  PVector updateBoid(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
     ArrayList<Boid> neighbors = findNeighbors(boids, 100.0);
     
     PVector coh = calculateCohesionForce(neighbors);
@@ -15,8 +15,11 @@ class Predator extends Boid {
     coh.mult(cohesionWeight);
     avoid.mult(avoidanceWeight); 
    
-    velocity.add(coh);
-    velocity.add(avoid);    
+    PVector vel = new PVector(0,0);    
+    vel.add(coh);
+    vel.add(avoid);
+
+    return vel;
   }   
   
   void setColors() {
