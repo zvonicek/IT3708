@@ -29,18 +29,22 @@ class Boid {
     PVector coh = calculateCohesionForce(neighbors);
     PVector avoid = calculateAvoidanceForce(obstacles);
     PVector escape = calculateEscapeForce(closePredators);
-
+    
     sep.mult(separationWeight);
     align.mult(alignmentWeight);
     coh.mult(cohesionWeight);
-    avoid.mult(avoidanceWeight);  
-    escape.mult(escapeWeight);  
-
-    velocity.add(sep);
-    velocity.add(align);
-    velocity.add(coh);
-    velocity.add(avoid);
-    velocity.add(escape);
+    avoid.mult(avoidanceWeight);         
+    escape.mult(escapeWeight);
+      
+    PVector vel = new PVector(0,0);    
+    vel.add(sep);
+    vel.add(align);
+    vel.add(coh);
+    vel.add(avoid);
+    vel.add(escape);    
+    vel.normalize();
+    
+    velocity.add(vel);
   } 
 
   // finds all neighbours closer than BOID_VICINITY
@@ -122,7 +126,7 @@ class Boid {
     Obstacle closest = getClosestObstacle(ahead, obstacles);
     if (closest == null) {
       return new PVector(0, 0);
-    }    
+    }               
 
     PVector avoid = PVector.sub(ahead, closest.position);
     avoid.normalize();    
@@ -142,7 +146,7 @@ class Boid {
         (closest == null || obstacle.position.dist(position) < closest.position.dist(position))) {
         closest = obstacle;
       }
-    }      
+    }             
 
     return closest;
   }  
