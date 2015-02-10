@@ -43,7 +43,7 @@ void drawGUI() {
 
   dropGroup = new GToggleGroup();
   
-  dropObstacle = new GOption(this, 650, height-40, 120, 20);
+  dropObstacle = new GOption(this, 650, height-40, 70, 20);
   dropObstacle.setTextAlign(GAlign.LEFT, GAlign.MIDDLE);
   dropObstacle.setText("Obstacle");  
   dropObstacle.setLocalColorScheme(4);
@@ -51,7 +51,7 @@ void drawGUI() {
   dropObstacle.tagNo = 1;
   dropGroup.addControl(dropObstacle);
   
-  dropPredator = new GOption(this, 650, height-20, 120, 20);
+  dropPredator = new GOption(this, 650, height-20, 70, 20);
   dropPredator.setTextAlign(GAlign.LEFT, GAlign.MIDDLE);
   dropPredator.setText("Predator");  
   dropPredator.setLocalColorScheme(4);
