@@ -2,6 +2,7 @@ GSlider sepSl, alignSl, cohSl;
 GLabel sepLab, alignLab, cohLab;
 GToggleGroup dropGroup;
 GOption dropObstacle, dropPredator;
+GButton clearButton;
 
 void drawGUI() {
   sepLab = new GLabel(this, 10, height - 60, 110, 20);
@@ -59,6 +60,10 @@ void drawGUI() {
   dropGroup.addControl(dropPredator);
   
   dropObstacle.setSelected(true);
+  
+  clearButton = new GButton(this, 740, height-30, 50, 20);
+  clearButton.setLocalColorScheme(4);
+  clearButton.setText("Clear");
 }
 
 public void handleSliderEvents(GValueControl slider, GEvent event) {
@@ -73,5 +78,9 @@ public void handleSliderEvents(GValueControl slider, GEvent event) {
 
 public void handleToggleControlEvents(GToggleControl option, GEvent event) {
  selectedDropItem = option.tagNo; 
+}
+
+public void handleButtonEvents(GButton button, GEvent event) {
+  clearButtonPressed();
 }
 

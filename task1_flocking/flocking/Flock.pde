@@ -35,6 +35,16 @@ class Flock {
     obstacles.add(new Obstacle(new PVector(x,y)));    
   }
   
+  void deletePredators() {
+    ArrayList<Boid> boidsCopy = new ArrayList<Boid>(boids);
+    
+    for (Boid b: boidsCopy) {
+      if (b instanceof Predator) {
+        boids.remove(b);
+      }
+    }       
+  }
+  
   boolean inCircle( float mx, float my, float cx, float cy, float circleDia ) {
     float distance = dist(mx, my, cx, cy);
     if (distance > circleDia/2) {
