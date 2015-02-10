@@ -35,3 +35,11 @@ void mousePressed() {
     }  
   } 
 }
+
+void clearButtonPressed() {
+  if (selectedDropItem == 1) {
+    flock.obstacles.clear();
+  } else if (selectedDropItem == 2) {
+    flock.deletePredators();
+  }
+}

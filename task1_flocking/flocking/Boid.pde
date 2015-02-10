@@ -186,9 +186,7 @@ class Boid {
   }    
 
   void render() {
-    // Draw a triangle rotated in the direction of velocity
-    float theta = velocity.heading2D() + radians(90);
-    // heading2D() above is now heading() but leaving old syntax until Processing.js catches up
+    float theta = velocity.heading() + radians(90);
 
     setColors();
     pushMatrix();
