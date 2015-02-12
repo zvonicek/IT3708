@@ -13,6 +13,6 @@ class Obstacle {
   void render() {
     fill(200, 100);
     stroke(255);      
-    ellipse(o.position.x, o.position.y, o.radius, o.radius);    
+    ellipse(position.x, position.y, radius, radius);    
   }
 }
