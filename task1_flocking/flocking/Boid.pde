@@ -78,9 +78,9 @@ class Boid {
     PVector sep = new PVector(0, 0);
 
     for (Boid other : boids) {
-      PVector distance = PVector.sub(other.position, position);
-      distance.normalize();
-      sep.add(distance);
+      PVector diff = PVector.sub(other.position, position);
+      diff.normalize();
+      sep.add(diff);
     }
 
     sep.mult(-1);          
