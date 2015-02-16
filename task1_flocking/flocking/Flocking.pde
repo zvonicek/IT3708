@@ -3,10 +3,10 @@ import g4p_controls.*;
 Flock flock;
 
 float separationWeight = 1.01;
-float alignmentWeight = 1;
-float cohesionWeight = 1;
-float avoidanceWeight = 1.1;
-float escapeWeight = 10;
+float alignmentWeight = 1.0;
+float cohesionWeight = 1.0;
+float avoidanceWeight = 1000.0;
+float escapeWeight = 10.0;
 
 int selectedDropItem = 1;
 
