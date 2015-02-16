@@ -78,18 +78,15 @@ class Boid {
     PVector sep = new PVector(0, 0);
 
     for (Boid other : boids) {
-      PVector diff = PVector.sub(other.position, position);
+      PVector diff = PVector.sub(position, other.position);
       diff.normalize();
       sep.add(diff);
     }
 
-    sep.mult(-1);          
-
     if (boids.size() > 0) {
       sep.div(boids.size());
-    }     
-
-    sep.normalize(); 
+      sep.normalize();      
+    }
 
     return sep;
   }
@@ -131,7 +128,7 @@ class Boid {
     }               
 
     PVector avoid = PVector.sub(ahead, closest.position);
-    avoid.normalize();    
+    avoid.normalize();
 
     return avoid;
   }  
@@ -151,22 +148,20 @@ class Boid {
   }  
 
   PVector calculateEscapeForce(ArrayList<Predator> predators) {
-    //PVector escape = new PVector(0,0);   
-    if (predators.size() == 0) {
-     return new PVector(0,0); 
+    PVector esc = new PVector(0, 0);
+
+    for (Predator predator : predators) {
+      PVector diff = PVector.sub(position, predator.position);
+      diff.normalize();
+      esc.add(diff);
     }
-      
-    
-    float angle = PVector.angleBetween(predators.get(0).velocity, velocity);
-    
-    //println ("pr: " + predators.get(0).velocity + " bo: " + velocity + " : " + degrees(angle) );
 
-    PVector escape = PVector.sub(predators.get(0).position, position);
-    escape.normalize();
-    escape.mult(-1);
-    //escape.rotate(radians(random(-45, 45)));
+    if (predators.size() > 0) {
+      esc.div(predators.size());
+      esc.normalize();      
+    }    
 
-    return escape;
+    return esc;
   }
 
   void move() {   
