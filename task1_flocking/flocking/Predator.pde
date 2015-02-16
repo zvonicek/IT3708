@@ -4,6 +4,7 @@ class Predator extends Boid {
      super(x,y);
      
      maxSpeed = 2.5;
+     obstacleLookahead = 10;
   }
   
   PVector updateBoid(ArrayList<Boid> boids, ArrayList<Obstacle> obstacles) {
@@ -12,7 +13,6 @@ class Predator extends Boid {
     PVector coh = calculateCohesionForce(neighbors);
     PVector avoid = calculateAvoidanceForce(obstacles);   
     
-    coh.mult(cohesionWeight);
     avoid.mult(avoidanceWeight); 
    
     PVector vel = new PVector(0,0);    
