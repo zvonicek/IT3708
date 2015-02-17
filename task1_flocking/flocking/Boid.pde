@@ -1,5 +1,5 @@
-final float BOID_RADIUS = 2.0;
-final float BOID_VICINITY = 25.0;
+final float BOID_RADIUS = 2.5;
+final float BOID_VICINITY = 45.0;
 
 class Boid {  
   PVector position;
@@ -66,7 +66,7 @@ class Boid {
     ArrayList<Predator> closePredators = new ArrayList<Predator>();
     for (Boid other : boids) {
       float d = PVector.dist(position, other.position);      
-      if ((d > 0) && (d < BOID_VICINITY) && (other instanceof Predator)) {
+      if ((d > 0) && (d < BOID_VICINITY * 2) && (other instanceof Predator)) {
         closePredators.add((Predator)other);
       }
     }
@@ -80,6 +80,7 @@ class Boid {
     for (Boid other : boids) {
       PVector diff = PVector.sub(position, other.position);
       diff.normalize();
+      diff.div(PVector.dist(position, other.position));
       sep.add(diff);
     }
 

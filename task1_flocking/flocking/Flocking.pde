@@ -2,7 +2,7 @@ import g4p_controls.*;
 
 Flock flock;
 
-float separationWeight = 1.01;
+float separationWeight = 1.0;
 float alignmentWeight = 1.0;
 float cohesionWeight = 1.0;
 float avoidanceWeight = 1000.0;
@@ -14,7 +14,7 @@ void setup() {
   size(1000, 600);
   flock = new Flock();
   
-  for (int i = 0; i < 300; i++) {
+  for (int i = 0; i < 350; i++) {
     flock.addBoid(new Boid(random(width),random(height)));
   }  
   
