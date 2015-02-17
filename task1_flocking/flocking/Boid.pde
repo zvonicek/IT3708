@@ -84,8 +84,7 @@ class Boid {
     }
 
     if (boids.size() > 0) {
-      sep.div(boids.size());
-      sep.normalize();      
+      sep.normalize();     
     }
 
     return sep;
@@ -98,7 +97,6 @@ class Boid {
     }
 
     if (boids.size() > 0) {
-      align.div(boids.size());
       align.normalize();
     }    
 
@@ -157,7 +155,6 @@ class Boid {
     }
 
     if (predators.size() > 0) {
-      esc.div(predators.size());
       esc.normalize();      
     }    
 
