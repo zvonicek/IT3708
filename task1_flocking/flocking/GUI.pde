@@ -26,7 +26,7 @@ void drawGUI() {
   alignSl.setShowValue(true); 
   alignSl.setShowTicks(true); 
   alignSl.setEasing(1.0); 
-  alignSl.setLimits(0.7, 1.3);
+  alignSl.setLimits(0.0, 2.0);
   alignSl.setValue(alignmentWeight);   
   
   cohLab = new GLabel(this, 440, height - 60, 110, 20);
