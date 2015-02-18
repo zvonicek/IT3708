@@ -25,7 +25,7 @@ Separation force is calculated as a sum of differences between position of the c
 
 ### Alignment
 
-Alignment force is calculated as a sum of velocities of nearby boids, which is then divided by the count of these nearby boids and normalized. This will set the force as an average velocity of its neighbours.
+Alignment force is calculated as a sum of velocities of nearby boids, which is then normalized. This will set the force as an average velocity of its neighbours.
 
 ### Cohesion
 
@@ -52,15 +52,15 @@ All boids fly in the same direction, they tend to group in a large clusters. The
 
 ### Scenario 3 – Separation: high, Alignment: low, Cohesion: low
 
-Boids tries to avoid colliding with each other and keep big distance between themselves.
+Boids tries to avoid colliding with each other and keeps a big distance between themselves.
 
 ### Scenario 4 – Separation: low, Alignment: high, Cohesion: high
 
-Boids fly in long clusters (stripes, tails).
+Boids fly close together in a long clusters ("stripes", "tails").
 
 ### Scenario 5 – Separation: high, Alignment: low, Cohesion: high
 
-Clusters are mid-large, boids are "not sure" with their direction and are not stable - they stays in a cluster for short time.
+Clusters are mid-large, boids are "not sure" with their direction and are not stable - they stay in a cluster for a short time.
 
 ### Scenarion 6 – Separation: high, Alignment: high, Cohesion: low
 
