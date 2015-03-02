@@ -2,23 +2,12 @@ import abc
 import numpy
 
 
-class Population:
-    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor', fitness_evaluator: 'AbstractFitnessEvaluator'):
+class Individual:
+    def __init__(self, genotype, phenotype_convertor: 'AbstractPhenotypeConvertor', fitness_evaluator: 'AbstractFitnessEvaluator'):
+        self.genotype = genotype
         self.phenotype_convertor = phenotype_convertor
         self.fitness_evaluator = fitness_evaluator
-        self.population_size = 5
 
-        self.individuals = self.generate(self.population_size)
-
-    def generate(self, count):
-        generated = []
-        for i in range(0, count):
-            generated.append(Individual(self.phenotype_convertor, self.fitness_evaluator))
-
-        return generated
-
-
-class Individual:
     def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor', fitness_evaluator: 'AbstractFitnessEvaluator'):
         self.genotype = numpy.random.choice([0, 1], size=(self.gene_length,))
         self.phenotype_convertor = phenotype_convertor
@@ -45,3 +34,15 @@ class AbstractFitnessEvaluator(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_fitness(self, phenotype):
         pass
+
+
+class IndividualFactory():
+    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor', fitness_evaluator: 'AbstractFitnessEvaluator'):
+        self.phenotype_convertor = phenotype_convertor
+        self.fitness_evaluator = fitness_evaluator
+
+    def create_random(self):
+        return Individual(self.phenotype_convertor, self.fitness_evaluator)
+
+    def create(self, genotype):
+        return Individual(genotype, self.phenotype_convertor, self.fitness_evaluator)
