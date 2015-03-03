@@ -1,42 +1,40 @@
 import abc
 import numpy
+from ea.mutation import BinaryVectorInversionMutation
 
 
 class AbstractIndividual(metaclass=abc.ABCMeta):
-    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor',
+    def __init__(self, genotype, phenotype_convertor: 'AbstractPhenotypeConvertor',
                  fitness_evaluator: 'AbstractFitnessEvaluator'):
         self.phenotype_convertor = phenotype_convertor
         self.fitness_evaluator = fitness_evaluator
-
-    @abc.abstractmethod
-    def phenotype(self):
-        pass
-
-    @abc.abstractmethod
-    def fitness(self):
-        pass
-
-
-class Individual(AbstractIndividual):
-    def __init__(self, genotype, phenotype_convertor: 'AbstractPhenotypeConvertor',
-                 fitness_evaluator: 'AbstractFitnessEvaluator'):
         self.genotype = genotype
-        super().__init__(phenotype_convertor, fitness_evaluator)
-
-    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor',
-                 fitness_evaluator: 'AbstractFitnessEvaluator'):
-        self.genotype = numpy.random.choice([0, 1], size=(self.gene_length,))
-        super().__init__(phenotype_convertor, fitness_evaluator)
-
-    @property
-    def gene_length(self):
-        return 5
 
     def phenotype(self):
         return self.phenotype_convertor.get_phenotype(self)
 
     def fitness(self):
         return self.fitness_evaluator.get_fitness(self.phenotype())
+
+    def mutate(self):
+        self.genotype = self.mutation.mutate(self.genotype)
+
+
+class Individual(AbstractIndividual):
+    def __init__(self, phenotype_convertor, fitness_evaluator, mutation_rate, genotype=None):
+        if genotype is None:
+            genotype = numpy.random.choice([0, 1], size=(self.gene_length,))
+
+        self.mutation = BinaryVectorInversionMutation(mutation_rate)
+        super().__init__(genotype, phenotype_convertor, fitness_evaluator)
+
+    @property
+    def gene_length(self):
+        return 5
+
+    @staticmethod
+    def crossover(self, a, b):
+        pass
 
 
 class AbstractPhenotypeConvertor(metaclass=abc.ABCMeta):
@@ -53,12 +51,13 @@ class AbstractFitnessEvaluator(metaclass=abc.ABCMeta):
 
 class IndividualFactory():
     def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor',
-                 fitness_evaluator: 'AbstractFitnessEvaluator'):
+                 fitness_evaluator: 'AbstractFitnessEvaluator', mutation_rate):
         self.phenotype_convertor = phenotype_convertor
         self.fitness_evaluator = fitness_evaluator
+        self.mutation_rate = mutation_rate
 
     def create_random(self):
-        return Individual(self.phenotype_convertor, self.fitness_evaluator)
+        return Individual(self.phenotype_convertor, self.fitness_evaluator, self.mutation_rate)
 
     def create(self, genotype):
-        return Individual(genotype, self.phenotype_convertor, self.fitness_evaluator)
+        return Individual(self.phenotype_convertor, self.fitness_evaluator, self.mutation_rate, genotype=genotype)
