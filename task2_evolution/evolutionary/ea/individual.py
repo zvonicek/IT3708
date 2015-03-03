@@ -2,16 +2,31 @@ import abc
 import numpy
 
 
-class Individual:
-    def __init__(self, genotype, phenotype_convertor: 'AbstractPhenotypeConvertor', fitness_evaluator: 'AbstractFitnessEvaluator'):
-        self.genotype = genotype
+class AbstractIndividual(metaclass=abc.ABCMeta):
+    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor',
+                 fitness_evaluator: 'AbstractFitnessEvaluator'):
         self.phenotype_convertor = phenotype_convertor
         self.fitness_evaluator = fitness_evaluator
 
-    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor', fitness_evaluator: 'AbstractFitnessEvaluator'):
+    @abc.abstractmethod
+    def phenotype(self):
+        pass
+
+    @abc.abstractmethod
+    def fitness(self):
+        pass
+
+
+class Individual(AbstractIndividual):
+    def __init__(self, genotype, phenotype_convertor: 'AbstractPhenotypeConvertor',
+                 fitness_evaluator: 'AbstractFitnessEvaluator'):
+        self.genotype = genotype
+        super().__init__(phenotype_convertor, fitness_evaluator)
+
+    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor',
+                 fitness_evaluator: 'AbstractFitnessEvaluator'):
         self.genotype = numpy.random.choice([0, 1], size=(self.gene_length,))
-        self.phenotype_convertor = phenotype_convertor
-        self.fitness_evaluator = fitness_evaluator
+        super().__init__(phenotype_convertor, fitness_evaluator)
 
     @property
     def gene_length(self):
@@ -37,7 +52,8 @@ class AbstractFitnessEvaluator(metaclass=abc.ABCMeta):
 
 
 class IndividualFactory():
-    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor', fitness_evaluator: 'AbstractFitnessEvaluator'):
+    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor',
+                 fitness_evaluator: 'AbstractFitnessEvaluator'):
         self.phenotype_convertor = phenotype_convertor
         self.fitness_evaluator = fitness_evaluator
 

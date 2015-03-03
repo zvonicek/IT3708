@@ -1,7 +1,3 @@
-import abc
-import numpy
-
-
 class Population:
     def __init__(self, individual_fact: 'IndividualFactory'):
         self.individual_fact = individual_fact
