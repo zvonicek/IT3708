@@ -30,5 +30,3 @@ class GenerationalMixingAdultSelector(AbstractAdultSelector):
         pool = population.individuals
         pool += population.generate(self.num_generated_children)
         population.individuals = heapq.nlargest(population.population_size, pool, key=lambda x: x.fitness())
-
-

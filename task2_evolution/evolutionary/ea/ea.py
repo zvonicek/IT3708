@@ -13,7 +13,7 @@ class EA():
 
     def run(self, generation_limit, fitness_threshold):
         generation = 0
-        while generation <= generation_limit and all(x for x in self.population.individuals if x.fitness() < fitness_threshold):
+        while generation <= generation_limit and not any(x for x in self.population.individuals if x.fitness() >= fitness_threshold):
             # adult selection
             self.adult_selector.select(self.population)
 

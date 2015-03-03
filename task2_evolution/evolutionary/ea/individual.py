@@ -27,10 +27,6 @@ class Individual(AbstractIndividual):
 
         super().__init__(genotype, phenotype_convertor, fitness_evaluator)
 
-    @staticmethod
-    def crossover(self, a, b):
-        pass
-
 
 class AbstractPhenotypeConvertor(metaclass=abc.ABCMeta):
     @abc.abstractmethod
