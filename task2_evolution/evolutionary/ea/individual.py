@@ -21,16 +21,11 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
 
 
 class Individual(AbstractIndividual):
-    def __init__(self, phenotype_convertor, fitness_evaluator, mutation_rate, genotype=None):
-        if genotype is None:
-            genotype = numpy.random.choice([0, 1], size=(self.gene_length,))
+    def __init__(self, phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, gene_length):
+        self.mutation = mutation_strategy
+        self.gene_length = gene_length
 
-        self.mutation = BinaryVectorInversionMutation(mutation_rate)
         super().__init__(genotype, phenotype_convertor, fitness_evaluator)
-
-    @property
-    def gene_length(self):
-        return 5
 
     @staticmethod
     def crossover(self, a, b):
@@ -49,15 +44,7 @@ class AbstractFitnessEvaluator(metaclass=abc.ABCMeta):
         pass
 
 
-class IndividualFactory():
-    def __init__(self, phenotype_convertor: 'AbstractPhenotypeConvertor',
-                 fitness_evaluator: 'AbstractFitnessEvaluator', mutation_rate):
-        self.phenotype_convertor = phenotype_convertor
-        self.fitness_evaluator = fitness_evaluator
-        self.mutation_rate = mutation_rate
-
-    def create_random(self):
-        return Individual(self.phenotype_convertor, self.fitness_evaluator, self.mutation_rate)
-
-    def create(self, genotype):
-        return Individual(self.phenotype_convertor, self.fitness_evaluator, self.mutation_rate, genotype=genotype)
+class AbstractIndividualFactory(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def create(self, genotype=None):
+        pass
