@@ -26,8 +26,8 @@ class OneMaxIndividualFactory(AbstractIndividualFactory):
     def create(self, genotype=None):
         phenotype_convertor = OneMaxPhenotypeConvertor()
         fitness_evaluator = OneMaxFitnessEvaluator()
-        mutation_strategy = BinaryVectorInversionMutation(0.005)
-        crossover_strategy = OnePointCrossover(0.8)
+        mutation_strategy = BinaryVectorInversionMutation(0.001)
+        crossover_strategy = OnePointCrossover(0.9)
         gene_length = 40
 
         if genotype is None:
@@ -41,7 +41,7 @@ class OneMaxEA(EA):
         individual_factory = OneMaxIndividualFactory()
 
         adult_selector = FullGenerationalReplacementAdultSelector()
-        parent_selector = SigmaScalingParentSelector()
+        parent_selector = FitnessProportionateParentSelector()
 
-        population_size = 50
+        population_size = 170
         super().__init__(individual_factory, adult_selector, parent_selector, population_size)
