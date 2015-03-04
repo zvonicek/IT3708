@@ -4,29 +4,25 @@ import heapq
 
 class AbstractAdultSelector(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def select(self, population: 'Population'):
+    def select(self, population):
         pass
 
 
 class FullGenerationalReplacementAdultSelector(AbstractAdultSelector):
-    def select(self, population: 'Population'):
-        population.individuals = population.generate(population.population_size)
+    def select(self, population):
+        return population.children
 
 
 class OverProductionAdultSelector(AbstractAdultSelector):
-    def __init__(self, num_generated_children):
-        self.num_generated_children = num_generated_children
-
-    def select(self, population: 'Population'):
-        offspring = population.generate(self.num_generated_children)
-        population.individuals = heapq.nlargest(population.population_size, offspring, key=lambda x: x.fitness())
+    def select(self, population):
+        return heapq.nlargest(population.population_size, population.children, key=lambda x: x.fitness())
 
 
 class GenerationalMixingAdultSelector(AbstractAdultSelector):
     def __init__(self, num_generated_children):
         self.num_generated_children = num_generated_children
 
-    def select(self, population: 'Population'):
+    def select(self, population):
         pool = population.individuals
-        pool += population.generate(self.num_generated_children)
-        population.individuals = heapq.nlargest(population.population_size, pool, key=lambda x: x.fitness())
+        pool += population.children
+        return heapq.nlargest(population.population_size, pool, key=lambda x: x.fitness())

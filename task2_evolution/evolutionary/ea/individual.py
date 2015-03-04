@@ -21,11 +21,15 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
 
 
 class Individual(AbstractIndividual):
-    def __init__(self, phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, gene_length):
+    def __init__(self, phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, gene_length, crossover_strategy):
         self.mutation = mutation_strategy
         self.gene_length = gene_length
+        self.crossover_strategy = crossover_strategy
 
         super().__init__(genotype, phenotype_convertor, fitness_evaluator)
+
+    def __repr__(self):
+        return ''.join(str(e) for e in self.genotype)
 
 
 class AbstractPhenotypeConvertor(metaclass=abc.ABCMeta):
