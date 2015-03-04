@@ -1,11 +1,11 @@
 import numpy
 from ea import individual
 from ea.adult_selection import *
+from ea.parent_selection import *
 from ea.crossover import OnePointCrossover
 from ea.ea import EA
 from ea.individual import AbstractIndividualFactory, Individual
 from ea.mutation import BinaryVectorInversionMutation
-from ea.parent_selection import FitnessProportionateParentSelector
 
 
 class OneMaxPhenotypeConvertor(individual.AbstractPhenotypeConvertor):
@@ -26,8 +26,8 @@ class OneMaxIndividualFactory(AbstractIndividualFactory):
     def create(self, genotype=None):
         phenotype_convertor = OneMaxPhenotypeConvertor()
         fitness_evaluator = OneMaxFitnessEvaluator()
-        mutation_strategy = BinaryVectorInversionMutation(0.1)
-        gene_length = 20
+        mutation_strategy = BinaryVectorInversionMutation(0.005)
+        gene_length = 40
 
         if genotype is None:
             genotype = numpy.random.choice([0, 1], size=(gene_length,)).tolist()
@@ -40,7 +40,7 @@ class OneMaxEA(EA):
         individual_factory = OneMaxIndividualFactory()
 
         adult_selector = GenerationalMixingAdultSelector(30)
-        parent_selector = FitnessProportionateParentSelector()
+        parent_selector = TournamentParentSelector(3, 0.5)
         crossover_strategy = OnePointCrossover(0.8)
         population_size = 20
         super().__init__(individual_factory, adult_selector, parent_selector, crossover_strategy, population_size)
