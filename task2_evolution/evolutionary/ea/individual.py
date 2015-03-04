@@ -10,11 +10,20 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
         self.fitness_evaluator = fitness_evaluator
         self.genotype = genotype
 
+    @property
+    def genotype(self):
+        return self._genotype
+
+    @genotype.setter
+    def genotype(self, attribute):
+        self._genotype = attribute
+        self._fitness = self.fitness_evaluator.get_fitness(self.phenotype())
+
     def phenotype(self):
         return self.phenotype_convertor.get_phenotype(self)
 
     def fitness(self):
-        return self.fitness_evaluator.get_fitness(self.phenotype())
+        return self._fitness
 
     def mutate(self):
         self.genotype = self.mutation.mutate(self.genotype)

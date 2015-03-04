@@ -24,7 +24,8 @@ class FitnessProportionateParentSelector(AbstractParentSelector):
                 return population.individuals[exp_vals.index(val)]
 
     def exp_vals(self, fitnesses):
-        return list(map(lambda x: x/mean(fitnesses), fitnesses))
+        m = mean(fitnesses)
+        return list(map(lambda x: x/m, fitnesses))
 
 
 class SigmaScalingParentSelector(FitnessProportionateParentSelector):
