@@ -1,5 +1,4 @@
-import numpy
-from ea import individual
+from ea.individual import *
 from ea.adult_selection import *
 from ea.parent_selection import *
 from ea.crossover import OnePointCrossover
@@ -8,12 +7,7 @@ from ea.individual import AbstractIndividualFactory, Individual
 from ea.mutation import BinaryVectorInversionMutation
 
 
-class OneMaxPhenotypeConvertor(individual.AbstractPhenotypeConvertor):
-    def get_phenotype(self, ind: 'Individual'):
-        return ind.genotype
-
-
-class OneMaxFitnessEvaluator(individual.AbstractFitnessEvaluator):
+class OneMaxFitnessEvaluator(AbstractFitnessEvaluator):
     def get_fitness(self, phenotype):
         ones = 0
         for bit in phenotype:
@@ -24,7 +18,7 @@ class OneMaxFitnessEvaluator(individual.AbstractFitnessEvaluator):
 
 class OneMaxIndividualFactory(AbstractIndividualFactory):
     def create(self, genotype=None):
-        phenotype_convertor = OneMaxPhenotypeConvertor()
+        phenotype_convertor = BasicPhenotypeConvertor()
         fitness_evaluator = OneMaxFitnessEvaluator()
         mutation_strategy = BinaryVectorInversionMutation(0.001)
         crossover_strategy = OnePointCrossover(0.9)

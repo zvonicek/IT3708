@@ -13,9 +13,7 @@ class AbstractMutation(metaclass=abc.ABCMeta):
 
 class BinaryVectorInversionMutation(AbstractMutation):
     def mutate(self, genotype):
-        print("before: ", genotype)
         for i in range(0, len(genotype)):
             if random.random() < self.mutation_rate:
                 genotype[i] = 1 if genotype[i] == 0 else 0
-        print("after: ", genotype)
         return genotype

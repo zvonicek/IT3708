@@ -47,6 +47,11 @@ class AbstractPhenotypeConvertor(metaclass=abc.ABCMeta):
         pass
 
 
+class BasicPhenotypeConvertor(AbstractPhenotypeConvertor):
+    def get_phenotype(self, ind: 'Individual'):
+        return ind.genotype
+
+
 class AbstractFitnessEvaluator(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_fitness(self, phenotype):

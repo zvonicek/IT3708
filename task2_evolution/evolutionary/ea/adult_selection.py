@@ -19,9 +19,6 @@ class OverProductionAdultSelector(AbstractAdultSelector):
 
 
 class GenerationalMixingAdultSelector(AbstractAdultSelector):
-    def __init__(self, num_generated_children):
-        self.num_generated_children = num_generated_children
-
     def select(self, population):
         pool = population.individuals
         pool += population.children

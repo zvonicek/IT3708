@@ -18,10 +18,10 @@ class FitnessProportionateParentSelector(AbstractParentSelector):
         exp_vals = self.exp_vals(fitnesses)
         pick = random.uniform(0, len(fitnesses))
         current = 0
-        for val in exp_vals:
-            current += val
+        for i in range(0, len(exp_vals)):
+            current += exp_vals[i]
             if current > pick:
-                return population.individuals[exp_vals.index(val)]
+                return population.individuals[i]
 
     def exp_vals(self, fitnesses):
         m = mean(fitnesses)
