@@ -16,7 +16,7 @@ class FitnessProportionateParentSelector(AbstractParentSelector):
         fitnesses = list(map(lambda x: x.fitness(), population.individuals))
 
         exp_vals = self.exp_vals(fitnesses)
-        pick = random.uniform(0, len(fitnesses))
+        pick = random.uniform(0, sum(exp_vals))
         current = 0
         for i in range(0, len(exp_vals)):
             current += exp_vals[i]
@@ -30,7 +30,13 @@ class FitnessProportionateParentSelector(AbstractParentSelector):
 
 class SigmaScalingParentSelector(FitnessProportionateParentSelector):
     def exp_vals(self, fitnesses):
-        return list(map(lambda x: 1 + (x - mean(fitnesses))/(2*std(fitnesses)), fitnesses))
+        m = mean(fitnesses)
+        s = std(fitnesses)
+
+        if s == 0:
+            return list(map(lambda x: 1, fitnesses))
+        else:
+            return list(map(lambda x: 1 + (x - m)/(2*s), fitnesses))
 
 
 class BoltzmannParentSelector(FitnessProportionateParentSelector):
