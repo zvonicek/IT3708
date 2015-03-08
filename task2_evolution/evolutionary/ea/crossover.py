@@ -14,7 +14,10 @@ class AbstractCrossover(metaclass=abc.ABCMeta):
 class OnePointCrossover(AbstractCrossover):
     def crossover(self, a, b):
         if random.random() < self.crossover_rate:
-            split_point = random.randint(1, len(a) - 1)
+            split_point = self.split_point(a)
             return a[:split_point] + b[split_point:], b[:split_point] + a[split_point:]
         else:
             return a, b
+
+    def split_point(self, a):
+        return random.randint(1, len(a) - 1)

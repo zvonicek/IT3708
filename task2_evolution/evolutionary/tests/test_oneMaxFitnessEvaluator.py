@@ -1,5 +1,7 @@
 from unittest import TestCase
-from one_max_problem import OneMaxFitnessEvaluator
+
+from ea_impl.one_max_problem import OneMaxFitnessEvaluator
+
 
 __author__ = 'zvonicek'
 

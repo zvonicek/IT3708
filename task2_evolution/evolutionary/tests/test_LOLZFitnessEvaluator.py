@@ -1,5 +1,7 @@
 from unittest import TestCase
-from lolz import LOLZFitnessEvaluator
+
+from ea_impl.lolz import LOLZFitnessEvaluator
+
 
 __author__ = 'zvonicek'
 
