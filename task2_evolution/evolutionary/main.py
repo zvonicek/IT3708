@@ -1,4 +1,11 @@
-from one_max_problem import OneMaxEA
+from ea_impl.suprising_sequences import SurprisingEA
+import yaml
+import ea.config
 
-ea = OneMaxEA()
-ea.run(100, 1.0)
+
+cfg = yaml.load(open('surprising.yaml', 'r'))
+for key, val in cfg.items():
+    setattr(ea.config, key, val)
+
+ea = SurprisingEA()
+ea.run()

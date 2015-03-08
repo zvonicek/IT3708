@@ -30,9 +30,8 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
 
 
 class Individual(AbstractIndividual):
-    def __init__(self, phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, gene_length, crossover_strategy):
+    def __init__(self, phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy):
         self.mutation = mutation_strategy
-        self.gene_length = gene_length
         self.crossover_strategy = crossover_strategy
 
         super().__init__(genotype, phenotype_convertor, fitness_evaluator)

@@ -4,7 +4,12 @@ class Population:
         self.population_size = population_size
         self.parent_selector = parent_selector
         self.adult_selector = adult_selector
+        self.children = []
+        self.individuals = []
 
+        self.initialize_population()
+
+    def initialize_population(self):
         self.children = self.generate(self.population_size)
         self.individuals = []
 

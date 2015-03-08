@@ -1,6 +1,7 @@
 from functools import reduce
 from ea.population import Population
 import matplotlib.pyplot as plt
+import ea.config as config
 
 
 class EA():
@@ -10,13 +11,25 @@ class EA():
         self.adult_selector = adult_selector
         self.population = Population(individual_fact, population_size, parent_selector, adult_selector)
 
-    def run(self, generation_limit, fitness_threshold):
-        plt.axis([0, generation_limit, 0, 1])
+    def run(self):
+        generation = self.compute()
+
+        for ind in self.population.individuals:
+            print(ind.phenotype(), ind.fitness())
+
+        print(generation)
+
+        plt.show(block=True)
+
+    def compute(self):
+        plt.axis([0, config.generation_limit, 0, 1])
         plt.ion()
         plt.show()
 
         generation = 0
-        while generation <= generation_limit and not any(x for x in self.population.individuals if x.fitness() >= fitness_threshold):
+        while generation <= config.generation_limit and \
+                not any(x for x in self.population.individuals if x.fitness() >= config.target_fitness):
+            generation += 1
 
             self.population.select_adults()
 
@@ -32,8 +45,5 @@ class EA():
             plt.draw()
             print(end='')
 
-            generation += 1
-
-        print(generation)
-
-        plt.show(block=True)
+        plt.clf()
+        return generation
