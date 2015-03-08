@@ -22,9 +22,10 @@ class EA():
         plt.show(block=True)
 
     def compute(self):
-        plt.axis([0, config.generation_limit, 0, 1])
-        plt.ion()
-        plt.show()
+        if config.plotting:
+            plt.axis([0, config.generation_limit, 0, 1])
+            plt.ion()
+            plt.show()
 
         generation = 0
         while generation <= config.generation_limit and \
@@ -39,11 +40,14 @@ class EA():
             # mutation
             self.population.mutate()
 
-            plt.scatter(generation, max(self.population.individuals, key=lambda x: x.fitness()).fitness(), c='r')
-            fitnesses = list(map(lambda x: x.fitness(), self.population.individuals))
-            plt.scatter(generation, sum(fitnesses) / len(fitnesses), c='b')
-            plt.draw()
-            print(end='')
+            if config.plotting:
+                plt.scatter(generation, max(self.population.individuals, key=lambda x: x.fitness()).fitness(), c='r')
+                fitnesses = list(map(lambda x: x.fitness(), self.population.individuals))
+                plt.scatter(generation, sum(fitnesses) / len(fitnesses), c='b')
+                plt.draw()
+                print(end='')
 
-        plt.clf()
+        if config.plotting:
+            plt.clf()
+
         return generation
