@@ -37,15 +37,27 @@ class SurprisingFitnessEvaluator(AbstractFitnessEvaluator):
         return collisions
 
     def check_phenotype_integrity(self, phenotype):
-        return all(map(lambda x: x < config.alphabet, phenotype))
+        for num in phenotype:
+            if num >= config.alphabet:
+                return False
+        return True
+        #return all(map(lambda x: x < config.alphabet, phenotype)) -- less efficient
 
 
 class SurprisingPhenotypeConvertor(AbstractPhenotypeConvertor):
+    def __init__(self):
+        self.cache = {}
+
+    def __setstate__(self, dict):
+        self.cache = {}
+
     def get_phenotype(self, genotype):
         chunk = math.ceil(math.log2(config.alphabet))
         numbers = []
         for number in zip(*[iter(genotype)]*chunk):
-            numbers += [int(''.join(map(str, number)), 2)]
+            if number not in self.cache:
+                self.cache[number] = [int(''.join(map(str, number)), 2)]
+            numbers += self.cache[number]
 
         return numbers
 
