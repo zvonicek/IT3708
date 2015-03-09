@@ -41,10 +41,10 @@ class SurprisingFitnessEvaluator(AbstractFitnessEvaluator):
 
 
 class SurprisingPhenotypeConvertor(AbstractPhenotypeConvertor):
-    def get_phenotype(self, ind: 'Individual'):
+    def get_phenotype(self, genotype):
         chunk = math.ceil(math.log2(config.alphabet))
         numbers = []
-        for number in zip(*[iter(ind.genotype)]*chunk):
+        for number in zip(*[iter(genotype)]*chunk):
             numbers += [int(''.join(map(str, number)), 2)]
 
         return numbers

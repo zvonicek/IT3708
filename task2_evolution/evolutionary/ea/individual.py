@@ -17,16 +17,18 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
     @genotype.setter
     def genotype(self, attribute):
         self._genotype = attribute
+        self._phenotype = self.phenotype_convertor.get_phenotype(attribute)
         self._fitness = self.fitness_evaluator.get_fitness(self.phenotype())
 
     def phenotype(self):
-        return self.phenotype_convertor.get_phenotype(self)
+        return self._phenotype
 
     def fitness(self):
         return self._fitness
 
     def mutate(self):
         self.genotype = self.mutation.mutate(self.genotype)
+
 
 
 class Individual(AbstractIndividual):
@@ -42,13 +44,13 @@ class Individual(AbstractIndividual):
 
 class AbstractPhenotypeConvertor(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_phenotype(self, individual: 'Individual'):
+    def get_phenotype(self, genotype):
         pass
 
 
 class BasicPhenotypeConvertor(AbstractPhenotypeConvertor):
-    def get_phenotype(self, ind: 'Individual'):
-        return ind.genotype
+    def get_phenotype(self, genotype):
+        return genotype
 
 
 class AbstractFitnessEvaluator(metaclass=abc.ABCMeta):
