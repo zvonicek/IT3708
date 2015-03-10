@@ -1,10 +1,7 @@
 import numpy
-from ea.adult_selection import *
-from ea.crossover import OnePointCrossover
 from ea.ea import EA
 from ea.individual import AbstractFitnessEvaluator, BasicPhenotypeConvertor, AbstractIndividualFactory, Individual
-from ea.mutation import BinaryVectorInversionMutation
-from ea.parent_selection import *
+import ea.config as config
 
 
 class LOLZFitnessEvaluator(AbstractFitnessEvaluator):
@@ -28,25 +25,15 @@ class LOLZFitnessEvaluator(AbstractFitnessEvaluator):
 
 class LOLZIndividualFactory(AbstractIndividualFactory):
     def create(self, genotype=None):
-        phenotype_convertor = BasicPhenotypeConvertor()
-        fitness_evaluator = LOLZFitnessEvaluator(21)
-        mutation_strategy = BinaryVectorInversionMutation(0.1)
-        crossover_strategy = OnePointCrossover(0.9)
-        gene_length = 40
+        gene_length = config.gene_length
 
         if genotype is None:
             genotype = numpy.random.choice([0, 1], size=(gene_length,)).tolist()
 
-        return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, gene_length, crossover_strategy)
+        return Individual(config.phenotype_convertor, config.fitness_evaluator, config.mutation_strategy, genotype,
+                          config.crossover_strategy)
 
 
 class LOLZEA(EA):
     def __init__(self):
-        individual_factory = LOLZIndividualFactory()
-
-        adult_selector = GenerationalMixingAdultSelector()
-        #parent_selector = SigmaScalingParentSelector()
-        parent_selector = TournamentParentSelector(5, 0.5)
-
-        population_size = 20
-        super().__init__(individual_factory, adult_selector, parent_selector, population_size)
+        super().__init__(config.individual_factory, config.adult_selector, config.parent_selector, config.population_size)
