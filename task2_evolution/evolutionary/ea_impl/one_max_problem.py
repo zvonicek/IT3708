@@ -5,7 +5,7 @@ from ea.crossover import OnePointCrossover
 from ea.ea import EA
 from ea.individual import AbstractIndividualFactory, Individual
 from ea.mutation import BinaryVectorInversionMutation
-
+import ea.config as config
 
 class OneMaxFitnessEvaluator(AbstractFitnessEvaluator):
     def get_fitness(self, phenotype):
@@ -22,12 +22,13 @@ class OneMaxIndividualFactory(AbstractIndividualFactory):
         fitness_evaluator = OneMaxFitnessEvaluator()
         mutation_strategy = BinaryVectorInversionMutation(0.001)
         crossover_strategy = OnePointCrossover(0.9)
-        gene_length = 40
+        gene_length = config.gene_length
 
         if genotype is None:
             genotype = numpy.random.choice([0, 1], size=(gene_length,)).tolist()
 
-        return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, gene_length, crossover_strategy)
+        return Individual(config.phenotype_convertor, config.fitness_evaluator, config.mutation_strategy, genotype,
+                          config.crossover_strategy)
 
 
 class OneMaxEA(EA):
@@ -38,4 +39,4 @@ class OneMaxEA(EA):
         parent_selector = FitnessProportionateParentSelector()
 
         population_size = 170
-        super().__init__(individual_factory, adult_selector, parent_selector, population_size)
+        super().__init__(config.individual_factory, config.adult_selector, config.parent_selector, config.population_size)

@@ -1,0 +1,19 @@
+population_size: 170
+generation_limit: 300
+target_fitness: 1.0
+plotting: true
+
+ea: !!python/object:ea_impl.one_max_problem.OneMaxEA {}
+
+adult_selector: !!python/object:ea.adult_selection.FullGenerationalReplacementAdultSelector {}
+parent_selector: !!python/object:ea.parent_selection.FitnessProportionateParentSelector {}
+
+individual_factory: !!python/object:ea_impl.one_max_problem.OneMaxIndividualFactory {}
+phenotype_convertor: !!python/object:ea.individual.BasicPhenotypeConvertor {}
+fitness_evaluator: !!python/object:ea_impl.one_max_problem.OneMaxFitnessEvaluator {}
+
+mutation_strategy: !!python/object:ea.mutation.BinaryVectorInversionMutation {mutation_rate: 0.001}
+crossover_strategy: !!python/object:ea.crossover.OnePointCrossover {crossover_rate: 0.9}
+
+# task-specific parameters
+gene_length: 40
