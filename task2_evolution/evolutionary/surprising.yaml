@@ -1,9 +1,12 @@
-population_size: 30
-generation_limit: 300
+population_size: 100
+generation_limit: 5000
 target_fitness: 1.0
+plotting: false
+
+ea: !!python/object:ea_impl.suprising_sequences.SurprisingEA {}
 
 adult_selector: !!python/object:ea.adult_selection.GenerationalMixingAdultSelector {}
-parent_selector: !!python/object:ea.parent_selection.TournamentParentSelector {group_size: 5, epsilon: 0.1}
+parent_selector: !!python/object:ea.parent_selection.TournamentParentSelector {group_size: 6, epsilon: 0.1}
 
 individual_factory: !!python/object:ea_impl.suprising_sequences.SurprisingIndividualFactory {}
 phenotype_convertor: !!python/object:ea_impl.suprising_sequences.SurprisingPhenotypeConvertor {}
@@ -14,5 +17,4 @@ crossover_strategy: !!python/object:ea_impl.suprising_sequences.SurprisingOnePoi
 
 # task-specific parameters
 alphabet: 10
-init_length: 80
-globally: true
+init_length: 91
