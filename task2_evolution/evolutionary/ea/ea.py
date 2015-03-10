@@ -14,15 +14,17 @@ class EA():
     def run(self):
         generation = self.compute()
 
-        for ind in self.population.individuals:
-            print(ind.phenotype(), ind.fitness())
-
-        print(generation)
+        fittest = list(filter(lambda x: x.fitness() == 1, self.population.individuals))
+        if len(fittest) > 0:
+            print("Found in generation", generation)
+        else:
+            print("Did not find within", generation, "generations")
 
         plt.show(block=True)
 
     def compute(self):
         if config.plotting:
+            plt.clf()
             plt.axis([0, config.generation_limit, 0, 1])
             plt.ion()
             plt.show()
@@ -46,8 +48,5 @@ class EA():
                 plt.scatter(generation, sum(fitnesses) / len(fitnesses), c='b')
                 plt.draw()
                 print(end='')
-
-        if config.plotting:
-            plt.clf()
 
         return generation
