@@ -1,3 +1,6 @@
+import numpy
+
+
 class Population:
     def __init__(self, individual_fact: 'IndividualFactory', population_size, parent_selector, adult_selector):
         self.individual_fact = individual_fact
@@ -6,12 +9,14 @@ class Population:
         self.adult_selector = adult_selector
         self.children = []
         self.individuals = []
+        self.generation = 0
 
         self.initialize_population()
 
     def initialize_population(self):
         self.children = self.generate(self.population_size)
         self.individuals = []
+        self.generation = 0
 
     def generate(self, count):
         generated = []
@@ -44,3 +49,15 @@ class Population:
     def select_adults(self):
         self.individuals = self.adult_selector.select(self)
         self.children = []
+
+    # reporting functions
+    def report(self, best, avg, sd):
+        print("generation:", self.generation, "best-f:", best.fitness(), "avg-f:", avg, "sd-f:", sd,
+              "best-ph:", best.phenotype_string())
+
+    def best_individual(self):
+        return max(self.individuals, key=lambda x: x.fitness())
+
+    def avg_sd_fitness(self):
+        fitnesses = list(map(lambda x: x.fitness(), self.individuals))
+        return numpy.mean(fitnesses), numpy.std(fitnesses)

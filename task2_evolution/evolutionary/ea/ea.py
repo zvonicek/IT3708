@@ -12,13 +12,17 @@ class EA():
         self.population = Population(individual_fact, population_size, parent_selector, adult_selector)
 
     def run(self):
-        generation = self.compute()
+        self.compute()
 
         fittest = list(filter(lambda x: x.fitness() == 1, self.population.individuals))
         if len(fittest) > 0:
-            print("Found in generation", generation)
+            # if logging is disabled, report the successful generation anyway
+            if not config.logging:
+                self.population.report()
+
+            print("Found in generation", self.population.generation )
         else:
-            print("Did not find within", generation, "generations")
+            print("Did not find within", self.population.generation , "generations")
 
         plt.show(block=True)
 
@@ -29,10 +33,9 @@ class EA():
             plt.ion()
             plt.show()
 
-        generation = 0
-        while generation <= config.generation_limit and \
+        while self.population.generation <= config.generation_limit and \
                 not any(x for x in self.population.individuals if x.fitness() >= config.target_fitness):
-            generation += 1
+            self.population.generation += 1
 
             self.population.select_adults()
 
@@ -42,11 +45,17 @@ class EA():
             # mutation
             self.population.mutate()
 
+            if config.plotting or config.logging:
+                best = self.population.best_individual()
+                avg, sd = self.population.avg_sd_fitness()
+
             if config.plotting:
-                plt.scatter(generation, max(self.population.individuals, key=lambda x: x.fitness()).fitness(), c='r')
-                fitnesses = list(map(lambda x: x.fitness(), self.population.individuals))
-                plt.scatter(generation, sum(fitnesses) / len(fitnesses), c='b')
+                plt.scatter(self.population.generation, best.fitness(), c='r')
+                plt.plot(self.population.generation, best.fitness(), c='r')
+                plt.scatter(self.population.generation, avg, c='b')
+                plt.scatter(self.population.generation, sd, c='g')
                 plt.draw()
                 print(end='')
 
-        return generation
+            if config.logging:
+                self.population.report(best, avg, sd)

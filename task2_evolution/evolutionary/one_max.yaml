@@ -2,6 +2,7 @@ population_size: 20
 generation_limit: 200
 target_fitness: 1.0
 plotting: true
+logging: true
 
 ea: !!python/object:ea_impl.one_max_problem.OneMaxEA {}
 

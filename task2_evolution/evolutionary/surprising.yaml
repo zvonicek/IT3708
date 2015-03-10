@@ -2,6 +2,7 @@ population_size: 100
 generation_limit: 5000
 target_fitness: 1.0
 plotting: false
+logging: false
 
 ea: !!python/object:ea_impl.suprising_sequences.SurprisingEA {}
 

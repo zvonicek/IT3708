@@ -30,7 +30,6 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
         self.genotype = self.mutation.mutate(self.genotype)
 
 
-
 class Individual(AbstractIndividual):
     def __init__(self, phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy):
         self.mutation = mutation_strategy
@@ -40,6 +39,9 @@ class Individual(AbstractIndividual):
 
     def __repr__(self):
         return ''.join(str(e) for e in self.genotype)
+
+    def phenotype_string(self):
+        return ', '.join(str(e) for e in self.phenotype())
 
 
 class AbstractPhenotypeConvertor(metaclass=abc.ABCMeta):
