@@ -36,19 +36,19 @@ class SurprisingFitnessEvaluator(AbstractFitnessEvaluator):
 
         return collisions
 
-    def check_phenotype_integrity(self, phenotype):
+    @staticmethod
+    def check_phenotype_integrity(phenotype):
         for num in phenotype:
             if num >= config.alphabet:
                 return False
         return True
-        #return all(map(lambda x: x < config.alphabet, phenotype)) -- less efficient
 
 
 class SurprisingPhenotypeConvertor(AbstractPhenotypeConvertor):
     def __init__(self):
         self.cache = {}
 
-    def __setstate__(self, dict):
+    def __setstate__(self, dictd):
         self.cache = {}
 
     def get_phenotype(self, genotype):
@@ -87,7 +87,6 @@ class SurprisingIndividualFactory(AbstractIndividualFactory):
 class SurprisingEA(EA):
     def __init__(self):
         self.intial_length = 3
-
         config.length = config.init_length
         super().__init__(config.individual_factory, config.adult_selector, config.parent_selector, config.population_size)
 

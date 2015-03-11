@@ -7,7 +7,7 @@ class AbstractMutation(metaclass=abc.ABCMeta):
         self.mutation_rate = mutation_rate
 
     @abc.abstractmethod
-    def mutate(self):
+    def mutate(self, genotype):
         pass
 
 

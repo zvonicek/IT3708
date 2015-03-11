@@ -8,8 +8,6 @@ import ea.config as config
 class EA():
     def __init__(self, individual_fact: 'AbstractIndividualFactory', adult_selector: 'AbstractAdultSelector',
                  parent_selector: 'AbstractParentSelector', population_size):
-        self.individual_fact = individual_fact
-        self.adult_selector = adult_selector
         self.population = Population(individual_fact, population_size, parent_selector, adult_selector)
 
     def run(self):
