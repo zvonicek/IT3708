@@ -98,11 +98,11 @@ class SurprisingEA(EA):
 
         while True:
             print("Computing length:", length)
-            generation = self.compute()
+            self.compute()
 
             supr_seq = list(filter(lambda x: x.fitness() == 1, self.population.individuals))
             if len(supr_seq) > 0:
-                print("Length", length, "found in generation", generation)
+                print("Length", length, "found in generation", self.population.generation)
                 print(supr_seq[0].phenotype())
             else:
                 break
