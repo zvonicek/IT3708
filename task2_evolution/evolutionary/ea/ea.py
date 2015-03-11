@@ -1,6 +1,7 @@
 from functools import reduce
 from ea.population import Population
 import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
 import ea.config as config
 
 
@@ -24,16 +25,15 @@ class EA():
         else:
             print("Did not find within", self.population.generation , "generations")
 
-        plt.show(block=True)
+        plt.show()
 
     def compute(self):
         if config.plotting:
-            plt.clf()
-            plt.axis([0, config.generation_limit, 0, 1])
-            plt.ion()
-            plt.show()
+            plot_max = []
+            plot_avg = []
+            plot_sd = []
 
-        while self.population.generation <= config.generation_limit and \
+        while self.population.generation < config.generation_limit and \
                 not any(x for x in self.population.individuals if x.fitness() >= config.target_fitness):
             self.population.generation += 1
 
@@ -50,12 +50,18 @@ class EA():
                 avg, sd = self.population.avg_sd_fitness()
 
             if config.plotting:
-                plt.scatter(self.population.generation, best.fitness(), c='r')
-                plt.plot(self.population.generation, best.fitness(), c='r')
-                plt.scatter(self.population.generation, avg, c='b')
-                plt.scatter(self.population.generation, sd, c='g')
-                plt.draw()
-                print(end='')
+                plot_max.append(best.fitness())
+                plot_avg.append(avg)
+                plot_sd.append(sd)
 
             if config.logging:
                 self.population.report(best, avg, sd)
+
+        if config.plotting:
+            plt.plot(plot_max)
+            plt.plot(plot_avg)
+            plt.plot(plot_sd)
+            prop = FontProperties()
+            prop.set_size('small')
+            plt.legend(['best', 'average', 'std'], loc='lower right', prop = prop)
+            plt.ylim([0, 1])
