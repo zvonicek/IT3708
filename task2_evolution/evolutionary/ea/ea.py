@@ -1,4 +1,3 @@
-from functools import reduce
 from ea.population import Population
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
@@ -17,7 +16,9 @@ class EA():
         if len(fittest) > 0:
             # if logging is disabled, report the successful generation anyway
             if not config.logging:
-                self.population.report()
+                best = self.population.best_individual()
+                avg, sd = self.population.avg_sd_fitness()
+                self.population.report(best, avg, sd)
 
             print("Found in generation", self.population.generation )
         else:
@@ -26,10 +27,9 @@ class EA():
         plt.show()
 
     def compute(self):
-        if config.plotting:
-            plot_max = []
-            plot_avg = []
-            plot_sd = []
+        plot_max = []
+        plot_avg = []
+        plot_sd = []
 
         while self.population.generation < config.generation_limit and \
                 not any(x for x in self.population.individuals if x.fitness() >= config.target_fitness):
