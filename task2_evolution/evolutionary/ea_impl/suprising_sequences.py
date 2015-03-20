@@ -5,6 +5,7 @@ from ea.crossover import OnePointCrossover
 from ea.ea import EA
 from ea.individual import AbstractFitnessEvaluator, AbstractIndividualFactory, Individual, \
     AbstractPhenotypeConvertor
+import matplotlib.pyplot as plt
 
 
 class SurprisingFitnessEvaluator(AbstractFitnessEvaluator):
@@ -109,3 +110,5 @@ class SurprisingEA(EA):
             length += 1
             setattr(config, 'length', length)
             self.population.initialize_population()
+
+            plt.show()

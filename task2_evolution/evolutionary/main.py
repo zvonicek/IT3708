@@ -4,7 +4,7 @@ import yaml
 import ea.config
 
 
-config_file = 'one_max.yaml'
+config_file = 'surprising.yaml'
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:

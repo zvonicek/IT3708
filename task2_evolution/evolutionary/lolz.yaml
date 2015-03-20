@@ -1,20 +1,19 @@
-population_size: 20
+population_size: 170
 generation_limit: 100
 target_fitness: 1.0
 plotting: true
-logging: true
+logging: false
 
 ea: !!python/object:ea_impl.lolz.LOLZEA {}
 
-adult_selector: !!python/object:ea.adult_selection.GenerationalMixingAdultSelector {}
-#parent_selector: !!python/object:ea.parent_selection.SigmaScalingParentSelector {}
-parent_selector: !!python/object:ea.parent_selection.TournamentParentSelector {group_size: 5, epsilon: 0.5}
+adult_selector: !!python/object:ea.adult_selection.FullGenerationalReplacementAdultSelector {}
+parent_selector: !!python/object:ea.parent_selection.TournamentParentSelector {group_size: 5, epsilon: 0.1}
 
 individual_factory: !!python/object:ea_impl.lolz.LOLZIndividualFactory {}
 phenotype_convertor: !!python/object:ea.individual.BasicPhenotypeConvertor {}
 fitness_evaluator: !!python/object:ea_impl.lolz.LOLZFitnessEvaluator {z: 21}
 
-mutation_strategy: !!python/object:ea.mutation.BinaryVectorInversionMutation {mutation_rate: 0.1}
+mutation_strategy: !!python/object:ea.mutation.BinaryVectorInversionMutation {mutation_rate: 0.01}
 crossover_strategy: !!python/object:ea.crossover.OnePointCrossover {crossover_rate: 0.9}
 
 # task-specific parameters
