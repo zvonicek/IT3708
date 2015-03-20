@@ -1,12 +1,16 @@
 from ea.population import Population
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
-import ea.config as config
 
 
 class EA():
     def __init__(self, individual_fact: 'AbstractIndividualFactory', adult_selector: 'AbstractAdultSelector',
-                 parent_selector: 'AbstractParentSelector', population_size):
+                 parent_selector: 'AbstractParentSelector', population_size, logging, plotting, generation_limit,
+                 target_fitness):
+        self.logging = logging
+        self.plotting = plotting
+        self.generation_limit = generation_limit
+        self.target_fitness = target_fitness
         self.population = Population(individual_fact, population_size, parent_selector, adult_selector)
 
     def run(self):
@@ -15,7 +19,7 @@ class EA():
         fittest = list(filter(lambda x: x.fitness() == 1, self.population.individuals))
         if len(fittest) > 0:
             # if logging is disabled, report the successful generation anyway
-            if not config.logging:
+            if not self.logging:
                 best = self.population.best_individual()
                 avg, sd = self.population.avg_sd_fitness()
                 self.population.report(best, avg, sd)
@@ -31,8 +35,8 @@ class EA():
         plot_avg = []
         plot_sd = []
 
-        while self.population.generation < config.generation_limit and \
-                not any(x for x in self.population.individuals if x.fitness() >= config.target_fitness):
+        while self.population.generation < self.generation_limit and \
+                not any(x for x in self.population.individuals if x.fitness() >= self.target_fitness):
             self.population.generation += 1
 
             self.population.select_adults()
@@ -43,19 +47,19 @@ class EA():
             # mutation
             self.population.mutate()
 
-            if config.plotting or config.logging:
+            if self.plotting or self.logging:
                 best = self.population.best_individual()
                 avg, sd = self.population.avg_sd_fitness()
 
-            if config.plotting:
+            if self.plotting:
                 plot_max.append(best.fitness())
                 plot_avg.append(avg)
                 plot_sd.append(sd)
 
-            if config.logging:
+            if self.logging:
                 self.population.report(best, avg, sd)
 
-        if config.plotting:
+        if self.plotting:
             plt.plot(plot_max)
             plt.plot(plot_avg)
             plt.plot(plot_sd)

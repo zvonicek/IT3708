@@ -89,7 +89,9 @@ class SurprisingEA(EA):
     def __init__(self):
         self.intial_length = 3
         config.length = config.init_length
-        super().__init__(config.individual_factory, config.adult_selector, config.parent_selector, config.population_size)
+        super().__init__(config.individual_factory, config.adult_selector, config.parent_selector,
+                         config.population_size, config.logging, config.plotting, config.generation_limit,
+                         config.target_fitness)
 
     def run(self):
         length = config.init_length
