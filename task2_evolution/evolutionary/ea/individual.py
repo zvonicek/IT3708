@@ -1,4 +1,5 @@
 import abc
+import math
 import numpy
 from ea.mutation import BinaryVectorInversionMutation
 
@@ -53,6 +54,26 @@ class AbstractPhenotypeConvertor(metaclass=abc.ABCMeta):
 class BasicPhenotypeConvertor(AbstractPhenotypeConvertor):
     def get_phenotype(self, genotype):
         return genotype
+
+
+class BitToNumberPhenotypeConvertor(AbstractPhenotypeConvertor):
+    def __init__(self, length):
+        self.length = length
+        self.cache = {}
+
+    def get_phenotype(self, genotype):
+        chunk = int(len(genotype)/self.get_length())
+
+        numbers = []
+        for number in zip(*[iter(genotype)]*chunk):
+            if number not in self.cache:
+                self.cache[number] = [int(''.join(map(str, number)), 2)]
+            numbers += self.cache[number]
+
+        return numbers
+
+    def get_length(self):
+        return self.length
 
 
 class AbstractFitnessEvaluator(metaclass=abc.ABCMeta):

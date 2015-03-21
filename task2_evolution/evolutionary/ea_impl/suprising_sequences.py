@@ -4,7 +4,7 @@ import ea.config as config
 from ea.crossover import OnePointCrossover
 from ea.ea import EA
 from ea.individual import AbstractFitnessEvaluator, AbstractIndividualFactory, Individual, \
-    AbstractPhenotypeConvertor
+    AbstractPhenotypeConvertor, BitToNumberPhenotypeConvertor
 import matplotlib.pyplot as plt
 
 
@@ -45,22 +45,16 @@ class SurprisingFitnessEvaluator(AbstractFitnessEvaluator):
         return True
 
 
-class SurprisingPhenotypeConvertor(AbstractPhenotypeConvertor):
+class SurprisingPhenotypeConvertor(BitToNumberPhenotypeConvertor):
     def __init__(self):
+        super().__init__(0)
         self.cache = {}
 
     def __setstate__(self, dictd):
         self.cache = {}
 
-    def get_phenotype(self, genotype):
-        chunk = math.ceil(math.log2(config.alphabet))
-        numbers = []
-        for number in zip(*[iter(genotype)]*chunk):
-            if number not in self.cache:
-                self.cache[number] = [int(''.join(map(str, number)), 2)]
-            numbers += self.cache[number]
-
-        return numbers
+    def get_length(self):
+        return config.length
 
 
 class SurprisingOnePointCrossover(OnePointCrossover):
