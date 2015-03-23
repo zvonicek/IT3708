@@ -31,14 +31,14 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
     def create(self, genotype=None):
         #TODO generate new genotype if not given
 
-        #TODO length should be
+        #TODO length should be the number of weights (items in phenotype)
         length = None
 
         #TODO genotype -> phenotype convertor
         phenotype_convertor = None
         fitness_evaluator = FlatlandFitnessEvaluator()
         mutation_strategy = BinaryVectorInversionMutation(0.01)
-        crossover_strategy = SurprisingOnePointCrossover(0.8, len(genotype))
+        crossover_strategy = SurprisingOnePointCrossover(0.8, length)
 
         return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy)
 
