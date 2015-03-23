@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from flatland.flatnand import Cell, Orientation
+from flatland.flatland import Cell, Orientation
 
 
 class GUI(Frame):
