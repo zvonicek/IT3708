@@ -1,9 +1,12 @@
 import random
 import sys
-from ea.crossover import OnePointCrossover
 
 sys.path.append('../../task2_evolution/evolutionary')
 
+from ea.adult_selection import GenerationalMixingAdultSelector
+from ea.crossover import OnePointCrossover
+from ea.ea import EA
+from ea.parent_selection import SigmaScalingParentSelector
 from ea.mutation import BinaryVectorInversionMutation
 from ea.individual import AbstractIndividualFactory, AbstractFitnessEvaluator, Individual
 
@@ -38,3 +41,13 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
         crossover_strategy = SurprisingOnePointCrossover(0.8, len(genotype))
 
         return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy)
+
+
+class FlatlandEA(EA):
+    def __init__(self):
+
+        individual_factory = FlatlandIndividualFactory()
+        adult_selector = GenerationalMixingAdultSelector()
+        parent_selector = SigmaScalingParentSelector()
+        population_size = 50
+        super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False, 80, 1.0)
