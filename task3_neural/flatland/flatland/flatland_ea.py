@@ -8,7 +8,7 @@ from ea.crossover import OnePointCrossover
 from ea.ea import EA
 from ea.parent_selection import SigmaScalingParentSelector
 from ea.mutation import BinaryVectorInversionMutation
-from ea.individual import AbstractIndividualFactory, AbstractFitnessEvaluator, Individual
+from ea.individual import AbstractIndividualFactory, AbstractFitnessEvaluator, Individual, AbstractPhenotypeConvertor
 
 
 class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
@@ -27,15 +27,36 @@ class SurprisingOnePointCrossover(OnePointCrossover):
         return pick * int(len(a)/self.length)
 
 
+class FlatlandPhenotypeConvertor(AbstractPhenotypeConvertor):
+    """phenotype is a list of weights – values from interval [-1; 1]"""
+
+    def __init__(self, length):
+        """length is a count of distinct numbers encoded in genotype"""
+        self.length = length
+
+    def get_phenotype(self, genotype):
+        chunk = int(len(genotype)/self.length)
+
+        numbers = []
+        for number in zip(*[iter(genotype)]*chunk):
+            number_dec = int(''.join(map(str, number)), 2)
+            # scale number to desired interval [-1; 1]
+            numbers += [2 * number_dec / (2**chunk - 1) - 1]
+
+        return numbers
+
+
 class FlatlandIndividualFactory(AbstractIndividualFactory):
+    def __init__(self):
+        self.bits_per_weight = 8
+
     def create(self, genotype=None):
         #TODO generate new genotype if not given
 
         #TODO length should be the number of weights (items in phenotype)
         length = None
 
-        #TODO genotype -> phenotype convertor
-        phenotype_convertor = None
+        phenotype_convertor = FlatlandPhenotypeConvertor(length)
         fitness_evaluator = FlatlandFitnessEvaluator()
         mutation_strategy = BinaryVectorInversionMutation(0.01)
         crossover_strategy = SurprisingOnePointCrossover(0.8, length)
@@ -50,4 +71,5 @@ class FlatlandEA(EA):
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 50
-        super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False, 80, 1.0)
+        generation_limit = 80
+        super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False, generation_limit, 1.0)
