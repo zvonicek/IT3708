@@ -1,5 +1,6 @@
 import random
 import sys
+from flatland.flatland.flatland import Cell, Turn
 
 sys.path.append('../../task2_evolution/evolutionary')
 
@@ -18,12 +19,27 @@ class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
         self.ann = ann
 
     def get_fitness(self, phenotype):
+        reward = 0
+        self.ann.set_weights(phenotype)
+        food_reward = 10
+        poison_punishment = 5
+
         # in assignment: 60 time step for moving in flatland
         for i in range(60):
-            sensor_output = flatland.sensor_output()
-            ann_input = map(lambda x: 1 if x == Cell.Food else 0) + map(lambda x: 1 if x == Cell.Poison else 0)
-            result = ann.compute(ann_input)
-            action = interpret_result(result)
+            sensor_output = self.flatland.sensor_output()
+            food_input = list(map(lambda x: 1 if x == Cell.Food else 0, sensor_output))
+            poison_input = list(map(lambda x: 1 if x == Cell.Poison else 0, sensor_output))
+            ann_input = food_input + poison_input
+            result = self.ann.compute(ann_input)
+            action = self.interpret_result(result)
+            eaten = self.flatland.move(action)
+
+            if eaten == Cell.Food:
+                reward += food_reward
+            elif eaten == Cell.Poison:
+                reward -= poison_punishment
+
+        return reward
 
     def interpret_result(self, result):
         # TODO function to interpret ANN result

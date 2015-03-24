@@ -15,10 +15,12 @@ class Orientation(IntEnum):
     Down = 2
     Left = 3
 
+
 class Turn(IntEnum):
     Left = 0
     Right = 1
     Straight = 2
+
 
 class Flatland():
     def __init__(self, length, fpd, agent_coord):
@@ -28,12 +30,13 @@ class Flatland():
         self.grid[agent_coord[0]][agent_coord[1]] = Cell.Agent
 
         food_positions = [(x, y) for x in range(length) for y in range(length) if x != y]
-        food_num = round(fpd[0]*length**2)
+        food_num = round(fpd[0] * length ** 2)
         for pos in random.sample(food_positions, food_num):
             self.grid[pos[0]][pos[1]] = Cell.Food
 
-        poison_positions = [(x, y) for x in range(length) for y in range(length) if x != y and self.grid[x][y] == Cell.Empty]
-        poison_num = round(fpd[1]*(length**2-food_num))
+        poison_positions = [(x, y) for x in range(length) for y in range(length) if
+                            x != y and self.grid[x][y] == Cell.Empty]
+        poison_num = round(fpd[1] * (length ** 2 - food_num))
         for pos in random.sample(poison_positions, poison_num):
             self.grid[pos[0]][pos[1]] = Cell.Poison
 
@@ -75,23 +78,22 @@ class Flatland():
                 if self.grid[row][col] == Cell.Agent:
                     return row, col
 
-
     def sensor_output(self):
-        x,y = self.get_agent()
+        x, y = self.get_agent()
         l = len(self.grid)
         result = []
 
         if self.agent_orientation == Orientation.Up:
-            surround = [((x-1)%l,y), (x,(y+1)%l), ((x+1)%l,y)]
+            surround = [((x - 1) % l, y), (x, (y + 1) % l), ((x + 1) % l, y)]
         elif self.agent_orientation == Orientation.Right:
-            surround = [(x,(y+1)%l), ((x+1)%l, y), (x,(y-1)%l)]
+            surround = [(x, (y + 1) % l), ((x + 1) % l, y), (x, (y - 1) % l)]
         elif self.agent_orientation == Orientation.Down:
-            surround = [((x+1)%l, y), (x,(y-1)%l), ((x-1)%l,y)]
-        elif self.agent_orientation == Orientation.Left:
-            surround = [(x,(y-1)%l), ((x-1)%l,y), (x, (y+1)%l)]
+            surround = [((x + 1) % l, y), (x, (y - 1) % l), ((x - 1) % l, y)]
+        else:
+            surround = [(x, (y - 1) % l), ((x - 1) % l, y), (x, (y + 1) % l)]
 
         for p in surround:
             result.append(self.grid[p[0]][p[1]])
 
-        #result: [Left sensor, Straight sensor, Right sensor]
+        # result: [Left sensor, Straight sensor, Right sensor]
         return result
