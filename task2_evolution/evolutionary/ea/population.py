@@ -1,8 +1,10 @@
+import heapq
 import numpy
 
 
 class Population:
-    def __init__(self, individual_fact: 'IndividualFactory', population_size, parent_selector, adult_selector):
+    def __init__(self, individual_fact: 'IndividualFactory', population_size, parent_selector, adult_selector,
+                 elitism_size=0):
         self.individual_fact = individual_fact
         self.population_size = population_size
         self.parent_selector = parent_selector
@@ -10,6 +12,7 @@ class Population:
         self.children = []
         self.individuals = []
         self.generation = 0
+        self.elitism_size = elitism_size
 
         self.initialize_population()
 
@@ -26,16 +29,21 @@ class Population:
         return generated
 
     def mate(self):
+            # elitism: pick the best n individuals
+            elitism = heapq.nlargest(self.elitism_size, self.individuals, key=lambda x: x.fitness())
+
             self.mutate()
             self.select_adults()
 
             new_generation = []
-            while len(new_generation) < self.population_size:
+            while len(new_generation) < self.population_size - self.elitism_size:
                 first, second = self.crossover()
 
                 new_generation.append(first)
-                new_generation.append(second)
+                if len(new_generation) < self.population_size - self.elitism_size:
+                    new_generation.append(second)
 
+            new_generation += elitism
             self.children = new_generation
 
     def crossover(self):
@@ -50,7 +58,7 @@ class Population:
             individual.mutate()
 
     def select_adults(self):
-        self.individuals = self.adult_selector.select(self)
+        self.individuals = self.adult_selector.select(self, self.population_size - self.elitism_size)
         self.children = []
 
     # reporting functions
