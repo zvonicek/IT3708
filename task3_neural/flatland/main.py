@@ -13,6 +13,7 @@ gui.draw_flatland(f)
 gui.draw_flatland(f)
 
 ann = FlatlandAnnFactory().create()
+ann.set_weights([1, 2, 3, 4, 5, 6])
 res = ann.compute([1, 1, 1, 1, 1, 1])
 print(res)
 
