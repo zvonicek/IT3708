@@ -4,7 +4,8 @@ class Layer():
 
     def compute(self, vals):
         res = []
-        for neuron in range(self.neurons):
-            res.append(neuron.compute(vals))
+        for neuron in self.neurons:
+            res.append(neuron.compute(vals[:neuron.weights_count]))
+            vals = vals[neuron.weights_count:]
 
         return res
