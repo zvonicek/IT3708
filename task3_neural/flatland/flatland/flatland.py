@@ -15,12 +15,10 @@ class Orientation(IntEnum):
     Down = 2
     Left = 3
 
-
 class Turn(IntEnum):
     Left = 0
     Right = 1
     Straight = 2
-
 
 class Flatland():
     def __init__(self, length, fpd, agent_coord):
@@ -76,3 +74,24 @@ class Flatland():
             for col in range(len(self.grid)):
                 if self.grid[row][col] == Cell.Agent:
                     return row, col
+
+
+    def sensor_output(self):
+        x,y = self.get_agent()
+        l = len(self.grid)
+        result = []
+
+        if self.agent_orientation == Orientation.Up:
+            surround = [((x-1)%l,y), (x,(y+1)%l), ((x+1)%l,y)]
+        elif self.agent_orientation == Orientation.Right:
+            surround = [(x,(y+1)%l), ((x+1)%l, y), (x,(y-1)%l)]
+        elif self.agent_orientation == Orientation.Down:
+            surround = [((x+1)%l, y), (x,(y-1)%l), ((x-1)%l,y)]
+        elif self.agent_orientation == Orientation.Left:
+            surround = [(x,(y-1)%l), ((x-1)%l,y), (x, (y+1)%l)]
+
+        for p in surround:
+            result.append(self.grid[p[0]][p[1]])
+
+        #result: [Left sensor, Straight sensor, Right sensor]
+        return result

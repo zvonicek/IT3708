@@ -12,3 +12,5 @@ gui.draw_flatland(f)
 gui.draw_flatland(f)
 
 tk.mainloop()
+
+ann = Network()
