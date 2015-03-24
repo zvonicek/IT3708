@@ -1,6 +1,6 @@
 import random
 import sys
-from flatland.flatland.flatland import Cell, Turn
+from flatland.flatland import Cell, Turn
 
 sys.path.append('../../task2_evolution/evolutionary')
 
