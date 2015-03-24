@@ -1,5 +1,6 @@
 from tkinter import Tk
 from flatland.flatland import Flatland, Turn
+from flatland.flatland_ann import FlatlandAnnFactory
 from gui.gui import GUI
 
 f = Flatland(10, (1/3, 1/3), (2, 2))
@@ -11,6 +12,8 @@ gui.draw_flatland(f)
 
 gui.draw_flatland(f)
 
-tk.mainloop()
+ann = FlatlandAnnFactory().create()
+res = ann.compute([1, 1, 1, 1, 1, 1])
+print(res)
 
-ann = Network()
+#tk.mainloop()
