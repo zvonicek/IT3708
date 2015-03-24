@@ -12,11 +12,23 @@ from ea.individual import AbstractIndividualFactory, AbstractFitnessEvaluator, I
 
 
 class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
+
+    def __init__(self, flatland, ann):
+        self.flatland = flatland
+        self.ann = ann
+
     def get_fitness(self, phenotype):
-        #TODO fitness function
-        pass
+        # in assignment: 60 time step for moving in flatland
+        for i in range(60):
+            sensor_output = flatland.sensor_output()
+            ann_input = map(lambda x: 1 if x == Cell.Food else 0) + map(lambda x: 1 if x == Cell.Poison else 0)
+            result = ann.compute(ann_input)
+            action = interpret_result(result)
 
-
+    def interpret_result(self, result):
+        # TODO function to interpret ANN result
+        return Turn.Straight
+    
 class SurprisingOnePointCrossover(OnePointCrossover):
     def __init__(self, crossover_rate, length):
         super().__init__(crossover_rate)
@@ -47,11 +59,13 @@ class FlatlandPhenotypeConvertor(AbstractPhenotypeConvertor):
 
 
 class FlatlandIndividualFactory(AbstractIndividualFactory):
-    def __init__(self):
+    def __init__(self, flatland, ann):
         self.bits_per_weight = 8
+        self.flatland = flatland
+        self.ann = ann
 
     def create(self, genotype=None):
-        #TODO length should be a count of dictinct of weights (items) in phenotype
+        # TODO length should be a count of dictinct of weights (items) in phenotype
         length = None
 
         if genotype is None:
@@ -62,7 +76,7 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
                 genotype += self.to_binary(random.choice(vals), self.bits_per_weight)
 
         phenotype_convertor = FlatlandPhenotypeConvertor(length)
-        fitness_evaluator = FlatlandFitnessEvaluator()
+        fitness_evaluator = FlatlandFitnessEvaluator(self.flatland, self.ann)
         mutation_strategy = BinaryVectorInversionMutation(0.01)
         crossover_strategy = SurprisingOnePointCrossover(0.8, length)
 
@@ -75,11 +89,15 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
 
 
 class FlatlandEA(EA):
-    def __init__(self):
+    def __init__(self, flatland, ann):
+        # neural network for solving problem
+        self.ann = ann
+        self.flatland = flatland
 
-        individual_factory = FlatlandIndividualFactory()
+        individual_factory = FlatlandIndividualFactory(self.flatland, self.ann)
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 50
         generation_limit = 80
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False, generation_limit, 1.0)
+
