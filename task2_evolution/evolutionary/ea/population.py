@@ -26,6 +26,7 @@ class Population:
         return generated
 
     def mate(self):
+            self.mutate()
             self.select_adults()
 
             new_generation = []

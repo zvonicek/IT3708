@@ -42,9 +42,6 @@ class EA():
             # mating
             self.population.mate()
 
-            # mutation
-            self.population.mutate()
-
             if self.plotting or self.logging:
                 best = self.population.best_individual()
                 avg, sd = self.population.avg_sd_fitness()
