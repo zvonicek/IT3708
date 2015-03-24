@@ -26,6 +26,8 @@ class Population:
         return generated
 
     def mate(self):
+            self.select_adults()
+
             new_generation = []
             while len(new_generation) < self.population_size:
                 first, second = self.crossover()

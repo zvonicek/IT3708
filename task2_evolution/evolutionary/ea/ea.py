@@ -39,8 +39,6 @@ class EA():
                 not any(x for x in self.population.individuals if x.fitness() >= self.target_fitness):
             self.population.generation += 1
 
-            self.population.select_adults()
-
             # mating
             self.population.mate()
 
