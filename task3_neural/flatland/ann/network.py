@@ -3,7 +3,7 @@ class Network():
         self.layers = layers
 
     def compute(self, vals):
-        for i in range(self.layers):
+        for i in range(len(self.layers)):
             vals = self.layers[i].compute(vals)
 
         return vals
