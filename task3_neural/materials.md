@@ -1,3 +1,5 @@
 - http://natureofcode.com/book/chapter-10-neural-networks/
 - http://www.ai-junkie.com/ann/evolved/nnt1.html
 - http://ufldl.stanford.edu/wiki/index.php/Neural_Networks
+- http://en.wikibooks.org/wiki/Artificial_Neural_Networks/Neural_Network_Basics
+- http://en.wikibooks.org/wiki/Artificial_Neural_Networks/Activation_Functions
