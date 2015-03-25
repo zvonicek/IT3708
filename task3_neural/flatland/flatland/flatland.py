@@ -30,14 +30,14 @@ class Flatland():
         self.grid[agent_coord[0]][agent_coord[1]] = Cell.Agent
 
         food_positions = [(x, y) for x in range(length) for y in range(length) if x != y]
-        food_num = round(fpd[0] * length ** 2)
-        for pos in random.sample(food_positions, food_num):
+        self.food_num = round(fpd[0] * length ** 2)
+        for pos in random.sample(food_positions, self.food_num):
             self.grid[pos[0]][pos[1]] = Cell.Food
 
         poison_positions = [(x, y) for x in range(length) for y in range(length) if
                             x != y and self.grid[x][y] == Cell.Empty]
-        poison_num = round(fpd[1] * (length ** 2 - food_num))
-        for pos in random.sample(poison_positions, poison_num):
+        self.poison_num = round(fpd[1] * (length ** 2 - self.food_num))
+        for pos in random.sample(poison_positions, self.poison_num):
             self.grid[pos[0]][pos[1]] = Cell.Poison
 
     def __turn(self, turn):

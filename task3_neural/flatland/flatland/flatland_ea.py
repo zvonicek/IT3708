@@ -39,6 +39,11 @@ class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
             elif eaten == Cell.Poison:
                 reward -= poison_punishment
 
+        # normalize reward to interval [0, 1]
+        min_value = self.flatland.poison_num * poison_punishment * -1
+        max_value = self.flatland.food_num * food_reward
+        reward = (reward - min_value) / (max_value - min_value)
+
         return reward
 
     def interpret_result(self, result):
