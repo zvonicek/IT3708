@@ -40,6 +40,13 @@ class Flatland():
         for pos in random.sample(poison_positions, self.poison_num):
             self.grid[pos[0]][pos[1]] = Cell.Poison
 
+        # copy the grid so as it can be restored for next generation
+        self.start_grid = self.grid[:]
+
+    def reset(self):
+        self.agent_orientation = Orientation.Up
+        self.grid = self.start_grid[:]
+
     def __turn(self, turn):
         if turn == Turn.Left:
             self.agent_orientation = Orientation((self.agent_orientation.value - 1) % 4)

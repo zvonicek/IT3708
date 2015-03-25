@@ -44,6 +44,8 @@ class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
         max_value = self.flatland.food_num * food_reward
         reward = (reward - min_value) / (max_value - min_value)
 
+        self.flatland.reset()
+
         return reward
 
     def interpret_result(self, result):
