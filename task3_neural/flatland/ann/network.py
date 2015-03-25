@@ -15,3 +15,6 @@ class Network():
                 for j in range(len(neuron.weights)):
                     neuron.weights[j] = weights[i]
                     i += 1
+
+    def weights_count(self):
+        return sum(x.weights_count() for x in self.layers)

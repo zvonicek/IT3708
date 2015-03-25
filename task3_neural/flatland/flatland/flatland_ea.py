@@ -81,8 +81,7 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
         self.ann = ann
 
     def create(self, genotype=None):
-        # TODO length should be a count of dictinct of weights (items) in phenotype
-        length = None
+        length = self.ann.weights_count()
 
         if genotype is None:
             # lecture06-slide21: it is recommended to initialize weights from interval [-0,1; 0,1]

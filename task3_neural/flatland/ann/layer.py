@@ -9,3 +9,6 @@ class Layer():
             vals = vals[neuron.weights_count:]
 
         return res
+
+    def weights_count(self):
+        return sum(x.weights_count for x in self.neurons)
