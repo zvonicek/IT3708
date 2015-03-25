@@ -49,9 +49,20 @@ class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
         return reward
 
     def interpret_result(self, result):
-        # TODO function to interpret ANN result
-        return Turn.Straight
-    
+        possibilities = []
+        if result[0]:
+            possibilities.append(Turn.Left)
+        if result[1]:
+            possibilities.append(Turn.Straight)
+        if result[2]:
+            possibilities.append(Turn.Right)
+
+        if len(possibilities) == 0:
+            possibilities = [Turn.Left, Turn.Straight, Turn.Right]
+
+        return random.choice(possibilities)
+
+
 class SurprisingOnePointCrossover(OnePointCrossover):
     def __init__(self, crossover_rate, length):
         super().__init__(crossover_rate)
