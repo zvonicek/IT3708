@@ -41,11 +41,11 @@ class Flatland():
             self.grid[pos[0]][pos[1]] = Cell.Poison
 
         # copy the grid so as it can be restored for next generation
-        self.start_grid = self.grid[:]
+        self.start_grid = [x[:] for x in self.grid]
 
     def reset(self):
         self.agent_orientation = Orientation.Up
-        self.grid = self.start_grid[:]
+        self.grid = [x[:] for x in self.start_grid]
 
     def __turn(self, turn):
         if turn == Turn.Left:
