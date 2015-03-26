@@ -14,4 +14,4 @@ gui = GUI(tk)
 
 gui.draw_flatland(f)
 
-tk.mainloop()
+#tk.mainloop()
