@@ -130,7 +130,8 @@ class FlatlandEA(EA):
         individual_factory = FlatlandIndividualFactory(self.flatland, self.ann)
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
-        population_size = 50
-        generation_limit = 80
-        super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False, generation_limit, 1.0)
-
+        population_size = 100
+        generation_limit = 100
+        elitism_size = 5
+        super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
+                         generation_limit, 1.0, elitism_size)

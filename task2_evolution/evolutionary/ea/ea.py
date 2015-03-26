@@ -6,12 +6,12 @@ from matplotlib.font_manager import FontProperties
 class EA():
     def __init__(self, individual_fact: 'AbstractIndividualFactory', adult_selector: 'AbstractAdultSelector',
                  parent_selector: 'AbstractParentSelector', population_size, logging, plotting, generation_limit,
-                 target_fitness):
+                 target_fitness, elitism_size=0):
         self.logging = logging
         self.plotting = plotting
         self.generation_limit = generation_limit
         self.target_fitness = target_fitness
-        self.population = Population(individual_fact, population_size, parent_selector, adult_selector)
+        self.population = Population(individual_fact, population_size, parent_selector, adult_selector, elitism_size)
 
     def run(self):
         self.compute()
