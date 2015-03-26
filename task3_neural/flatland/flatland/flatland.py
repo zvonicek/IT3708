@@ -1,25 +1,16 @@
-from enum import IntEnum
 import random
 
 
-class Cell(IntEnum):
-    Food = 0
-    Poison = 1
-    Empty = 2
-    Agent = 3
+class Cell:
+    Food, Poison, Empty, Agent = range(0, 4)
 
 
-class Orientation(IntEnum):
-    Up = 0
-    Right = 1
-    Down = 2
-    Left = 3
+class Orientation:
+    Up, Right, Down, Left = range(0, 4)
 
 
-class Turn(IntEnum):
-    Left = 0
-    Right = 1
-    Straight = 2
+class Turn:
+    Left, Right, Straight = range(0, 3)
 
 
 class Flatland():
@@ -28,6 +19,7 @@ class Flatland():
 
         self.agent_orientation = Orientation.Up
         self.grid[agent_coord[0]][agent_coord[1]] = Cell.Agent
+        self.agent_coord = agent_coord
 
         food_positions = [(x, y) for x in range(length) for y in range(length) if x != y]
         self.food_num = round(fpd[0] * length ** 2)
@@ -49,9 +41,9 @@ class Flatland():
 
     def __turn(self, turn):
         if turn == Turn.Left:
-            self.agent_orientation = Orientation((self.agent_orientation.value - 1) % 4)
+            self.agent_orientation = (self.agent_orientation - 1) % 4
         elif turn == Turn.Right:
-            self.agent_orientation = Orientation((self.agent_orientation.value + 1) % 4)
+            self.agent_orientation = (self.agent_orientation + 1) % 4
         elif turn == Turn.Straight:
             pass
         else:
@@ -76,14 +68,12 @@ class Flatland():
 
         self.grid[curr_row][curr_col] = Cell.Empty
         self.grid[new_row][new_col] = Cell.Agent
+        self.agent_coord = (new_row, new_col)
 
         return cell_state
 
     def get_agent(self):
-        for row in range(len(self.grid)):
-            for col in range(len(self.grid)):
-                if self.grid[row][col] == Cell.Agent:
-                    return row, col
+        return self.agent_coord
 
     def sensor_output(self):
         x, y = self.get_agent()
