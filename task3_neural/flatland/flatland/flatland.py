@@ -94,3 +94,47 @@ class Flatland():
 
         # result: [Left sensor, Straight sensor, Right sensor]
         return result
+
+    def simulate(self, ann):
+        reward = 0
+        food_reward = 10
+        poison_punishment = 5
+
+        # in assignment: 60 time step for moving in flatland
+        for i in range(60):
+            sensor_output = self.sensor_output()
+            food_input = list(map(lambda x: 1 if x == Cell.Food else 0, sensor_output))
+            poison_input = list(map(lambda x: 1 if x == Cell.Poison else 0, sensor_output))
+            ann_input = food_input + poison_input
+            result = ann.compute(ann_input)
+            action = self.interpret_result(result)
+            eaten = self.move(action)
+
+            if eaten == Cell.Food:
+                reward += food_reward
+            elif eaten == Cell.Poison:
+                reward -= poison_punishment
+
+        # normalize reward to interval [0, 1]
+        min_value = self.poison_num * poison_punishment * -1
+        max_value = self.food_num * food_reward
+        reward = (reward - min_value) / (max_value - min_value)
+
+        self.reset()
+
+        return reward
+
+    @staticmethod
+    def interpret_result(result):
+        possibilities = []
+        if result[0]:
+            possibilities.append(Turn.Left)
+        if result[1]:
+            possibilities.append(Turn.Straight)
+        if result[2]:
+            possibilities.append(Turn.Right)
+
+        if len(possibilities) == 0:
+            possibilities = [Turn.Left, Turn.Straight, Turn.Right]
+
+        return random.choice(possibilities)
