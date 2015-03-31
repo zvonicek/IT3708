@@ -1,3 +1,4 @@
+import copy
 import heapq
 import numpy
 
@@ -32,9 +33,14 @@ class Population:
             # elitism: pick the best n individuals
             elitism = heapq.nlargest(self.elitism_size, self.individuals, key=lambda x: x.fitness())
 
+            # we need to copy the objects so as they do not get modified by mutation or crossover
+            elitism_copy = []
+            for e in elitism:
+                elitism_copy.append(copy.copy(e))
+
             self.mutate()
             self.select_adults()
-            self.individuals += elitism
+            self.individuals += elitism_copy
 
             new_generation = []
             while len(new_generation) < self.population_size:
