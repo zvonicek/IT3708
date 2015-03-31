@@ -15,11 +15,11 @@ class GUI(Frame):
         self.board = None
         self.queue = queue.Queue()
 
-    def replay_scenario(self, flatland, ann):
-        self.draw_grid(flatland)
+    def replay_scenarios(self, flatlands, ann):
+        self.draw_grid(flatlands[0])
 
         self.queue = queue.Queue()
-        ThreadedFlatlandTask(self.queue, 0.3, flatland, ann).start()
+        ThreadedFlatlandTask(self.queue, 0.3, flatlands, ann).start()
         self.master.after(100, self.poll_queue)
 
     def poll_queue(self):
@@ -80,15 +80,16 @@ class GUI(Frame):
 
 
 class ThreadedFlatlandTask(threading.Thread):
-    def __init__(self, queue, delay, flatland, ann):
+    def __init__(self, queue, delay, flatlands, ann):
         threading.Thread.__init__(self)
-        self.flatland = flatland
+        self.flatlands = flatlands
         self.ann = ann
         self.queue = queue
         self.delay = delay
 
     def run(self):
-        self.flatland.simulate(self.ann, self.tick_callback)
+        for flatland in self.flatlands:
+            flatland.simulate(self.ann, self.tick_callback)
 
     def tick_callback(self, flatland):
         self.queue.put(flatland)

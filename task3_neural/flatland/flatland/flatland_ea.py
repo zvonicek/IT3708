@@ -1,7 +1,7 @@
 import random
 import sys
 from tkinter import Tk
-from flatland.flatland import Cell, Turn
+from flatland.flatland import Cell, Turn, Flatland
 from gui.gui import GUI
 
 sys.path.append('../../task2_evolution/evolutionary')
@@ -16,13 +16,18 @@ from ea.individual import AbstractIndividualFactory, AbstractFitnessEvaluator, I
 
 class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
 
-    def __init__(self, flatland, ann):
-        self.flatland = flatland
+    def __init__(self, flatlands, ann):
+        self.flatlands = flatlands  # TODO property bude nutné při "dynamic" vždy znovu nastavovat
         self.ann = ann
 
     def get_fitness(self, phenotype):
         self.ann.set_weights(phenotype)
-        return self.flatland.simulate(self.ann)
+
+        fitness_sum = 0
+        for flatland in self.flatlands:
+            fitness_sum += flatland.simulate(self.ann)
+
+        return fitness_sum / len(self.flatlands)
 
 
 class SurprisingOnePointCrossover(OnePointCrossover):
@@ -84,20 +89,31 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
 
 
 class FlatlandEA(EA):
-    def __init__(self, flatland, ann):
+    def __init__(self, ann, dynamic=False, scenarios=1):
         # neural network for solving problem
         self.ann = ann
-        self.flatland = flatland
+        self.dynamic = dynamic
+        self.scenarios = scenarios
 
-        individual_factory = FlatlandIndividualFactory(self.flatland, self.ann)
+        # initialize flatlands
+        self.flatlands = self.generate_flatlands()
+
+        individual_factory = FlatlandIndividualFactory(self.flatlands, self.ann)
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 50
-        elitism_size = 2
-        self.visualize_best = False
-        super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, True,
+        generation_limit = 40
+        elitism_size = 5
+        self.visualize_best = True
+        super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
                          generation_limit, 1.0, elitism_size)
+
+    def generate_flatlands(self):
+        flatlands = []
+        for i in range(self.scenarios):
+            flatlands.append(Flatland(10, (1/3, 1/3), (2, 2)))
+
+        return flatlands
 
     def compute(self):
         super().compute()
@@ -108,5 +124,5 @@ class FlatlandEA(EA):
         if self.visualize_best:
             tk = Tk()
             gui = GUI(tk)
-            gui.replay_scenario(self.flatland, self.ann)
+            gui.replay_scenarios(self.flatlands, self.ann)
             tk.mainloop()
