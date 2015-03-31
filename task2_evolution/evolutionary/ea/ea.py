@@ -30,6 +30,10 @@ class EA():
 
         plt.show()
 
+    def compute_generation(self):
+        # mating
+        self.population.mate()
+
     def compute(self):
         plot_max = []
         plot_avg = []
@@ -39,8 +43,7 @@ class EA():
                 not any(x for x in self.population.individuals if x.fitness() >= self.target_fitness):
             self.population.generation += 1
 
-            # mating
-            self.population.mate()
+            self.compute_generation()
 
             if self.plotting or self.logging:
                 best = self.population.best_individual()
