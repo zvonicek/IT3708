@@ -34,16 +34,16 @@ class Population:
 
             self.mutate()
             self.select_adults()
+            self.individuals += elitism
 
             new_generation = []
-            while len(new_generation) < self.population_size - self.elitism_size:
+            while len(new_generation) < self.population_size:
                 first, second = self.crossover()
 
                 new_generation.append(first)
-                if len(new_generation) < self.population_size - self.elitism_size:
+                if len(new_generation) < self.population_size:
                     new_generation.append(second)
 
-            new_generation += elitism
             self.children = new_generation
 
     def crossover(self):
