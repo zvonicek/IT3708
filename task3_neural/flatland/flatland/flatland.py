@@ -1,4 +1,5 @@
 import random
+import collections
 
 
 class Cell:
@@ -36,8 +37,17 @@ class Flatland():
         self.start_grid = [x[:] for x in self.grid]
 
     def reset(self):
+        """resets the world to initial state"""
+
         self.agent_orientation = Orientation.Up
         self.grid = [x[:] for x in self.start_grid]
+
+        # find initial agent position
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid)):
+                if self.grid[row][col] == Cell.Agent:
+                    self.agent_coord = row, col
+                    break
 
     def __turn(self, turn):
         if turn == Turn.Left:
@@ -95,7 +105,14 @@ class Flatland():
         # result: [Left sensor, Straight sensor, Right sensor]
         return result
 
-    def simulate(self, ann):
+    def simulate(self, ann, move_callback=None):
+        """
+        run 60-step simulation and return the fitness
+        :param ann ANN
+        :param move_callback optional callback called on each tick
+        :return fitness of the run
+        """
+
         reward = 0
         food_reward = 10
         poison_punishment = 5
@@ -114,6 +131,10 @@ class Flatland():
                 reward += food_reward
             elif eaten == Cell.Poison:
                 reward -= poison_punishment
+
+            # check if the callback was set
+            if isinstance(move_callback, collections.Callable):
+                move_callback(self)
 
         # normalize reward to interval [0, 1]
         min_value = self.poison_num * poison_punishment * -1
