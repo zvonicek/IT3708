@@ -1,6 +1,8 @@
 import random
 import sys
+from tkinter import Tk
 from flatland.flatland import Cell, Turn
+from gui.gui import GUI
 
 sys.path.append('../../task2_evolution/evolutionary')
 
@@ -91,7 +93,20 @@ class FlatlandEA(EA):
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 60
+        generation_limit = 50
         elitism_size = 2
+        self.visualize_best = False
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, True,
                          generation_limit, 1.0, elitism_size)
+
+    def compute(self):
+        super().compute()
+
+        best = self.population.best_individual()
+        self.ann.set_weights(best.phenotype())
+
+        if self.visualize_best:
+            tk = Tk()
+            gui = GUI(tk)
+            gui.replay_scenario(self.flatland, self.ann)
+            tk.mainloop()
