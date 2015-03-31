@@ -10,8 +10,6 @@ class FlatlandAnnFactory(AbstractAnnFactory):
 
         activation_func = StepActivation()
 
-        #hidden_layer_1 = Neuron()
-
         output_layer_f = Neuron(6, activation_func)
         output_layer_l = Neuron(6, activation_func)
         output_layer_r = Neuron(6, activation_func)

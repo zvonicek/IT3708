@@ -1,7 +1,4 @@
 import abc
-import math
-import numpy
-from ea.mutation import BinaryVectorInversionMutation
 
 
 class AbstractIndividual(metaclass=abc.ABCMeta):
@@ -39,7 +36,7 @@ class Individual(AbstractIndividual):
         super().__init__(genotype, phenotype_convertor, fitness_evaluator)
 
     def __repr__(self):
-        return ''.join(str(e) for e in self.genotype)
+        return self.phenotype_string()
 
     def phenotype_string(self):
         return ', '.join(str(e) for e in self.phenotype())

@@ -11,6 +11,7 @@ class GUI(Frame):
         Frame.__init__(self, master)
         self.sqsize = 50
         self.grid(row=0, column=0)
+        self.pack(fill=BOTH, expand=1)
         self.board = None
         self.queue = queue.Queue()
 
@@ -33,11 +34,20 @@ class GUI(Frame):
 
     def draw_grid(self, flatland):
         self.mainframe = ttk.Frame(self, padding=(5, 5, 5, 5))
-        self.mainframe.grid(column=0, row=0, sticky=(N, S, E, W))
+        self.mainframe.pack(side="top", fill="both", expand=True)
+
+        self.bottom_frame = ttk.Frame(self.mainframe)
+        self.bottom_frame.grid(row=2, column=1)
+
+        w = Scale(self.bottom_frame, from_=0, to=100, orient=HORIZONTAL)
+        w.grid(row=0, column=0)
+
+        button = Button(self.bottom_frame, text="New scenario", command=self.draw_flatland)
+        button.grid(row=0, column=1)
 
     def draw_flatland(self, flatland):
         self.board = Canvas(self.mainframe, width=self.sqsize*len(flatland.grid), height=self.sqsize*len(flatland.grid), bg='white')
-        self.board.grid(row=1, column=0)
+        self.board.grid(row=1, column=0, columnspan=3, sticky=(N, S, E, W))
 
         for row in range(len(flatland.grid)):
             for col in range(len(flatland.grid)):

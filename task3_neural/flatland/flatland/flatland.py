@@ -115,7 +115,7 @@ class Flatland():
 
         reward = 0
         food_reward = 10
-        poison_punishment = 5
+        poison_punishment = 10
 
         # in assignment: 60 time step for moving in flatland
         for i in range(60):
