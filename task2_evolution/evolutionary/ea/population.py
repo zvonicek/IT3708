@@ -39,7 +39,7 @@ class Population:
                 elitism_copy.append(copy.copy(e))
 
             self.mutate()
-            self.select_adults()
+            self.select_adults(self.population_size - len(elitism))
             self.individuals += elitism_copy
 
             new_generation = []
@@ -63,8 +63,8 @@ class Population:
         for individual in self.individuals:
             individual.mutate()
 
-    def select_adults(self):
-        self.individuals = self.adult_selector.select(self, self.population_size - self.elitism_size)
+    def select_adults(self, select_count):
+        self.individuals = self.adult_selector.select(self, select_count)
         self.children = []
 
     # reporting functions
