@@ -45,13 +45,13 @@ class Population:
             elitism = heapq.nlargest(self.elitism_size, self.individuals, key=lambda x: x.fitness())
 
             # we need to copy the objects so as they do not get modified by mutation or crossover
-            elitism_copy = []
+            elitism_new = []
             for e in elitism:
-                elitism_copy.append(copy.copy(e))
+                elitism_new.append(self.individual_fact.create(e.genotype))
 
             self.mutate()
             self.select_adults(self.population_size - len(elitism))
-            self.individuals += elitism_copy
+            self.individuals += elitism_new
 
     def crossover(self):
         parent_1 = self.parent_selector.select_one(self)
