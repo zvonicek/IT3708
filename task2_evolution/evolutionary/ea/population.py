@@ -30,6 +30,17 @@ class Population:
         return generated
 
     def mate(self):
+            if len(self.children) == 0:
+                new_generation = []
+                while len(new_generation) < self.population_size:
+                    first, second = self.crossover()
+
+                    new_generation.append(first)
+                    if len(new_generation) < self.population_size:
+                        new_generation.append(second)
+
+                self.children = new_generation
+
             # elitism: pick the best n individuals
             elitism = heapq.nlargest(self.elitism_size, self.individuals, key=lambda x: x.fitness())
 
@@ -41,16 +52,6 @@ class Population:
             self.mutate()
             self.select_adults(self.population_size - len(elitism))
             self.individuals += elitism_copy
-
-            new_generation = []
-            while len(new_generation) < self.population_size:
-                first, second = self.crossover()
-
-                new_generation.append(first)
-                if len(new_generation) < self.population_size:
-                    new_generation.append(second)
-
-            self.children = new_generation
 
     def crossover(self):
         parent_1 = self.parent_selector.select_one(self)
