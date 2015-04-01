@@ -126,3 +126,10 @@ class FlatlandEA(EA):
             gui = GUI(tk)
             gui.replay_scenarios(self.flatlands, self.ann)
             tk.mainloop()
+
+    def compute_generation(self):
+        super().compute_generation()
+
+        # in dynamic mode generate new worlds on each new generation
+        if self.dynamic:
+            self.flatlands[0:len(self.flatlands)] = self.generate_flatlands()
