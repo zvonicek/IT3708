@@ -12,6 +12,9 @@ class EA():
         self.generation_limit = generation_limit
         self.target_fitness = target_fitness
         self.population = Population(individual_fact, population_size, parent_selector, adult_selector, elitism_size)
+        self.plot_max = []
+        self.plot_avg = []
+        self.plot_sd = []
 
     def run(self):
         self.compute()
@@ -35,9 +38,9 @@ class EA():
         self.population.mate()
 
     def compute(self):
-        plot_max = []
-        plot_avg = []
-        plot_sd = []
+        self.plot_max = []
+        self.plot_avg = []
+        self.plot_sd = []
 
         while self.population.generation < self.generation_limit and \
                 not any(x for x in self.population.individuals if x.fitness() >= self.target_fitness):
@@ -48,19 +51,17 @@ class EA():
             if self.plotting or self.logging:
                 best = self.population.best_individual()
                 avg, sd = self.population.avg_sd_fitness()
-
-            if self.plotting:
-                plot_max.append(best.fitness())
-                plot_avg.append(avg)
-                plot_sd.append(sd)
+                self.plot_max.append(best.fitness())
+                self.plot_avg.append(avg)
+                self.plot_sd.append(sd)
 
             if self.logging:
                 self.population.report(best, avg, sd)
 
         if self.plotting:
-            plt.plot(plot_max)
-            plt.plot(plot_avg)
-            plt.plot(plot_sd)
+            plt.plot(self.plot_max)
+            plt.plot(self.plot_avg)
+            plt.plot(self.plot_sd)
             prop = FontProperties()
             prop.set_size('small')
             plt.legend(['best', 'average', 'std'], loc='lower right', prop = prop)

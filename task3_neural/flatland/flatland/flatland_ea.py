@@ -124,7 +124,7 @@ class FlatlandEA(EA):
         if self.visualize_best:
             tk = Tk()
             gui = GUI(tk)
-            gui.replay_scenarios(self.flatlands, self.ann)
+            gui.replay_scenarios(self.flatlands, self.ann, (self.plot_max, self.plot_avg, self.plot_sd))
             tk.mainloop()
 
     def compute_generation(self):
