@@ -25,7 +25,7 @@ class GUI(Frame):
         self.queue = queue.Queue()
 
 
-        self.mainframe = ttk.Frame(self, padding=(10, 10, 10, 10), bg="white")
+        self.mainframe = ttk.Frame(self, padding=(10, 10, 10, 10))
         self.mainframe.pack(side="top", fill="both", expand=True)
 
         self.bottom_frame = ttk.Frame(self.mainframe, padding=(10, 10, 10, 10))
