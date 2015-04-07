@@ -105,7 +105,7 @@ class Flatland():
         # result: [Left sensor, Straight sensor, Right sensor]
         return result
 
-    def simulate(self, ann, move_callback=None):
+    def simulate(self, ann, move_callback=None, print_stats=False):
         """
         run 60-step simulation and return the fitness
         :param ann ANN
@@ -141,6 +141,9 @@ class Flatland():
         max_value = self.food_num * food_reward
         reward = (reward - min_value) / (max_value - min_value)
 
+        if print_stats:
+            self.print_stats()
+
         self.reset()
 
         return reward
@@ -159,3 +162,16 @@ class Flatland():
             possibilities = [Turn.Left, Turn.Straight, Turn.Right]
 
         return random.choice(possibilities)
+
+    def print_stats(self):
+        food = 0
+        poison = 0
+
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid)):
+                if self.grid[row][col] == Cell.Food:
+                    food += 1
+                elif self.grid[row][col] == Cell.Poison:
+                    poison += 1
+
+        print("food eaten:", self.food_num - food, "poison eaten:", self.poison_num - poison)

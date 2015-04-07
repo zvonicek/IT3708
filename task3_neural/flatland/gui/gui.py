@@ -1,17 +1,17 @@
-from cmath import pi
 import queue
 import threading
-from time import sleep, time
 from tkinter import *
 from tkinter import ttk
-from math import sin
+
 import matplotlib
 from matplotlib.font_manager import FontProperties
+
+from time import sleep
+
 
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from numpy import arange
 from flatland.flatland import Cell, Orientation, Flatland
 
 
@@ -168,7 +168,7 @@ class ThreadedFlatlandTask(threading.Thread):
         self.stop_flag = True
 
     def run(self):
-        self.flatland.simulate(self.ann, self.tick_callback)
+        self.flatland.simulate(self.ann, self.tick_callback, True)
         self.parent.did_stop()
 
     def tick_callback(self, flatland):
