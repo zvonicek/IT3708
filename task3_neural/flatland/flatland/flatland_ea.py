@@ -1,8 +1,10 @@
 import random
 import sys
 from tkinter import Tk
-from flatland.flatland import Cell, Turn, Flatland
-from gui.gui import GUI
+
+from flatland.flatland import Flatland
+from flatland.gui import GUI
+
 
 sys.path.append('../../task2_evolution/evolutionary')
 
@@ -102,7 +104,7 @@ class FlatlandEA(EA):
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 40
+        generation_limit = 30
         elitism_size = 5
         self.visualize_best = True
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
