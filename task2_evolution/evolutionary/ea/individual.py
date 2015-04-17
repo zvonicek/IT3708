@@ -7,6 +7,7 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
         self.phenotype_convertor = phenotype_convertor
         self.fitness_evaluator = fitness_evaluator
         self.genotype = genotype
+        self.recalculate_fitness = True
 
     @property
     def genotype(self):
@@ -16,12 +17,16 @@ class AbstractIndividual(metaclass=abc.ABCMeta):
     def genotype(self, attribute):
         self._genotype = attribute
         self._phenotype = self.phenotype_convertor.get_phenotype(attribute)
-        self._fitness = self.fitness_evaluator.get_fitness(self.phenotype())
+        self.recalculate_fitness = True
 
     def phenotype(self):
         return self._phenotype
 
     def fitness(self):
+        if self.recalculate_fitness:
+            self.recalculate_fitness = False
+            self._fitness = self.fitness_evaluator.get_fitness(self.phenotype())
+
         return self._fitness
 
     def mutate(self):

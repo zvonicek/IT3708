@@ -47,7 +47,7 @@ class Population:
             # we need to copy the objects so as they do not get modified by mutation or crossover
             elitism_new = []
             for e in elitism:
-                elitism_new.append(self.individual_fact.create(e.genotype))
+                elitism_new.append(self.individual_fact.create(e.genotype[:]))
 
             self.mutate()
             self.select_adults(self.population_size - len(elitism))
@@ -66,6 +66,8 @@ class Population:
 
     def select_adults(self, select_count):
         self.individuals = self.adult_selector.select(self, select_count)
+        for i in self.individuals:
+            i.recalculate_fitness = True
         self.children = []
 
     # reporting functions
