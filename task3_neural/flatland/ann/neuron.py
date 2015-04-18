@@ -34,7 +34,7 @@ class CtrnnNeuron(Neuron):
         result = super(CtrnnNeuron, self).integration(vals)
         result += self.bias_weight
         for i in range(0, len(my_layer_vals)):
-            result += vals[i] * self.my_layer_weights[i]
+            result += my_layer_vals[i] * self.my_layer_weights[i]
         return result
 
     def compute(self, vals, my_layer_vals=[]):
