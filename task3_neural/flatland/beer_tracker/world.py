@@ -77,19 +77,48 @@ class World():
         """
 
         fitness = 0
+        capture_reward = 20
+        avoidance_reward = 20
+        avoidance_punishment = 20
+        partial_punishment = 2
 
         for i in range(600):
             self.tick()
 
-            # TODO: use ANN to calculate move direction and magnitude
-            self.move(Direction.Right, 4)
+            # use ANN to calculate move direction and magnitude
+            object_position = list(map(lambda x: x[1], self.object_position))
+            ann_input = [0 for _ in range(5)]
+            for j in range(5):
+                if self.tracker_position[j] in object_position:
+                    ann_input[j] = 1
+            ann_result = ann.compute(ann_input)
+            direction, speed = self.interpret_ann_result(ann_result)
+            self.move(direction, speed)
 
             # handle the case when object hits the tracker
-            if next(iter(self.object_position))[0] == self.world_height:
-                if all(x[1] in self.tracker_position for x in self.object_position):
-                    print("capture") # TODO adjust fitness
-                elif not any(x[1] in self.tracker_position for x in self.object_position):
-                    print("avoidance") # TODO adjust fitness
+            if next(iter(self.object_position))[0] == self.world_height - 1:
+                shadowing_tracker = [x for x in object_position if x in self.tracker_position]
+                shadow_size = len(shadowing_tracker)
+                object_size = len(self.object_position)
+                if shadow_size == object_size:
+                    print("capture")
+                    fitness += capture_reward
+                elif shadow_size == 0:
+                    print("avoidance", object_position, self.tracker_position)
+                    if object_size > 4:
+                        fitness += avoidance_reward
+                    else:
+                        fitness -= avoidance_punishment
+                # object hit the tracker partially:
+                # for small objects count what tracker wasn't able to recover
+                # for bigger count what tracker wasn't able to avoid
+                else:
+                    print("partial hit")
+                    if object_size > 4:
+                        fitness -= partial_punishment*shadow_size
+                    else:
+                        fitness -= partial_punishment*(object_size - shadow_size)
+
 
                 self.object_position = self.drop_object()
 
@@ -98,3 +127,14 @@ class World():
                 move_callback(self)
 
         return fitness
+
+    @staticmethod
+    def interpret_ann_result(ann_result):
+        # ta sila je ted delana jen podle toho "silnejsiho" neuronu, mozna vzit v uvahu i ten druhej
+        print(ann_result)
+        if ann_result[0] > ann_result[1]:
+            return Direction.Left, (ann_result[0]*5)//1
+        elif ann_result[1] > ann_result[0]:
+            return Direction.Right, (ann_result[1]*5)//1
+        else:
+            return Direction.Right, 0
