@@ -19,7 +19,7 @@ from ea.individual import AbstractIndividualFactory, AbstractFitnessEvaluator, I
 class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
 
     def __init__(self, flatlands, ann):
-        self.flatlands = flatlands  # TODO property bude nutné při "dynamic" vždy znovu nastavovat
+        self.flatlands = flatlands
         self.ann = ann
 
     def get_fitness(self, phenotype):
