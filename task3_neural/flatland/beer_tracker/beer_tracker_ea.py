@@ -1,24 +1,21 @@
 import random
 from ea.individual import AbstractFitnessEvaluator, AbstractPhenotypeConvertor, Individual, AbstractIndividualFactory
 from ea.mutation import BinaryVectorInversionMutation
-from ea_impl.suprising_sequences import SurprisingOnePointCrossover
+from ea.parent_selection import SigmaScalingParentSelector
 from beer_tracker.beer_tracker_genotype import BeerTrackerGenotypeCoder
+from flatland.flatland_ea import FlatlandOnePointCrossover
 
 
 class BeerTrackerFitnessEvaluator(AbstractFitnessEvaluator):
 
-    def __init__(self, worlds, ann):
-        self.worlds = worlds
+    def __init__(self, world, ann):
+        self.world = world
         self.ann = ann
 
     def get_fitness(self, phenotype):
         self.ann.set_weights(phenotype)
-        fitness_sum = 0
 
-        for world in self.worlds:
-            fitness_sum += world.simulate(self.ann)
-
-        return fitness_sum / len(self.worlds)
+        return self.world.simulate(self.ann)
 
 
 class BeerTrackerPhenotypeConvertor(AbstractPhenotypeConvertor):
@@ -78,10 +75,10 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
         if genotype is None:
             genotype = self.genotype_coder.generate_init_genotype()
 
-        phenotype_convertor = BeerTrackerPhenotypeConvertor(length)
-        fitness_evaluator = BeerTrackerFitnessEvaluator(self.flatland, self.ann)
+        phenotype_convertor = BeerTrackerPhenotypeConvertor(length, self.genotype_coder)
+        fitness_evaluator = BeerTrackerFitnessEvaluator(self.world, self.ann)
         mutation_strategy = BinaryVectorInversionMutation(0.01)
-        crossover_strategy = SurprisingOnePointCrossover(0.8, length)
+        crossover_strategy = FlatlandOnePointCrossover(0.8, length)
 
         return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy)
 

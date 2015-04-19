@@ -20,7 +20,7 @@ class Network():
         return sum(x.weights_count() for x in self.layers)
 
     def neurons_count(self):
-        return sum(map(lambda x: len(x), self.layers))
+        return sum(map(lambda x: len(x.neurons), self.layers))
 
 
 class CtrnnNetwork(Network):

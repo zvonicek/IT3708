@@ -1,6 +1,6 @@
 from ann.activation import SigmoidActivation
 from ann.ann import AbstractAnnFactory
-from ann.layer import Layer
+from ann.layer import Layer, CtrnnLayer
 from ann.network import Network
 from ann.neuron import CtrnnNeuron
 
@@ -19,6 +19,6 @@ class BeerTrackerAnnFactory(AbstractAnnFactory):
             # time constant: [1,2]
             output_layer.append(CtrnnNeuron(2, activation_func, 1, 2))
 
-        network = Network([Layer(hidden_layer), Layer(output_layer)])
+        network = Network([CtrnnLayer(hidden_layer), CtrnnLayer(output_layer)])
 
         return network
