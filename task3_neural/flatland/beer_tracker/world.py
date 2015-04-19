@@ -10,6 +10,7 @@ class World():
     def __init__(self):
         self.world_width = 30
         self.world_height = 15
+        self.simulate_steps = 600
         self.wraparound = True
 
         # initialize tracker
@@ -82,7 +83,7 @@ class World():
         avoidance_punishment = 20
         partial_punishment = 2
 
-        for i in range(600):
+        for i in range(self.simulate_steps):
             self.tick()
 
             # use ANN to calculate move direction and magnitude
@@ -125,6 +126,11 @@ class World():
             # check if the callback was set
             if isinstance(move_callback, collections.Callable):
                 move_callback(self)
+
+        # normalize fitness to interval [0, 1]
+        min_value = (self.simulate_steps / self.world_height) * max(avoidance_punishment, partial_punishment) * -1
+        max_value = (self.simulate_steps / self.world_height) * max(avoidance_reward, capture_reward)
+        fitness = (fitness - min_value) / (max_value - min_value)
 
         return fitness
 
