@@ -7,11 +7,12 @@ class Direction:
 
 
 class World():
-    def __init__(self):
+    def __init__(self, pull_extension=False):
         self.world_width = 30
         self.world_height = 15
         self.simulate_steps = 600
         self.wraparound = True
+        self.pull_extension = pull_extension
 
         # initialize tracker
         self.tracker_position = []
@@ -69,6 +70,16 @@ class World():
 
         return positions
 
+    def pull_object(self):
+        new_positions = set()
+        object_position_y = list(map(lambda x: x[1], self.object_position))
+
+        for p in object_position_y:
+            new_positions.add((self.world_height - 1, p))
+
+        return new_positions
+
+
     def simulate(self, ann, move_callback=None, print_stats=False):
         """
         run 600-step simulation and return the fitness
@@ -91,8 +102,11 @@ class World():
             ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
 
             ann_result = ann.compute(ann_input)
-            direction, speed = self.interpret_ann_result(ann_result)
+            direction, speed, pull = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
+            if self.pull_extension and pull:
+                self.object_position = self.pull_object()
+
 
             if next(iter(self.object_position))[0] == self.world_height:
                 self.object_position = self.drop_object()
@@ -104,10 +118,10 @@ class World():
                 shadow_size = len(shadowing_tracker)
                 object_size = len(self.object_position)
                 if shadow_size == object_size:
-                    print("capture")
+                #    print("capture")
                     fitness += capture_reward
                 elif shadow_size == 0:
-                    print("avoidance", object_position, self.tracker_position)
+                #    print("avoidance", object_position_y, self.tracker_position)
                     if object_size > 4:
                         fitness += avoidance_reward
                     else:
@@ -116,7 +130,7 @@ class World():
                 # for small objects count what tracker wasn't able to recover
                 # for bigger count what tracker wasn't able to avoid
                 else:
-                    print("partial hit")
+                    #print("partial hit")
                     if object_size > 4:
                         fitness -= partial_punishment*shadow_size
                     else:
@@ -136,10 +150,12 @@ class World():
     @staticmethod
     def interpret_ann_result(ann_result):
         # ta sila je ted delana jen podle toho "silnejsiho" neuronu, mozna vzit v uvahu i ten druhej
-        print(ann_result)
+        #print(ann_result)
+        pull_parameter = 0.5
+        pull = ann_result[0] + ann_result[1] < pull_parameter
         if ann_result[0] > ann_result[1]:
-            return Direction.Left, (ann_result[0]*5)//1
+            return Direction.Left, (ann_result[0]*5)//1, pull
         elif ann_result[1] > ann_result[0]:
-            return Direction.Right, (ann_result[1]*5)//1
+            return Direction.Right, (ann_result[1]*5)//1, pull
         else:
-            return Direction.Right, 0
+            return Direction.Right, 0, pull
