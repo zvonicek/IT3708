@@ -96,6 +96,9 @@ class World():
             direction, speed = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
 
+            if next(iter(self.object_position))[0] == self.world_height:
+                self.object_position = self.drop_object()
+
             # handle the case when object hits the tracker
             if next(iter(self.object_position))[0] == self.world_height - 1:
                 shadowing_tracker = [x for x in object_position if x in self.tracker_position]
@@ -119,9 +122,6 @@ class World():
                         fitness -= partial_punishment*shadow_size
                     else:
                         fitness -= partial_punishment*(object_size - shadow_size)
-
-
-                self.object_position = self.drop_object()
 
             # check if the callback was set
             if isinstance(move_callback, collections.Callable):
