@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../../task2_evolution/evolutionary')
+
 import random
 from tkinter import Tk
 from ea.adult_selection import GenerationalMixingAdultSelector
