@@ -32,7 +32,7 @@ class FlatlandFitnessEvaluator(AbstractFitnessEvaluator):
         return fitness_sum / len(self.flatlands)
 
 
-class SurprisingOnePointCrossover(OnePointCrossover):
+class FlatlandOnePointCrossover(OnePointCrossover):
     def __init__(self, crossover_rate, length):
         super().__init__(crossover_rate)
         self.length = length
@@ -80,7 +80,7 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
         phenotype_convertor = FlatlandPhenotypeConvertor(length)
         fitness_evaluator = FlatlandFitnessEvaluator(self.flatland, self.ann)
         mutation_strategy = BinaryVectorInversionMutation(0.01)
-        crossover_strategy = SurprisingOnePointCrossover(0.8, length)
+        crossover_strategy = FlatlandOnePointCrossover(0.8, length)
 
         return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy)
 
