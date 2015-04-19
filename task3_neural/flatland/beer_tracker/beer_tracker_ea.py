@@ -56,19 +56,19 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
         # weights from interval [-5; 5]
         for i in range(0, self.ann.weights_count()):
-            self.genotype_coder.add_parameter(-5, 5, lambda: random.randint(-5, 5))
+            coder.add_parameter(-5, 5, lambda: random.randint(-5, 5))
 
         # bias from interval [-10; 0]
         for i in range(0, self.ann.neurons_count()):
-            self.genotype_coder.add_parameter(-10, 0, lambda: random.randint(-10, 0))
+            coder.add_parameter(-10, 0, lambda: random.randint(-10, 0))
 
         # gains from interval [1,5]
         for i in range(0, self.ann.neurons_count()):
-            self.genotype_coder.add_parameter(1, 5, lambda: random.randint(1, 5))
+            coder.add_parameter(1, 5, lambda: random.randint(1, 5))
 
         # time constant from interval [1,2]
         for i in range(0, self.ann.neurons_count()):
-            self.genotype_coder.add_parameter(1, 2, lambda: random.randint(1, 2))
+            coder.add_parameter(1, 2, lambda: random.randint(1, 2))
 
         return coder
 
