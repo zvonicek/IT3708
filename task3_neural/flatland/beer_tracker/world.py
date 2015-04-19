@@ -87,11 +87,9 @@ class World():
             self.tick()
 
             # use ANN to calculate move direction and magnitude
-            object_position = list(map(lambda x: x[1], self.object_position))
-            ann_input = [0 for _ in range(5)]
-            for j in range(5):
-                if self.tracker_position[j] in object_position:
-                    ann_input[j] = 1
+            object_position_y = list(map(lambda x: x[1], self.object_position))
+            ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
+
             ann_result = ann.compute(ann_input)
             direction, speed = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
@@ -101,7 +99,8 @@ class World():
 
             # handle the case when object hits the tracker
             if next(iter(self.object_position))[0] == self.world_height - 1:
-                shadowing_tracker = [x for x in object_position if x in self.tracker_position]
+                shadowing_tracker = [x for x in object_position_y if x in self.tracker_position]
+
                 shadow_size = len(shadowing_tracker)
                 object_size = len(self.object_position)
                 if shadow_size == object_size:
@@ -124,7 +123,7 @@ class World():
                         fitness -= partial_punishment*(object_size - shadow_size)
 
             # check if the callback was set
-            if isinstance(move_callback, collections.Callable):
+            if move_callback:
                 move_callback(self)
 
         # normalize fitness to interval [0, 1]

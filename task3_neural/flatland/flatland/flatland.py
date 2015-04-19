@@ -133,7 +133,7 @@ class Flatland():
                 reward -= poison_punishment
 
             # check if the callback was set
-            if isinstance(move_callback, collections.Callable):
+            if move_callback:
                 move_callback(self)
 
         # normalize reward to interval [0, 1]
