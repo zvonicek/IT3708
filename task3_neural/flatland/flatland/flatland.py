@@ -150,18 +150,31 @@ class Flatland():
 
     @staticmethod
     def interpret_result(result):
-        possibilities = []
-        if result[0]:
-            possibilities.append(Turn.Left)
-        if result[1]:
-            possibilities.append(Turn.Straight)
-        if result[2]:
-            possibilities.append(Turn.Right)
+        portions = Flatland.compute_portions(result)
 
-        if len(possibilities) == 0:
-            possibilities = [Turn.Left, Turn.Straight, Turn.Right]
+        rnd = random.uniform(0, 1)
+        i = 0
 
-        return random.choice(possibilities)
+        for d in [Turn.Left, Turn.Straight, Turn.Right]:
+            if portions[i][0] <= rnd < portions[i][1]:
+                return d
+            i += 1
+
+    @staticmethod
+    def compute_portions(sensor_output):
+        output_sum = sum(sensor_output)
+        prob_sum = 0
+        result = []
+
+        if output_sum == 0:
+            return [(0, 1/3), (1/3, 2/3), (2/3, 1)]
+
+        for o in sensor_output:
+            new_prob_sum = prob_sum + o/output_sum
+            result.append((prob_sum, new_prob_sum))
+            prob_sum = new_prob_sum
+
+        return result
 
     def print_stats(self):
         food = 0
