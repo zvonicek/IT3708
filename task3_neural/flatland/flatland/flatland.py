@@ -149,14 +149,27 @@ class Flatland():
         return reward
 
     @staticmethod
-    def interpret_result(result):
+    def interpret_result(result, roulette_interpertation=False):
         portions = Flatland.compute_portions(result)
+        directions = [Turn.Left, Turn.Straight, Turn.Right]
 
-        rnd = random.uniform(0, 1)
+        if roulette_interpertation:
+            rnd = random.uniform(0, 1)
 
-        for d in [Turn.Left, Turn.Straight, Turn.Right]:
-            if portions[d][0] <= rnd < portions[d][1]:
-                return d
+            for d in directions:
+                if portions[d][0] <= rnd < portions[d][1]:
+                    return d
+
+        # choose the maximum output, if there are more, then randomly
+        else:
+            max_o = max(result)
+            act = []
+
+            for d in directions:
+                if result[d] == max_o:
+                    act.append(d)
+
+            return random.choice(act)
 
 
     @staticmethod
