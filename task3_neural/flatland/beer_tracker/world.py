@@ -89,10 +89,10 @@ class World():
         """
 
         fitness = 0
-        capture_reward = 30
-        avoidance_reward = 0
-        avoidance_punishment = 40
+        capture_reward = 20
+        avoidance_reward = 20
         partial_punishment = 10
+        capture_punishment = 0
 
         for i in range(self.simulate_steps):
             self.tick()
@@ -103,7 +103,6 @@ class World():
 
             ann_result = ann.compute(ann_input)
             direction, speed, pull = self.interpret_ann_result(ann_result)
-            print(ann_input, ann_result)
             self.move(direction, speed)
             if self.pull_extension and pull:
                 self.object_position = self.pull_object()
@@ -118,22 +117,21 @@ class World():
 
                 shadow_size = len(shadowing_tracker)
                 object_size = len(self.object_position)
+
+
                 if shadow_size == object_size:
                 #    print("capture")
                     fitness += capture_reward
-                elif shadow_size == 0:
-                #    print("avoidance", object_position_y, self.tracker_position)
-                    if object_size > 4:
+                elif shadow_size == 0 and object_size > 4:
                         fitness += avoidance_reward
-                    else:
-                        fitness -= avoidance_punishment
                 # object hit the tracker partially:
                 # for small objects count what tracker wasn't able to recover
                 # for bigger count what tracker wasn't able to avoid
                 else:
                     #print("partial hit")
                     if object_size > 4:
-                        fitness -= partial_punishment*shadow_size
+                        #fitness -= partial_punishment*shadow_size
+                        fitness -= capture_punishment
                     else:
                         fitness -= partial_punishment*(object_size - shadow_size)
 
@@ -142,7 +140,7 @@ class World():
                 move_callback(self)
 
         # normalize fitness to interval [0, 1]
-        min_value = (self.simulate_steps / self.world_height) * max(avoidance_punishment, partial_punishment) * -1
+        min_value = (self.simulate_steps / self.world_height) * max(capture_punishment, partial_punishment*3) * -1
         max_value = (self.simulate_steps / self.world_height) * max(avoidance_reward, capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
 
@@ -155,8 +153,8 @@ class World():
         pull_parameter = 0.5
         pull = ann_result[0] + ann_result[1] < pull_parameter
         if ann_result[0] > ann_result[1]:
-            return Direction.Left, min([((ann_result[0] - ann_result[1])*5)//1, 4]), pull
+            return Direction.Left, min([((ann_result[0])*5)//1, 4]), pull
         elif ann_result[1] > ann_result[0]:
-            return Direction.Right, min([((ann_result[1] - ann_result[0])*5)//1, 4]), pull
+            return Direction.Right, min([((ann_result[1])*5)//1, 4]), pull
         else:
             return Direction.Left, 0, pull
