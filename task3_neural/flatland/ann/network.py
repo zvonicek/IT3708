@@ -19,7 +19,8 @@ class Network():
         for layer in self.layers:
             for neuron in layer.neurons:
                 if neuron.bias:
-                    neuron.bias_weight = weights[i]
+                    # skaredy, pak prepsat, aby ty vahy byly ve vetsim rozsahu uz pri generovani
+                    neuron.bias_weight = weights[i]*5
                     i += 1
 
     def biased_neurons_count(self):
