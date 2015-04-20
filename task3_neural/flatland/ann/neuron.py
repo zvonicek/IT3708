@@ -13,8 +13,8 @@ class Neuron():
 
     def integration(self, vals):
         integration_sum = 0
-        for i in range(0, len(vals)):
-            integration_sum += vals[i] * self.weights[i]
+        for val, weight in zip(vals, self.weights):
+            integration_sum += val * weight
         return integration_sum
 
 
@@ -33,8 +33,8 @@ class CtrnnNeuron(Neuron):
     def integration(self, vals, my_layer_vals=[]):
         result = super(CtrnnNeuron, self).integration(vals)
         result += self.bias_weight
-        for i in range(0, len(my_layer_vals)):
-            result += my_layer_vals[i] * self.my_layer_weights[i]
+        for val, weight in zip(my_layer_vals, self.my_layer_weights):
+            result += val * weight
         return result
 
     def compute(self, vals, my_layer_vals=[]):
