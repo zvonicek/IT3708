@@ -36,6 +36,8 @@ class CtrnnNeuron(Neuron):
         self.bias_weight = 0
         self.time_constant = time_constant
         self.output = 0
+        # because we compute it differently, so we want to avoid adding bias at super_integration
+        self.bias = False
 
     def integration(self, vals, my_layer_vals=[]):
         result = super(CtrnnNeuron, self).integration(vals)
