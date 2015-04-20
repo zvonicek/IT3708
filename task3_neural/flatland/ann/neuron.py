@@ -2,19 +2,26 @@ from ann.activation import AbstractActivation
 
 
 class Neuron():
-    def __init__(self, weights_count, activation_func: AbstractActivation):
+    def __init__(self, weights_count, activation_func: AbstractActivation, bias = False):
         self.weights_count = weights_count
         self.weights = [0 for _ in range(weights_count)]
         self.activation_func = activation_func
+        self.bias = bias
+        if bias:
+            self.bias_weight = 0
 
     def compute(self, vals):
         integration = self.integration(vals)
+
         return self.activation_func.get_output(integration)
 
     def integration(self, vals):
         integration_sum = 0
         for val, weight in zip(vals, self.weights):
             integration_sum += val * weight
+
+        if self.bias:
+            integration_sum += self.bias_weight
         return integration_sum
 
 
