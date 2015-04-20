@@ -153,25 +153,25 @@ class Flatland():
         portions = Flatland.compute_portions(result)
 
         rnd = random.uniform(0, 1)
-        i = 0
 
         for d in [Turn.Left, Turn.Straight, Turn.Right]:
-            if portions[i][0] <= rnd < portions[i][1]:
+            if portions[d][0] <= rnd < portions[d][1]:
                 return d
-            i += 1
+
 
     @staticmethod
     def compute_portions(sensor_output):
         output_sum = sum(sensor_output)
         prob_sum = 0
-        result = []
+        result = {}
+        directions = [Turn.Left, Turn.Straight, Turn.Right]
 
         if output_sum == 0:
             return [(0, 1/3), (1/3, 2/3), (2/3, 1)]
 
-        for o in sensor_output:
+        for o, d in zip(sensor_output, directions):
             new_prob_sum = prob_sum + o/output_sum
-            result.append((prob_sum, new_prob_sum))
+            result[d] = (prob_sum, new_prob_sum)
             prob_sum = new_prob_sum
 
         return result
