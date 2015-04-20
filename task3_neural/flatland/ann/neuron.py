@@ -2,7 +2,7 @@ from ann.activation import AbstractActivation
 
 
 class Neuron():
-    def __init__(self, weights_count, activation_func: AbstractActivation, bias = False):
+    def __init__(self, weights_count, activation_func: AbstractActivation, bias=False):
         self.weights_count = weights_count
         self.weights = [0 for _ in range(weights_count)]
         self.activation_func = activation_func
