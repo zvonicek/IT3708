@@ -101,7 +101,7 @@ class BeerTrackerEA(EA):
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 30
+        generation_limit = 15
         elitism_size = 5
         self.visualize_best = True
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
