@@ -8,7 +8,7 @@ from ann.neuron import Neuron
 class FlatlandAnnFactory(AbstractAnnFactory):
     def create(self):
 
-        activation_func = StepActivation()
+        activation_func = SigmoidActivation()
 
         output_layer_f = Neuron(6, activation_func)
         output_layer_l = Neuron(6, activation_func)
