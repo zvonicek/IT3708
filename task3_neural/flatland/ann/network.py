@@ -16,6 +16,21 @@ class Network():
                     neuron.weights[j] = weights[i]
                     i += 1
 
+        for layer in self.layers:
+            for neuron in layer.neurons:
+                if neuron.bias:
+                    neuron.bias_weight = weights[i]
+                    i += 1
+
+    def biased_neurons_count(self):
+        biased_neurons = 0
+        for layer in self.layers:
+            for neuron in layer.neurons:
+                if neuron.bias:
+                    biased_neurons += 1
+
+        return biased_neurons
+
     def weights_count(self):
         return sum(x.weights_count() for x in self.layers)
 
@@ -25,7 +40,6 @@ class Network():
 
 class CtrnnNetwork(Network):
 
-    # Ty neurony je treba prochazet tak blbe nekolikrat, protoze chci zachovat poradi tech vah v poli (napr. bias ma jiny rozsah nez gain)
     def set_weights(self, weights):
         i = 0
 
