@@ -16,6 +16,12 @@ class FlatlandAnnFactory(AbstractAnnFactory):
 
         output_layer = Layer([output_layer_f, output_layer_l, output_layer_r])
 
-        network = Network([output_layer])
+        final_layer_f = Neuron(3, activation_func)
+        final_layer_l = Neuron(3, activation_func)
+        final_layer_r = Neuron(3, activation_func)
+
+        final_layer = Layer([final_layer_f, final_layer_l, final_layer_r])
+
+        network = Network([output_layer, final_layer])
 
         return network
