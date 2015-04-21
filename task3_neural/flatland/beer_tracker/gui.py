@@ -49,7 +49,10 @@ class GUI(Frame):
                 fill = ''
 
                 if world.contains_tracker(row, col):
-                    fill = 'blue'
+                    if world.object_was_pulled:
+                        fill = 'orange'
+                    else:
+                        fill = 'blue'
                 elif world.contains_object(row, col):
                     if len(world.object_position) > 4:
                         fill = 'red'
