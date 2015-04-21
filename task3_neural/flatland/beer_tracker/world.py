@@ -93,9 +93,9 @@ class World():
 
         fitness = 0
         capture_reward = 3
-        avoidance_reward = 0
-        capture_punishment = 0
-        avoidance_punishment = 3
+        avoidance_reward = 2.3
+        capture_punishment = 2
+        avoidance_punishment = 3.3
 
         for i in range(self.simulate_steps):
             self.tick()
@@ -138,8 +138,8 @@ class World():
                 move_callback(self)
 
         # normalize fitness to interval [0, 1]
-        min_value = (self.simulate_steps/self.world_height) * max(capture_punishment, avoidance_punishment) * -1
-        max_value = (self.simulate_steps/self.world_height) * max(avoidance_reward, capture_reward)
+        min_value = (self.simulate_steps) * max(capture_punishment, avoidance_punishment) * -1
+        max_value = (self.simulate_steps) * max(avoidance_reward, capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
 
         return fitness
