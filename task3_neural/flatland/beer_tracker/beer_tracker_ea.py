@@ -1,4 +1,6 @@
 import sys
+from beer_tracker.beer_tracker_ann import BeerTrackerAnnFactory
+
 sys.path.append('../../task2_evolution/evolutionary')
 
 import random
@@ -92,16 +94,18 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
 
 class BeerTrackerEA(EA):
-    def __init__(self, ann):
-        self.ann = ann
+    def __init__(self, pull_extension=False):
+        self.ann = BeerTrackerAnnFactory().create(pull_extension)
+        self.pull_extension = pull_extension
 
-        self.world = World()
+        self.world = World(pull_extension)
 
         individual_factory = BeerTrackerIndividualFactory(self.world, self.ann)
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 15
+        generation_limit = 20
+
         elitism_size = 5
         self.visualize_best = True
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
