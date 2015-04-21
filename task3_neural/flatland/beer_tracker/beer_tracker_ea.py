@@ -120,5 +120,5 @@ class BeerTrackerEA(EA):
         if self.visualize_best:
             tk = Tk()
             gui = GUI(tk)
-            gui.play(self.world, self.ann)
+            gui.play(self.world, self.ann, (self.plot_max, self.plot_avg, self.plot_sd))
             tk.mainloop()

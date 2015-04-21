@@ -2,6 +2,11 @@ from time import sleep
 import queue
 import threading
 from tkinter import Frame, BOTH, ttk, Canvas, N, S, E, W
+from tkinter import *
+from tkinter import ttk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+from matplotlib.font_manager import FontProperties
 
 
 class GUI(Frame):
@@ -19,7 +24,9 @@ class GUI(Frame):
         self.bottom_frame = ttk.Frame(self.mainframe, padding=(10, 10, 10, 10))
         self.bottom_frame.grid(row=2, column=1, padx=100)
 
-    def play(self, world, ann):
+    def play(self, world, ann, statistics):
+        self.draw_stats(statistics)
+
         self.queue = queue.Queue()
         self.running_thread = ThreadedBeerTask(self.queue, 0.4, world, ann, self)
         self.running_thread.start()
@@ -69,6 +76,21 @@ class GUI(Frame):
         world.large_object_hit = False
         self.board.focus_set()
         self.mainframe.lift()
+
+    def draw_stats(self, data):
+        f = Figure(figsize=(5, 4), dpi=70)
+        a = f.add_subplot(111)
+
+        canvas = FigureCanvasTkAgg(f, master=self.mainframe)
+        canvas.show()
+        canvas.get_tk_widget().grid(row=1, column=4, padx=100)
+
+        a.plot(data[0])
+        a.plot(data[1])
+        a.plot(data[2])
+        prop = FontProperties()
+        prop.set_size('small')
+        a.legend(['best', 'average', 'std'], loc='lower right', prop=prop)
 
 
 class ThreadedBeerTask(threading.Thread):
