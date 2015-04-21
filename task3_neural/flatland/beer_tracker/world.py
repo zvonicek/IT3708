@@ -93,9 +93,9 @@ class World():
         """
 
         fitness = 0
-        capture_reward = 3
-        avoidance_reward = 2.3
-        capture_punishment = 2
+        capture_reward = 4
+        avoidance_reward = 3
+        capture_punishment = 3
         avoidance_punishment = 3.3
 
         for i in range(self.simulate_steps):
@@ -107,7 +107,7 @@ class World():
             ann_result = ann.compute(ann_input)
             direction, speed, pull = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
-            if self.pull_extension and pull:
+            if pull:
                 self.pull_object()
                 self.object_pulled = True
 
@@ -139,19 +139,19 @@ class World():
                 move_callback(self)
 
         # normalize fitness to interval [0, 1]
-        min_value = (self.simulate_steps) * max(capture_punishment, avoidance_punishment) * -1
-        max_value = (self.simulate_steps) * max(avoidance_reward, capture_reward)
+        min_value = (self.simulate_steps/self.world_height) * max(capture_punishment, avoidance_punishment) * -1
+        max_value = (self.simulate_steps/self.world_height) * max(avoidance_reward, capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
 
         return fitness
 
-    @staticmethod
-    def interpret_ann_result(ann_result):
+    def interpret_ann_result(self, ann_result):
         # ta sila je ted delana jen podle toho "silnejsiho" neuronu, mozna vzit v uvahu i ten druhej
         #print(ann_result)
-        pull_parameter = 0.5
-        pull = ann_result[2] < pull_parameter
-        #pull = True
+        pull = False
+        if self.pull_extension:
+            pull_parameter = 0.5
+            pull = ann_result[2] < pull_parameter
         if ann_result[0] > ann_result[1]:
             return Direction.Left, min([((ann_result[0])*5)//1, 4]), pull
         elif ann_result[1] > ann_result[0]:
