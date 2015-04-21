@@ -5,5 +5,5 @@ from beer_tracker.gui import GUI
 from beer_tracker.beer_tracker_ann import BeerTrackerAnnFactory
 
 
-ea = BeerTrackerEA(True)
+ea = BeerTrackerEA()
 ea.run()
