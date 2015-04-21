@@ -49,8 +49,12 @@ class GUI(Frame):
                 fill = ''
 
                 if world.contains_tracker(row, col):
-                    if world.object_was_pulled:
+                    if world.object_captured:
                         fill = 'orange'
+                    elif world.object_pulled:
+                        fill = 'yellow'
+                    elif world.large_object_hit:
+                        fill = 'red'
                     else:
                         fill = 'blue'
                 elif world.contains_object(row, col):
@@ -61,6 +65,8 @@ class GUI(Frame):
 
                 self.board.create_rectangle(left, top, right, bottom, outline='gray', width=1, fill=fill)
 
+        world.object_captured = False
+        world.large_object_hit = False
         self.board.focus_set()
         self.mainframe.lift()
 
