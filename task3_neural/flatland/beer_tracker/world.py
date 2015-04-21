@@ -90,8 +90,7 @@ class World():
 
         fitness = 0
         capture_reward = 20
-        avoidance_reward = 20
-        partial_punishment = 10
+        avoidance_reward = 0
         capture_punishment = 0
 
         for i in range(self.simulate_steps):
@@ -120,27 +119,21 @@ class World():
 
 
                 if shadow_size == object_size:
-                #    print("capture")
                     fitness += capture_reward
                 elif shadow_size == 0 and object_size > 4:
                         fitness += avoidance_reward
                 # object hit the tracker partially:
-                # for small objects count what tracker wasn't able to recover
-                # for bigger count what tracker wasn't able to avoid
+                elif object_size > 4:
+                    fitness -= capture_punishment
                 else:
-                    #print("partial hit")
-                    if object_size > 4:
-                        #fitness -= partial_punishment*shadow_size
-                        fitness -= capture_punishment
-                    else:
-                        fitness -= partial_punishment*(object_size - shadow_size)
+                    fitness -= avoidance_punishment
 
             # check if the callback was set
             if move_callback:
                 move_callback(self)
 
         # normalize fitness to interval [0, 1]
-        min_value = (self.simulate_steps / self.world_height) * max(capture_punishment, partial_punishment*3) * -1
+        min_value = (self.simulate_steps / self.world_height) * max(capture_punishment, avoidance_punishment) * -1
         max_value = (self.simulate_steps / self.world_height) * max(avoidance_reward, capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
 
