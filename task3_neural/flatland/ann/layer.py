@@ -17,7 +17,7 @@ class CtrnnLayer(Layer):
     def compute(self, vals):
         res = []
         # weight for self loops, ...
-        layer_vals = list(x.output for x in self.neurons)
+        layer_vals = [x.output for x in self.neurons]
         for neuron in self.neurons:
             res.append(neuron.compute(vals, layer_vals))
 

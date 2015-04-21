@@ -45,13 +45,14 @@ class World():
             func = lambda x: (x - length)
         else:
             func = lambda x: (x + length)
-        new_tracker_position = list(map(func, self.tracker_position))
 
         # if wraparound is on, use apply modulo on the value; else do not allow moving beyond borders
         if self.wraparound:
-            self.tracker_position = list(map(lambda x: x % self.world_width, new_tracker_position))
-        elif all(0 <= x < self.world_width for x in new_tracker_position):
-            self.tracker_position = new_tracker_position
+            self.tracker_position = list(map(lambda x: func(x) % self.world_width, self.tracker_position))
+        else:
+            new_tracker_position = list(map(func, self.tracker_position))
+            if all(0 <= x < self.world_width for x in new_tracker_position):
+                self.tracker_position = new_tracker_position
 
     def tick(self):
         """Simulate one tick and move the object down"""
