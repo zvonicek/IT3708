@@ -7,12 +7,13 @@ class Direction:
 
 
 class World():
-    def __init__(self, pull_extension=False):
+    def __init__(self, pull_extension=True):
         self.world_width = 30
         self.world_height = 15
         self.simulate_steps = 600
         self.wraparound = True
         self.pull_extension = pull_extension
+        self.object_was_pulled = False
 
         # initialize tracker
         self.tracker_position = []
@@ -68,17 +69,17 @@ class World():
         for i in range(length):
             positions.add((0, position + i))
 
+        self.object_was_pulled = False
         return positions
 
     def pull_object(self):
-        new_positions = set()
-        object_position_y = list(map(lambda x: x[1], self.object_position))
+        new_positions = []
 
-        for p in object_position_y:
-            new_positions.add((self.world_height - 1, p))
-
-        return new_positions
-
+        for row, col in self.object_position:
+            if row >= self.world_height - 2:
+                return
+            new_positions.append((self.world_height - 2, col))
+        self.object_position = set(new_positions)
 
     def simulate(self, ann, move_callback=None, print_stats=False):
         """
@@ -89,9 +90,10 @@ class World():
         """
 
         fitness = 0
-        capture_reward = 20
+        capture_reward = 3
         avoidance_reward = 0
         capture_punishment = 0
+        avoidance_punishment = 3
 
         for i in range(self.simulate_steps):
             self.tick()
@@ -104,11 +106,8 @@ class World():
             direction, speed, pull = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
             if self.pull_extension and pull:
-                self.object_position = self.pull_object()
-
-
-            if next(iter(self.object_position))[0] == self.world_height:
-                self.object_position = self.drop_object()
+                self.pull_object()
+                self.object_was_pulled = True
 
             # handle the case when object hits the tracker
             if next(iter(self.object_position))[0] == self.world_height - 1:
@@ -117,16 +116,19 @@ class World():
                 shadow_size = len(shadowing_tracker)
                 object_size = len(self.object_position)
 
-
                 if shadow_size == object_size:
                     fitness += capture_reward
                 elif shadow_size == 0 and object_size > 4:
-                        fitness += avoidance_reward
+                    fitness += avoidance_reward
                 # object hit the tracker partially:
                 elif object_size > 4:
                     fitness -= capture_punishment
                 else:
                     fitness -= avoidance_punishment
+
+                self.object_position = self.drop_object()
+
+
 
             # check if the callback was set
             if move_callback:
@@ -144,7 +146,7 @@ class World():
         # ta sila je ted delana jen podle toho "silnejsiho" neuronu, mozna vzit v uvahu i ten druhej
         #print(ann_result)
         pull_parameter = 0.5
-        pull = ann_result[0] + ann_result[1] < pull_parameter
+        pull = ann_result[2] < pull_parameter
         if ann_result[0] > ann_result[1]:
             return Direction.Left, min([((ann_result[0])*5)//1, 4]), pull
         elif ann_result[1] > ann_result[0]:
