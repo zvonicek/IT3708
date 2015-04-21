@@ -26,6 +26,7 @@ class GUI(Frame):
 
     def play(self, world, ann, statistics):
         self.draw_stats(statistics)
+        self.draw_controls()
 
         self.queue = queue.Queue()
         self.running_thread = ThreadedBeerTask(self.queue, 0.4, world, ann, self)
@@ -92,6 +93,11 @@ class GUI(Frame):
         prop.set_size('small')
         a.legend(['best', 'average', 'std'], loc='lower right', prop=prop)
 
+    def draw_controls(self):
+        self.scale = Scale(self.bottom_frame, from_=1, to=9, orient=HORIZONTAL)
+        self.scale.set(6)
+        self.scale.grid(row=1, column=1)
+
 
 class ThreadedBeerTask(threading.Thread):
     def __init__(self, queue, delay, world, ann, parent):
@@ -110,6 +116,8 @@ class ThreadedBeerTask(threading.Thread):
         self.world.simulate(self.ann, self.tick_callback, True)
 
     def tick_callback(self, flatland):
+        self.delay = 1-self.parent.scale.get()/10-0.08
+
         if self.stop_flag:
             return
 
