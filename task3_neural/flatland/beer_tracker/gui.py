@@ -50,20 +50,20 @@ class GUI(Frame):
 
                 if world.contains_tracker(row, col):
                     if world.object_captured:
-                        fill = 'orange'
+                        fill = '#F4B589'
                     elif world.object_pulled:
-                        fill = 'yellow'
+                        fill = '#FEF59E'
                     elif world.large_object_hit:
-                        fill = 'red'
+                        fill = '#EF9FA4'
                     else:
-                        fill = 'blue'
+                        fill = '#91B0DB'
                 elif world.contains_object(row, col):
                     if len(world.object_position) > 4:
-                        fill = 'red'
+                        fill = '#F19C7E'
                     else:
-                        fill = 'green'
+                        fill = '#97CC9E'
 
-                self.board.create_rectangle(left, top, right, bottom, outline='gray', width=1, fill=fill)
+                self.board.create_rectangle(left, top, right, bottom, outline='#F3EFF0', width=1, fill=fill)
 
         world.object_captured = False
         world.large_object_hit = False
