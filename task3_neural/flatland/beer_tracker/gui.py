@@ -73,8 +73,6 @@ class GUI(Frame):
 
                 self.board.create_rectangle(left, top, right, bottom, outline='#F3EFF0', width=1, fill=fill)
 
-        world.object_captured = False
-        world.large_object_hit = False
         self.board.focus_set()
         self.mainframe.lift()
 

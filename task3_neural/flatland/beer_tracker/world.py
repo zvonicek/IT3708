@@ -22,7 +22,7 @@ class World():
         for i in range(5, 10):
             self.tracker_position.append(i)
 
-        self.object_position = self.drop_object()
+        self.object_position = self.generate_object()
 
     def contains_object(self, row, col):
         if row == self.world_height - 1:
@@ -54,7 +54,7 @@ class World():
             if all(0 <= x < self.world_width for x in new_tracker_position):
                 self.tracker_position = new_tracker_position
 
-    def tick(self):
+    def lower_object(self):
         """Simulate one tick and move the object down"""
 
         new_positions = []
@@ -62,7 +62,7 @@ class World():
             new_positions.append((row + 1, col))
         self.object_position = set(new_positions)
 
-    def drop_object(self):
+    def generate_object(self):
         """Drop new object"""
 
         length = random.randint(1, 6)
@@ -79,9 +79,7 @@ class World():
         new_positions = []
 
         for row, col in self.object_position:
-            if row >= self.world_height - 2:
-                return
-            new_positions.append((self.world_height - 2, col))
+            new_positions.append((self.world_height - 1, col))
         self.object_position = set(new_positions)
 
     def simulate(self, ann, move_callback=None, print_stats=False):
@@ -98,21 +96,24 @@ class World():
         capture_punishment = 2
         avoidance_punishment = 3.3
 
-        for i in range(self.simulate_steps):
-            self.tick()
-            # use ANN to calculate move direction and magnitude
-            object_position_y = list(map(lambda x: x[1], self.object_position))
-            ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
+        #capture_reward = 4
+        #avoidance_reward = 3
+        #capture_punishment = 3
+        #avoidance_punishment = 3
 
-            ann_result = ann.compute(ann_input)
-            direction, speed, pull = self.interpret_ann_result(ann_result)
-            self.move(direction, speed)
-            if self.pull_extension and pull:
-                self.pull_object()
-                self.object_pulled = True
+        for i in range(self.simulate_steps):
+            # check if the callback was set
+            if move_callback:
+                move_callback(self)
+
+            self.object_captured = False
+            self.large_object_hit = False
+
+            object_position_y = list(map(lambda x: x[1], self.object_position))
 
             # handle the case when object hits the tracker
-            if next(iter(self.object_position))[0] == self.world_height - 1:
+            is_last_floor = next(iter(self.object_position))[0] == self.world_height - 1
+            if is_last_floor:
                 shadowing_tracker = [x for x in object_position_y if x in self.tracker_position]
 
                 shadow_size = len(shadowing_tracker)
@@ -129,18 +130,23 @@ class World():
                     self.large_object_hit = True
                 else:
                     fitness -= avoidance_punishment
+                self.object_position = self.generate_object()
+            else:
+                self.lower_object()
 
-                self.object_position = self.drop_object()
+            # use ANN to calculate move direction and magnitude
+            ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
 
-
-
-            # check if the callback was set
-            if move_callback:
-                move_callback(self)
+            ann_result = ann.compute(ann_input)
+            direction, speed, pull = self.interpret_ann_result(ann_result)
+            self.move(direction, speed)
+            if self.pull_extension and pull and not is_last_floor:
+                self.pull_object()
+                self.object_pulled = True
 
         # normalize fitness to interval [0, 1]
-        min_value = (self.simulate_steps) * max(capture_punishment, avoidance_punishment) * -1
-        max_value = (self.simulate_steps) * max(avoidance_reward, capture_reward)
+        min_value = (self.simulate_steps / 3) * max(capture_punishment, avoidance_punishment) * -1
+        max_value = (self.simulate_steps / 3) * max(avoidance_reward, capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
 
         return fitness
@@ -151,7 +157,7 @@ class World():
         #print(ann_result)
         pull_parameter = 0.5
         pull = ann_result[2] < pull_parameter
-        #pull = True
+        pull = True
         if ann_result[0] > ann_result[1]:
             return Direction.Left, min([((ann_result[0])*5)//1, 4]), pull
         elif ann_result[1] > ann_result[0]:
