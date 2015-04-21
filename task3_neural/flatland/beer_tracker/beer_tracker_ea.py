@@ -87,7 +87,7 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
         phenotype_convertor = BeerTrackerPhenotypeConvertor(length, self.genotype_coder)
         fitness_evaluator = BeerTrackerFitnessEvaluator(self.world, self.ann)
-        mutation_strategy = BinaryVectorInversionMutation(0.01)
+        mutation_strategy = BinaryVectorInversionMutation(0.05)
         crossover_strategy = FlatlandOnePointCrossover(0.8, length)
 
         return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy)
