@@ -21,7 +21,7 @@ class GUI(Frame):
 
     def play(self, world, ann):
         self.queue = queue.Queue()
-        self.running_thread = ThreadedBeerTask(self.queue, 0.5, world, ann, self)
+        self.running_thread = ThreadedBeerTask(self.queue, 0.4, world, ann, self)
         self.running_thread.start()
         self.master.after(100, self.poll_queue)
 
@@ -49,9 +49,12 @@ class GUI(Frame):
                 fill = ''
 
                 if world.contains_tracker(row, col):
-                    fill = 'red'
+                    fill = 'blue'
                 elif world.contains_object(row, col):
-                    fill = 'green'
+                    if len(world.object_position) >= 6:
+                        fill = 'red'
+                    else:
+                        fill = 'green'
 
                 self.board.create_rectangle(left, top, right, bottom, outline='gray', width=1, fill=fill)
 
