@@ -23,7 +23,7 @@ class Network():
                     neuron.bias_weight = weights[i]*5
                     i += 1
 
-        assert len(weights) == 1, "some weights remains unassigned"
+        assert len(weights) == i, "some weights remains unassigned"
 
     def biased_neurons_count(self):
         biased_neurons = 0

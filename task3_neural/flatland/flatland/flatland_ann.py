@@ -17,7 +17,7 @@ class FlatlandAnnFactory(AbstractAnnFactory):
 
         output_layer = []
         for _ in range(3):
-            output_layer.append(Neuron(3, activation_func_f))
+            output_layer.append(Neuron(6, activation_func_f))
 
         network = Network([Layer(hidden_layer), Layer(output_layer)])
 
