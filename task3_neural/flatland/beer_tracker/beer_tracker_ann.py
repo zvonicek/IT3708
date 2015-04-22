@@ -6,7 +6,7 @@ from ann.neuron import CtrnnNeuron
 
 
 class BeerTrackerAnnFactory(AbstractAnnFactory):
-    def create(self, pull_extension=False, wraparound=True):
+    def create(self, pull_extension, wraparound):
         activation_func = SigmoidActivation()
         hidden_layer = []
         output_layer = []

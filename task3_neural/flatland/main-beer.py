@@ -17,7 +17,7 @@ if __name__ == '__main__':
             ea = BeerTrackerNoWrapEA()
 
 if ea is None:
-    ea = BeerTrackerEA()
+    ea = BeerTrackerNoWrapEA()
 
 if type(ea) is BeerTrackerEA:
     print("computing standard")

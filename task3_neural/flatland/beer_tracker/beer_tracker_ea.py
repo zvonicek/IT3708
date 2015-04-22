@@ -100,7 +100,7 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
 class BeerTrackerEA(EA):
     def __init__(self, pull_extension=False, wraparound=True):
-        self.ann = BeerTrackerAnnFactory().create(pull_extension)
+        self.ann = BeerTrackerAnnFactory().create(pull_extension, wraparound)
         self.pull_extension = pull_extension
 
         self.params = namedtuple('Params', 'capture_reward avoidance_reward capture_punishment avoidance_punishment')
