@@ -26,7 +26,13 @@ In the standard scenario, agent always choose at the beginning one direction whi
 
 Our trackers has problems with catching objects while they appear immediately above them after they caught something. Usually they just continue with the relaxing and don't try to avoid/catch object. 
 
+<<<<<<< HEAD
+=======
 Every time object hits the floor fitness function is computed. We have punishment for not taking small object and not avoid big one, then we have rewards for taking small object and avoid big one. Fitness is given as the sum. This is the same for all scenarios, except the non wraparound (see No-Wrap section).
+![](.\object_distinguish.PNG)
+
+
+>>>>>>> origin/master
 ### Pull scenario
 With the pull scenario agent behaves similarly as in the standard case. When it just stopped in the standard case and waited for the object, now he use pull action to get the object faster. Sometimes immediately after it takes the pull action it use it also for bigger object. On the figure is shown how EA first learn capture objectsm then the second graph jump captures learn use pull action.
  
@@ -54,9 +60,4 @@ We use the same topology as was in the assignment. Lets mark neuron from the inp
 |time constants| 1.0   | 1.250 | 1.003 | 2.0   |
 
 
-Agent with this weights is always taking left direction. It is well seen on the biases that the bias for the right motor output is very low, so agent never take action to the right (since we deciding based on the maximum of the outputs of the motor output neurons). The weights for the borders of tracker are the most important (to detect if the object is above the tracker), so their weights are extreme. Left motor output needs more information from the $h_1$, because he need to underfly big object if there is some. Thus the weight from this neuron is bigger. The second output neuron gives the left output feedback when it sees the object and thus value of the left is getting lower and tracker stops. So the weights from this left output are very low to allow make the output from left output neuron very low.
-
-If we take network with previous given weights and the three inputs `[[1,1,1,1,0], [1,1,1,0,0],[1,1,0,0,0]]` its output after last will be `[0.9928198173818509, 1.944821830446952e-13]`. However, if we try to use the same network with the same initial state with different first two inputs `[[1,1,1,1,0], [1,1,1,0,0], 1,1,0,0,0]]` its output will be `[0.5764259499298425, 1.5154171154892676e-10]`.
-
-If we give our network inputs `[[1,1,1,0,0], [1,1,1,0,0],[1,1,1,0,0]]` we are given outputs `[0.1004982589701444, 1.7124585674299352e-05], [0.04159479854050314, 3.204724235117445e-06],[0.03441738614485795, 1.6194432630797721e-06]`, it is corresponding with the agent behaviour when it stops under object (that first output is getting lower is given by the feedback from the second output node which takes it down). If we "let object fall" from the other side, i.e. inputs `[[0,0,1,1,1], [0,0,1,1,1],[0,0,1,1,1]]` output of the network is `[0.7243432766232919, 1.0510463627465613e-05], [0.9159772553264353, 9.160789065372894e-08], [0.9414226330411551, 1.1391061986261452e-08]`, thus we can see tracker will not stop. It corresponds with our observation that tracker can't handle when objects fall immediately on it (since he miss input from first neuron and thus lowing feedback).
- 
+Agent with this weights is always taking left direction. It is well seen on the biases that the bias for the right motor output is very low, so agent never take action to the right (since we deciding based on the maximum of the outputs of the motor output neurons). The weights for the borders of tracker are the most important (to detect if the object is on the tracker), so their weights are high. Left motor output takes more information from the $h_1$,
