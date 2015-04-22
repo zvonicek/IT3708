@@ -24,6 +24,8 @@ class Network():
                     neuron.bias_weight = weights[i]*5
                     i += 1
 
+        assert len(weights) == i+1, "some weights remains unassigned"
+
     def biased_neurons_count(self):
         biased_neurons = 0
         for layer in self.layers:
@@ -73,3 +75,5 @@ class CtrnnNetwork(Network):
                 # set time constant
                 neuron.time_constant = weights[i]
                 i += 1
+
+        assert len(weights) == i+1, "some weights remains unassigned"

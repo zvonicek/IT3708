@@ -17,6 +17,7 @@ class Neuron():
 
     def integration(self, vals):
         integration_sum = 0
+        assert len(vals) == len(self.weights), "vals and weights has not equal length"
         for val, weight in zip(vals, self.weights):
             integration_sum += val * weight
 
@@ -42,6 +43,8 @@ class CtrnnNeuron(Neuron):
     def integration(self, vals, my_layer_vals=[]):
         result = super(CtrnnNeuron, self).integration(vals)
         result += self.bias_weight
+
+        assert len(my_layer_vals) == len(self.my_layer_weights), "vals and weights has not equal length"
         for val, weight in zip(my_layer_vals, self.my_layer_weights):
             result += val * weight
         return result
