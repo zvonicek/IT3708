@@ -54,6 +54,7 @@ The weights are from interval [-1, 1] and the initial values of the weights are 
 
 A lot of tweeking has been done regarding the fitness function. Our agent often suffered from looping around. We believe there is not much to be done about this problem as the ANN does not remember past states to detect and interrupt the looping. However, this problem was significantly reduced by lowering the punishment for eating a poinson from 5 to 1.
 
+We also tried to interpret output results in manner of "roulette selection", but this approach didn't work at all, since output values were quite close to each other and actions were chosen nearly randomly. 
 ## c) Performance
 
 ### 1) Static run, 1 scenario
@@ -69,7 +70,7 @@ The behaviour can be seen as overfitting, the neural network is specialized for 
 
 This run had slightly worse performance on static scenarios than the previous one (25x2, 25x0, 20x0, 25x2, 26x1), but random scenarios had higher performance (usually around 20x1). However, some random scenarios had still very low performance (around 12 food) and the agents sometimes got stucked on looping.
 
-Obviously this run was less affected by overfitting and evolved more general behaviour. Plot shows that the top fitness was also achieved in less generations then on the previous run, which is because of the bigger diversity.
+Obviously this run was less affected by overfitting and evolved more general behaviour.
 
 
 ![Static run, 5 scenarios](img/flatland_static_5.png)
