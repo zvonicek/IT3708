@@ -66,11 +66,6 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
         for i in range(0, self.ann.weights_count()):
             coder.add_parameter(-5, 5, lambda: random.uniform(-0.5, 0.5))
 
-        # for not wraparound extension make the range of weights of wall sensors bigger
-        if not self.ann.wraparound:
-            for _ in range(2):
-                coder.add_parameter(-7, 7, lambda: random.uniform(-3, 3))
-
         # bias from interval [-10; 0]
         for i in range(0, self.ann.neurons_count()):
             coder.add_parameter(-10, 0, lambda: random.randint(-10, 0))

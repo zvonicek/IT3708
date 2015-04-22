@@ -16,11 +16,12 @@ class World():
         self.object_pulled = False
         self.object_captured = False
         self.large_object_hit = False
-        self.wall_on_right = False
-        self.wall_on_left = False
+        self.wall_on_right = 0
+        self.wall_on_left = 0
         self.tracker_position = []
         self.object_position = []
         self.fitness_params = fitness_params
+        self.moved = True
 
         self.initialize_world()
 
@@ -49,6 +50,7 @@ class World():
         """Tracker movement"""
 
         assert (length <= 4), "Tracker can move at most by 4 steps"
+
 
         if direction == Direction.Left:
             func = lambda x: (x - length)
@@ -97,12 +99,12 @@ class World():
 
     def deploy_wall_sensors(self):
         if self.tracker_position[0] == 0:
-            self.wall_on_left = True
+            self.wall_on_left = 1
         elif self.tracker_position[4] == self.world_width - 1:
-            self.wall_on_right = True
+            self.wall_on_right = 1
         else:
-            self.wall_on_left = False
-            self.wall_on_right = False
+            self.wall_on_left = 0
+            self.wall_on_right = 0
 
     def compute_tracker_shadowing(self):
         object_position_y = list((map(lambda x: x[1], self.object_position)))
@@ -125,12 +127,6 @@ class World():
         else:
             fitness -= self.fitness_params.avoidance_punishment
 
-        if not self.wraparound:
-            wall_punishment = 0.22
-            if self.wall_on_left:
-                fitness -= wall_punishment
-            if self.wall_on_right:
-                fitness -= wall_punishment
         return fitness
 
     def simulate(self, ann, move_callback=None):
@@ -168,6 +164,7 @@ class World():
             ann_result = ann.compute(ann_input)
             direction, speed, pull = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
+            
             if pull and not is_last_floor:
                 self.pull_object()
                 self.object_pulled = True

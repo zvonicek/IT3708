@@ -12,13 +12,11 @@ class BeerTrackerAnnFactory(AbstractAnnFactory):
         output_layer = []
 
         if wraparound:
-            num_input_neurons = 2
             input_size = 5
         else:
-            num_input_neurons = 4
             input_size = 7
 
-        for _ in range(num_input_neurons):
+        for _ in range(2):
             # time constant: [1,2]
             hidden_layer.append(CtrnnNeuron(input_size, activation_func, 1, 2))
 
