@@ -1,7 +1,6 @@
 class Network():
     def __init__(self, layers):
         self.layers = layers
-        self.wraparound = True
 
     def compute(self, vals):
         for layer in self.layers:
@@ -43,6 +42,9 @@ class Network():
 
 
 class CtrnnNetwork(Network):
+    def __init__(self, layers):
+        super().__init__(layers)
+        self.wraparound = True
 
     def set_weights(self, weights):
         i = 0
