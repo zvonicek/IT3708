@@ -5,7 +5,7 @@
 
 ### Genotype / Phenotype representations
 
-TBD Petr
+Genotype is a bit vector and is divided into 8-bit chunks representing one decimal number (0 - 255). This decimal number represents one weight – one item of the phenotype. The genotype - phenotype conversion is done by converting the binary number to decimal, linear scaling (decoding) of the [0, 255] interval into the desired interval of the weight (eg. [-5, 5]). The phenotype - genotype conversion is slightly more complicated, it requires finding the closest value in the scaled values, encoding this value to [0, 255] interval and converting this to binary.
 
 ### CTRNN
 The CTRNN is the subclass of the network from Flatland project. In addition we added to neurons attributes (bias weight, gain, time constant) needed for CTRNN output computation.
@@ -26,25 +26,21 @@ In the standard scenario, agent always choose at the beginning one direction whi
 
 Our trackers has problems with catching objects while they appear immediately above them after they caught something. Usually they just continue with the rest and don't try to avoid/catch object. 
 
-![](.\object_distinguish.PNG)
-
-
 ### Pull scenario
 With the pull scenario agent behaves similarly as in the standard case. When it just stopped in the standard case and waited for the object, now he use pull action to get the object faster. Sometimes immediately after it takes the pull action it use it also for bigger object. On the figure is shown how EA first learn capture objectsm then the second graph jump captures learn use pull action.
-
-![](.\pull_evolving.PNG)
  
 ### No-Wrap scenario
 
 This scenario is probably the most difficult for our EA, because evolving rational behaving agent needs more luck. With this scenario we added to the input sensors two more sensors detecting walls (on the right and on the left). We also make weights from this inputs twice bigger as the rest weights. We managed to educate agent which can turn after hit the wall as well as capturing objects (it was not able to avoid bigger ones). However, educating good agents demands many runs of EA and it is very sensitive to initial conditions, so we change fitness function to help agents to learn turn after hit wall. When some agent turns, he is given a big reward for this behaviour. He can obtain this reward only few times per its live, since we want to avoid hitting only wall all the time. This approach was showed to be good since agent learns both capturing objects and turn after hit wall. The develop is shown on the picture, where is perceptible two jumps, first turn from the wall, second capture objects.
 
-![](.\turn_from_wall.PNG)
+![](img/object_distinguish.png) \ ![](img/pull_evolving.PNG) \ ![](img/turn_from_wall.PNG) \
+
 
 ## c) CTRNN Analysis
 
 We use the same topology as was in the assignment. Lets mark neuron from the input layer as $i_1, \dots, i_5$, neurons from the hidden layer as $h_1, h_2$, neurons from the motor output layer as $o_1, o_2$ and the bias neuron as $b$. One of the evolved ANN weights are followed:
 
-|to\from| $i_1$ | $i_2$ | $i_3$ | $i_4$ | $i_5$ | $h_1$ | $h_2$ | $o_1$ | $o_2$ |  $b$  |
+|to\\from| $i_1$ | $i_2$ | $i_3$ | $i_4$ | $i_5$ | $h_1$ | $h_2$ | $o_1$ | $o_2$ |  $b$  |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 | $h_1$ |  5.0  |-4.647 |-4.058 |-1.274 |  5.0  | 2.019 | 2.294 |       |       |-1.019 |
 | $h_2$ |-3.862 | 0.098 | 3.980 |-2.960 |  5.0  | 1.352 | 3.0   |       |       |-0.352 |
