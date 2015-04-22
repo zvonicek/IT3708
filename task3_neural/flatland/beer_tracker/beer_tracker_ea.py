@@ -145,6 +145,8 @@ class BeerTrackerPullEA(BeerTrackerEA):
         capture_reward = 4
         avoidance_reward = 3
         capture_punishment = 3
+        avoidance_reward = 3.25
+        capture_punishment = 3.1
         avoidance_punishment = 3.3
 
         return self.params(capture_reward, avoidance_reward, capture_punishment, avoidance_punishment)
