@@ -25,6 +25,9 @@ class GUI(Frame):
         self.bottom_frame.grid(row=2, column=1, padx=100)
 
     def play(self, world, ann, statistics):
+        self.ann = ann
+        self.world = world
+
         self.draw_stats(statistics)
         self.draw_controls()
 
@@ -96,6 +99,16 @@ class GUI(Frame):
         self.scale.set(6)
         self.scale.grid(row=1, column=1)
 
+        self.play = Button(self.bottom_frame, text="Replay", command=self.replay)
+        self.play.config(state='disabled')
+        self.play.grid(row=1, column=2)
+
+    def replay(self):
+        self.play.config(state='disabled')
+
+        self.queue = queue.Queue()
+        self.running_thread = ThreadedBeerTask(self.queue, 0.4, self.world, self.ann, self)
+        self.running_thread.start()
 
 class ThreadedBeerTask(threading.Thread):
     def __init__(self, queue, delay, world, ann, parent):
@@ -112,6 +125,7 @@ class ThreadedBeerTask(threading.Thread):
 
     def run(self):
         self.world.simulate(self.ann, self.tick_callback)
+        self.parent.play.config(state='normal')
 
     def tick_callback(self, flatland):
         self.delay = 1-self.parent.scale.get()/10-0.08
