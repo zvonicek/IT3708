@@ -16,12 +16,18 @@ class World():
         self.object_pulled = False
         self.object_captured = False
         self.large_object_hit = False
+        self.tracker_position = []
+        self.object_position = []
 
+        self.initialize_world()
+
+    def initialize_world(self):
         # initialize tracker
         self.tracker_position = []
         for i in range(5, 10):
             self.tracker_position.append(i)
 
+        # initialize object
         self.object_position = self.generate_object()
 
     def contains_object(self, row, col):
@@ -148,6 +154,8 @@ class World():
         min_value = (self.simulate_steps/self.world_height) * max(capture_punishment, avoidance_punishment) * -1
         max_value = (self.simulate_steps/self.world_height) * max(avoidance_reward, capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
+
+        self.initialize_world()
 
         return fitness
 
