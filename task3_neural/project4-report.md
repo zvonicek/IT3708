@@ -36,7 +36,9 @@ With the pull scenario agent behaves similarly as in the standard case. When it 
 
 ### No-Wrap scenario
 
-TBD
+This scenario is probably the most difficult for our EA, because evolving rational behaving agent needs more luck. With this scenario we added to the input sensors two more sensors detecting walls (on the right and on the left). We also make weights from this inputs twice bigger as the rest weights. We managed to educate agent which can turn after hit the wall as well as capturing objects (it was not able to avoid bigger ones). However, educating good agents demands many runs of EA and it is very sensitive to initial conditions, so we change fitness function to help agents to learn turn after hit wall. When some agent turns, he is given a big reward for this behaviour. He can obtain this reward only few times per its live, since we want to avoid hitting only wall all the time. This approach was showed to be good since agent learns both capturing objects and turn after hit wall. The develop is shown on the picture, where is perceptible two jumps, first turn from the wall, second capture objects.
+
+![](\IT3708\task3_neural\turn_from_wall)
 
 ## c) CTRNN Analysis
 
@@ -53,3 +55,6 @@ We use the same topology as was in the assignment. Lets mark neuron from the inp
 |--------------|-------|-------|-------|-------|
 |gains         | 4.921 | 3.996 | 2.003 | 2.992 |
 |time constants| 1.0   | 1.250 | 1.003 | 2.0   |
+
+
+
