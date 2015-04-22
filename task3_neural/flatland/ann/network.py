@@ -1,6 +1,7 @@
 class Network():
     def __init__(self, layers):
         self.layers = layers
+        self.wraparound = True
 
     def compute(self, vals):
         for layer in self.layers:

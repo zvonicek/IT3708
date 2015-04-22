@@ -63,7 +63,11 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
         # weights from interval [-5; 5]
         for i in range(0, self.ann.weights_count()):
-            coder.add_parameter(-5, 5, lambda: random.randint(-5, 5))
+            coder.add_parameter(-5, 5, lambda: random.uniform(-0.5, 0.5))
+
+        # for not wraparound extension make the range of weights of wall sensors bigger
+        if not self.ann.wraparound:
+            coder.add_parameter(-6, 6, lambda: random.uniform(-0.5, 0.5))
 
         # bias from interval [-10; 0]
         for i in range(0, self.ann.neurons_count()):
@@ -104,7 +108,7 @@ class BeerTrackerEA(EA):
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 15
+        generation_limit = 20
 
         elitism_size = 5
         self.visualize_best = True

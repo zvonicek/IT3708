@@ -30,5 +30,7 @@ class BeerTrackerAnnFactory(AbstractAnnFactory):
             output_layer.append(CtrnnNeuron(2, activation_func, 1, 2))
 
         network = CtrnnNetwork([CtrnnLayer(hidden_layer), CtrnnLayer(output_layer)])
+        if not wraparound:
+            network.wraparound = False
 
         return network
