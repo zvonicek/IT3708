@@ -18,10 +18,11 @@ class World():
         self.large_object_hit = False
         self.wall_on_right = 0
         self.wall_on_left = 0
+        self.wall_hit = False
         self.tracker_position = []
         self.object_position = []
         self.fitness_params = fitness_params
-        self.moved = True
+        self.turn_wall_rewards_num = 3
 
         self.initialize_world()
 
@@ -31,6 +32,7 @@ class World():
         for i in range(5, 10):
             self.tracker_position.append(i)
 
+        self.turn_wall_rewards_num = 3
         # initialize object
         self.object_position = self.generate_object()
 
@@ -51,7 +53,6 @@ class World():
 
         assert (length <= 4), "Tracker can move at most by 4 steps"
 
-
         if direction == Direction.Left:
             func = lambda x: (x - length)
         else:
@@ -63,6 +64,10 @@ class World():
         else:
             new_tracker_position = list(map(func, self.tracker_position))
             if all(0 <= x < self.world_width for x in new_tracker_position):
+                if self.tracker_position[0] == 0 and new_tracker_position[0] != 0:
+                    self.wall_hit = True
+                elif new_tracker_position[0] == self.world_width - 5 and new_tracker_position[0] != self.world_width - 5:
+                    self.wall_hit = True
                 self.tracker_position = new_tracker_position
             elif any(x < 0 for x in new_tracker_position):
                 self.tracker_position = list(range(5))
@@ -129,7 +134,7 @@ class World():
 
         return fitness
 
-    def simulate(self, ann, move_callback=None):
+    def simulate(self, ann, move_callback=None, turn_wall_reward=20):
         """
         run 600-step simulation and return the fitness
         :param ann ANN
@@ -144,6 +149,10 @@ class World():
             if move_callback:
                 move_callback(self)
 
+            if self.wall_hit and self.turn_wall_rewards_num:
+                self.turn_wall_rewards_num -= 1
+                self.wall_hit = False
+                fitness += turn_wall_reward
             self.object_captured = False
             self.large_object_hit = False
 
@@ -164,7 +173,7 @@ class World():
             ann_result = ann.compute(ann_input)
             direction, speed, pull = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
-            
+
             if pull and not is_last_floor:
                 self.pull_object()
                 self.object_pulled = True
