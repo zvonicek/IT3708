@@ -99,12 +99,12 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
 
 class BeerTrackerEA(EA):
-    def __init__(self, pull_extension=False):
+    def __init__(self, pull_extension=False, wraparound=True):
         self.ann = BeerTrackerAnnFactory().create(pull_extension)
         self.pull_extension = pull_extension
 
         self.params = namedtuple('Params', 'capture_reward avoidance_reward capture_punishment avoidance_punishment')
-        self.world = World(self.fitness_parameters(), pull_extension)
+        self.world = World(self.fitness_parameters(), pull_extension, wraparound)
 
         individual_factory = BeerTrackerIndividualFactory(self.world, self.ann)
         adult_selector = GenerationalMixingAdultSelector()
@@ -139,6 +139,9 @@ class BeerTrackerEA(EA):
 
 
 class BeerTrackerPullEA(BeerTrackerEA):
+    def __init__(self):
+        super().__init__(True, True)
+
     def fitness_parameters(self):
         capture_reward = 4
         avoidance_reward = 3
@@ -149,6 +152,9 @@ class BeerTrackerPullEA(BeerTrackerEA):
 
 
 class BeerTrackerNoWrapEA(BeerTrackerEA):
+    def __init__(self):
+        super().__init__(False, False)
+
     def fitness_parameters(self):
         capture_reward = 4
         avoidance_reward = 3

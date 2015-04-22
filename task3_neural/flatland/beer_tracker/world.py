@@ -7,11 +7,11 @@ class Direction:
 
 
 class World():
-    def __init__(self, fitness_params, pull_extension=True):
+    def __init__(self, fitness_params, pull_extension=True, wraparound=True):
         self.world_width = 30
         self.world_height = 15
         self.simulate_steps = 600
-        self.wraparound = True
+        self.wraparound = wraparound
         self.pull_extension = pull_extension
         self.object_pulled = False
         self.object_captured = False
