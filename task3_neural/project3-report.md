@@ -70,7 +70,7 @@ The behaviour can be seen as overfitting, the neural network is specialized for 
 
 This run had slightly worse performance on static scenarios than the previous one (25x2, 25x0, 20x0, 25x2, 26x1), but random scenarios had higher performance (usually around 20x1). However, some random scenarios had still very low performance (around 12 food) and the agents sometimes got stucked on looping.
 
-Obviously this run was less affected by overfitting and evolved more general behaviour. Plot shows that the top fitness was also achieved in less generations then on the previous run, which is because of the bigger diversity.
+Obviously this run was less affected by overfitting and evolved more general behaviour.
 
 
 ![Static run, 5 scenarios](img/flatland_static_5.png)
