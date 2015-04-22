@@ -65,21 +65,21 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
         # weights from interval [-5; 5]
         for i in range(0, self.ann.weights_count()):
             if not self.ann.wraparound and i in [5, 6, 14, 15]:
-                coder.add_parameter(-20, 20, lambda: 20)
+                coder.add_parameter(-20, 20, lambda: random.uniform(-20, 20))
             else:
                 coder.add_parameter(-5, 5, lambda: random.uniform(-0.5, 0.5))
 
         # bias from interval [-10; 0]
         for i in range(0, self.ann.neurons_count()):
-            coder.add_parameter(-10, 0, lambda: random.randint(-10, 0))
+            coder.add_parameter(-10, 0, lambda: random.uniform(-10, 0))
 
         # gains from interval [1,5]
         for i in range(0, self.ann.neurons_count()):
-            coder.add_parameter(1, 5, lambda: random.randint(1, 5))
+            coder.add_parameter(1, 5, lambda: random.uniform(1, 5))
 
         # time constant from interval [1,2]
         for i in range(0, self.ann.neurons_count()):
-            coder.add_parameter(1, 2, lambda: random.randint(1, 2))
+            coder.add_parameter(1, 2, lambda: random.uniform(1, 2))
 
         return coder
 
@@ -91,7 +91,7 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
         phenotype_convertor = BeerTrackerPhenotypeConvertor(length, self.genotype_coder)
         fitness_evaluator = BeerTrackerFitnessEvaluator(self.world, self.ann)
-        mutation_strategy = BinaryVectorInversionMutation(0.01)
+        mutation_strategy = BinaryVectorInversionMutation(0.05)
         crossover_strategy = FlatlandOnePointCrossover(0.8, length)
 
         return Individual(phenotype_convertor, fitness_evaluator, mutation_strategy, genotype, crossover_strategy)
@@ -109,7 +109,7 @@ class BeerTrackerEA(EA):
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 20
+        generation_limit = 60
 
         elitism_size = 5
         self.visualize_best = True
