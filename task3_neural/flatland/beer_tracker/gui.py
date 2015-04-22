@@ -111,7 +111,7 @@ class ThreadedBeerTask(threading.Thread):
         self.stop_flag = True
 
     def run(self):
-        self.world.simulate(self.ann, self.tick_callback, True)
+        self.world.simulate(self.ann, self.tick_callback)
 
     def tick_callback(self, flatland):
         self.delay = 1-self.parent.scale.get()/10-0.08

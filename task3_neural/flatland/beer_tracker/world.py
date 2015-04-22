@@ -7,7 +7,7 @@ class Direction:
 
 
 class World():
-    def __init__(self, pull_extension=True):
+    def __init__(self, fitness_params, pull_extension=True):
         self.world_width = 30
         self.world_height = 15
         self.simulate_steps = 600
@@ -20,6 +20,7 @@ class World():
         self.wall_on_left = False
         self.tracker_position = []
         self.object_position = []
+        self.fitness_params = fitness_params
 
         self.initialize_world()
 
@@ -98,7 +99,7 @@ class World():
             new_positions.append((self.world_height - 1, col))
         self.object_position = set(new_positions)
 
-    def simulate(self, ann, move_callback=None, print_stats=False):
+    def simulate(self, ann, move_callback=None):
         """
         run 600-step simulation and return the fitness
         :param ann ANN
@@ -107,10 +108,6 @@ class World():
         """
 
         fitness = 0
-        capture_reward = 4
-        avoidance_reward = 3
-        capture_punishment = 3
-        avoidance_punishment = 3.3
 
         for i in range(self.simulate_steps):
             # check if the callback was set
@@ -132,16 +129,16 @@ class World():
                 object_size = len(self.object_position)
 
                 if shadow_size == object_size and object_size <= 4:
-                    fitness += capture_reward
+                    fitness += self.fitness_params.capture_reward
                     self.object_captured = True
                 elif shadow_size == 0 and object_size > 4:
-                    fitness += avoidance_reward
+                    fitness += self.fitness_params.avoidance_reward
                 # object hit the tracker partially:
                 elif object_size > 4:
-                    fitness -= capture_punishment
+                    fitness -= self.fitness_params.capture_punishment
                     self.large_object_hit = True
                 else:
-                    fitness -= avoidance_punishment
+                    fitness -= self.fitness_params.avoidance_punishment
                 self.object_position = self.generate_object()
             else:
                 self.lower_object()
@@ -158,8 +155,8 @@ class World():
                 self.object_pulled = True
 
         # normalize fitness to interval [0, 1]
-        min_value = (self.simulate_steps/self.world_height) * max(capture_punishment, avoidance_punishment) * -1
-        max_value = (self.simulate_steps/self.world_height) * max(avoidance_reward, capture_reward)
+        min_value = (self.simulate_steps/self.world_height) * max(self.fitness_params.capture_punishment, self.fitness_params.avoidance_punishment) * -1
+        max_value = (self.simulate_steps/self.world_height) * max(self.fitness_params.avoidance_reward, self.fitness_params.capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
 
         self.initialize_world()

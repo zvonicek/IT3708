@@ -1,3 +1,4 @@
+from collections import namedtuple
 import sys
 from beer_tracker.beer_tracker_ann import BeerTrackerAnnFactory
 
@@ -102,7 +103,8 @@ class BeerTrackerEA(EA):
         self.ann = BeerTrackerAnnFactory().create(pull_extension)
         self.pull_extension = pull_extension
 
-        self.world = World(pull_extension)
+        self.params = namedtuple('Params', 'capture_reward avoidance_reward capture_punishment avoidance_punishment')
+        self.world = World(self.fitness_parameters(), pull_extension)
 
         individual_factory = BeerTrackerIndividualFactory(self.world, self.ann)
         adult_selector = GenerationalMixingAdultSelector()
@@ -115,6 +117,14 @@ class BeerTrackerEA(EA):
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
                          generation_limit, 1.0, elitism_size)
 
+    def fitness_parameters(self):
+        capture_reward = 4
+        avoidance_reward = 3
+        capture_punishment = 3
+        avoidance_punishment = 3.3
+
+        return self.params(capture_reward, avoidance_reward, capture_punishment, avoidance_punishment)
+
     def compute(self):
         super().compute()
 
@@ -126,3 +136,24 @@ class BeerTrackerEA(EA):
             gui = GUI(tk)
             gui.play(self.world, self.ann, (self.plot_max, self.plot_avg, self.plot_sd))
             tk.mainloop()
+
+
+class BeerTrackerPullEA(BeerTrackerEA):
+    def fitness_parameters(self):
+        capture_reward = 4
+        avoidance_reward = 3
+        capture_punishment = 3
+        avoidance_punishment = 3.3
+
+        return self.params(capture_reward, avoidance_reward, capture_punishment, avoidance_punishment)
+
+
+class BeerTrackerNoWrapEA(BeerTrackerEA):
+    def fitness_parameters(self):
+        capture_reward = 4
+        avoidance_reward = 3
+        capture_punishment = 3
+        avoidance_punishment = 3.3
+
+        return self.params(capture_reward, avoidance_reward, capture_punishment, avoidance_punishment)
+
