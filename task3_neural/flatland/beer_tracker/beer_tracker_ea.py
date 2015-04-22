@@ -64,7 +64,10 @@ class BeerTrackerIndividualFactory(AbstractIndividualFactory):
 
         # weights from interval [-5; 5]
         for i in range(0, self.ann.weights_count()):
-            coder.add_parameter(-5, 5, lambda: random.uniform(-0.5, 0.5))
+            if not self.ann.wraparound and i in [5, 6, 14, 15]:
+                coder.add_parameter(-20, 20, lambda: 20)
+            else:
+                coder.add_parameter(-5, 5, lambda: random.uniform(-0.5, 0.5))
 
         # bias from interval [-10; 0]
         for i in range(0, self.ann.neurons_count()):
