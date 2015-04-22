@@ -11,14 +11,14 @@ class FlatlandAnnFactory(AbstractAnnFactory):
         activation_func_o = TangentActivation()
         activation_func_f = SimpleActivation()
 
-        output_layer = []
+        hidden_layer = []
         for _ in range(6):
-            output_layer.append(Neuron(6, activation_func_o, True))
+            hidden_layer.append(Neuron(6, activation_func_o, True))
 
-        final_layer = []
+        output_layer = []
         for _ in range(3):
-            final_layer.append(Neuron(3, activation_func_f))
+            output_layer.append(Neuron(3, activation_func_f))
 
-        network = Network([Layer(output_layer), Layer(final_layer)])
+        network = Network([Layer(hidden_layer), Layer(output_layer)])
 
         return network
