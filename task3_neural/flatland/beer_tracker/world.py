@@ -11,7 +11,7 @@ class World():
         self.world_width = 30
         self.world_height = 15
         self.simulate_steps = 600
-        self.wraparound = False
+        self.wraparound = True
         self.pull_extension = pull_extension
         self.object_pulled = False
         self.object_captured = False
@@ -104,6 +104,28 @@ class World():
             self.wall_on_left = False
             self.wall_on_right = False
 
+    def compute_tracker_shadowing(self):
+        object_position_y = list((map(lambda x: x[1], self.object_position)))
+        shadow = [1 if x in object_position_y else 0 for x in self.tracker_position]
+        return shadow
+
+    def recompute_fitness(self, fitness):
+        shadow_size = len([x for x in self.compute_tracker_shadowing() if x == 1])
+        object_size = len(self.object_position)
+
+        if shadow_size == object_size and object_size <= 4:
+            fitness += self.fitness_params.capture_reward
+            self.object_captured = True
+        elif shadow_size == 0 and object_size > 4:
+            fitness += self.fitness_params.avoidance_reward
+        # object hit the tracker partially:
+        elif object_size > 4:
+            fitness -= self.fitness_params.capture_punishment
+            self.large_object_hit = True
+        else:
+            fitness -= self.fitness_params.avoidance_punishment
+        return fitness
+
     def simulate(self, ann, move_callback=None):
         """
         run 600-step simulation and return the fitness
@@ -122,33 +144,16 @@ class World():
             self.object_captured = False
             self.large_object_hit = False
 
-            object_position_y = list(map(lambda x: x[1], self.object_position))
-
             # handle the case when object hits the tracker
             is_last_floor = next(iter(self.object_position))[0] == self.world_height - 1
             if is_last_floor:
-                shadowing_tracker = [x for x in object_position_y if x in self.tracker_position]
-
-                shadow_size = len(shadowing_tracker)
-                object_size = len(self.object_position)
-
-                if shadow_size == object_size and object_size <= 4:
-                    fitness += self.fitness_params.capture_reward
-                    self.object_captured = True
-                elif shadow_size == 0 and object_size > 4:
-                    fitness += self.fitness_params.avoidance_reward
-                # object hit the tracker partially:
-                elif object_size > 4:
-                    fitness -= self.fitness_params.capture_punishment
-                    self.large_object_hit = True
-                else:
-                    fitness -= self.fitness_params.avoidance_punishment
+                fitness = self.recompute_fitness(fitness)
                 self.object_position = self.generate_object()
             else:
                 self.lower_object()
 
             # use ANN to calculate move direction and magnitude
-            ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
+            ann_input = self.compute_tracker_shadowing()
 
             if not self.wraparound:
                 self.deploy_wall_sensors()
