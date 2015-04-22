@@ -27,7 +27,7 @@ class BeerTrackerAnnFactory(AbstractAnnFactory):
 
         for _ in range(num_output_neurons):
             # time constant: [1,2]
-            output_layer.append(CtrnnNeuron(2, activation_func, 1, 2))
+            output_layer.append(CtrnnNeuron(2, activation_func, 1, num_output_neurons))
 
         network = CtrnnNetwork([CtrnnLayer(hidden_layer), CtrnnLayer(output_layer)])
 

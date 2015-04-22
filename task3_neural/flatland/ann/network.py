@@ -46,6 +46,11 @@ class CtrnnNetwork(Network):
         super().__init__(layers)
         self.wraparound = True
 
+    def set_state(self, value):
+        for layer in self.layers:
+            for neuron in layer.neurons:
+                neuron.state = value
+
     def set_weights(self, weights):
         i = 0
 

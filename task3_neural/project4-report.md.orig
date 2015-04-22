@@ -26,7 +26,13 @@ In the standard scenario, agent always choose at the beginning one direction whi
 
 Our trackers has problems with catching objects while they appear immediately above them after they caught something. Usually they just continue with the relaxing and don't try to avoid/catch object. 
 
+<<<<<<< HEAD
+=======
 Every time object hits the floor fitness function is computed. We have punishment for not taking small object and not avoid big one, then we have rewards for taking small object and avoid big one. Fitness is given as the sum. This is the same for all scenarios, except the non wraparound (see No-Wrap section).
+![](.\object_distinguish.PNG)
+
+
+>>>>>>> origin/master
 ### Pull scenario
 With the pull scenario agent behaves similarly as in the standard case. When it just stopped in the standard case and waited for the object, now he use pull action to get the object faster. Sometimes immediately after it takes the pull action it use it also for bigger object. On the figure is shown how EA first learn capture objectsm then the second graph jump captures learn use pull action.
  
