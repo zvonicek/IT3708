@@ -10,9 +10,9 @@ TBD Petr
 ### CTRNN
 The CTRNN is the subclass of the network from Flatland project. In addition we added to neurons attributes (bias weight, gain, time constant) needed for CTRNN output computation.
 
-The motor output is formed by two neurons, which gives output in the range from 0 to 1. The tracker direction is decided by the neuron which gives higher value (i.e. one represent *right* direction, one *left* direction. The speed of the tracker is then computed from the value of the "winning" neuron. By multiply this value by 5 we scale its output to the 4 possible speeds. 
+The motor output is formed by two neurons (each represent one directions), which gives output in $(0,1)$. The tracker direction is decided by the neuron which gives higher value. The speed of the tracker is then computed from the value of the "winning" neuron. By multiply this value by 5 we scresale its output to the 4 possible speeds. 
 
-With pull extension we gave to output layer one more neuron. It has the same properties as the others in this layer, i.e. it is connected to bias and also it to every neuron in this layer (self included). We interpret its output (which is again in range $(0,1)$) as make a pull action if it is higher than the value $0.5$.
+With pull extension we gave to output layer one more neuron. It has the same properties as the others in this layer. Output is intepret as to make a pull action if it is higher than the value $0.5$.
 
 ## b) Performance
 
@@ -24,8 +24,9 @@ In the standard scenario, agent always choose at the beginning one direction whi
 
 - It is going slower and when it is under object it tries to catch it at the end part. If it sees that object is big, it just pass without stop under it.
 
-Our trackers has problems with catching objects while they appear immediately above them after they caught something. Usually they just continue with the rest and don't try to avoid/catch object. 
+Our trackers has problems with catching objects while they appear immediately above them after they caught something. Usually they just continue with the relaxing and don't try to avoid/catch object. 
 
+Every time object hits the floor fitness function is computed. We have punishment for not taking small object and not avoid big one, then we have rewards for taking small object and avoid big one. Fitness is given as the sum. This is the same for all scenarios, except the non wraparound (see No-Wrap section).
 ![](.\object_distinguish.PNG)
 
 
@@ -57,4 +58,4 @@ We use the same topology as was in the assignment. Lets mark neuron from the inp
 |time constants| 1.0   | 1.250 | 1.003 | 2.0   |
 
 
-
+Agent with this weights is always taking left direction. It is well seen on the biases that the bias for the right motor output is very low, so agent never take action to the right (since we deciding based on the maximum of the outputs of the motor output neurons). The weights for the borders of tracker are the most important (to detect if the object is on the tracker), so their weights are high. Left motor output takes more information from the $h_1$,
