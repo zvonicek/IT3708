@@ -124,6 +124,13 @@ class World():
             self.large_object_hit = True
         else:
             fitness -= self.fitness_params.avoidance_punishment
+
+        if not self.wraparound:
+            wall_punishment = 0.3
+            if self.wall_on_left:
+                fitness -= wall_punishment
+            if self.wall_on_right:
+                fitness -= wall_punishment
         return fitness
 
     def simulate(self, ann, move_callback=None):
