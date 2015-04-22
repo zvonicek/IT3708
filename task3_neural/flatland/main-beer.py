@@ -2,7 +2,7 @@ import getopt
 import sys
 from beer_tracker.beer_tracker_ea import BeerTrackerEA, BeerTrackerPullEA, BeerTrackerNoWrapEA
 
-ea = BeerTrackerEA()
+ea = None
 
 if __name__ == '__main__':
     try:
@@ -15,6 +15,9 @@ if __name__ == '__main__':
             ea = BeerTrackerPullEA()
         elif opt == '-w':
             ea = BeerTrackerNoWrapEA()
+
+if ea is None:
+    ea = BeerTrackerEA()
 
 if type(ea) is BeerTrackerEA:
     print("computing standard")
