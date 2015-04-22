@@ -13,12 +13,14 @@ class BeerTrackerAnnFactory(AbstractAnnFactory):
 
         if wraparound:
             num_input_neurons = 2
+            input_size = 5
         else:
             num_input_neurons = 4
+            input_size = 7
 
         for _ in range(num_input_neurons):
             # time constant: [1,2]
-            hidden_layer.append(CtrnnNeuron(5, activation_func, 1, 2))
+            hidden_layer.append(CtrnnNeuron(input_size, activation_func, 1, 2))
 
         if pull_extension:
             num_output_neurons = 3
@@ -30,6 +32,7 @@ class BeerTrackerAnnFactory(AbstractAnnFactory):
             output_layer.append(CtrnnNeuron(2, activation_func, 1, 2))
 
         network = CtrnnNetwork([CtrnnLayer(hidden_layer), CtrnnLayer(output_layer)])
+
         if not wraparound:
             network.wraparound = False
 
