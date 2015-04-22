@@ -11,11 +11,13 @@ class World():
         self.world_width = 30
         self.world_height = 15
         self.simulate_steps = 600
-        self.wraparound = True
+        self.wraparound = False
         self.pull_extension = pull_extension
         self.object_pulled = False
         self.object_captured = False
         self.large_object_hit = False
+        self.wall_on_right = False
+        self.wall_on_left = False
 
         # initialize tracker
         self.tracker_position = []
@@ -53,6 +55,14 @@ class World():
             new_tracker_position = list(map(func, self.tracker_position))
             if all(0 <= x < self.world_width for x in new_tracker_position):
                 self.tracker_position = new_tracker_position
+                self.wall_on_right = False
+                self.wall_on_left = False
+            elif any(x < 0 for x in new_tracker_position):
+                self.wall_on_left = True
+                self.wall_on_right = False
+            else:
+                self.wall_on_right = True
+                self.wall_on_left = False
 
     def lower_object(self):
         """Simulate one tick and move the object down"""
@@ -96,15 +106,11 @@ class World():
         capture_punishment = 3
         avoidance_punishment = 3.3
 
-        #capture_reward = 4
-        #avoidance_reward = 3
-        #capture_punishment = 3
-        #avoidance_punishment = 3
-
         for i in range(self.simulate_steps):
             # check if the callback was set
             if move_callback:
                 move_callback(self)
+
 
             self.object_captured = False
             self.large_object_hit = False
@@ -136,7 +142,8 @@ class World():
 
             # use ANN to calculate move direction and magnitude
             ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
-
+            if not self.wraparound:
+                ann_input += [self.wall_on_left, self.wall_on_right]
             ann_result = ann.compute(ann_input)
             direction, speed, pull = self.interpret_ann_result(ann_result)
             self.move(direction, speed)
@@ -153,7 +160,6 @@ class World():
 
     def interpret_ann_result(self, ann_result):
         # ta sila je ted delana jen podle toho "silnejsiho" neuronu, mozna vzit v uvahu i ten druhej
-        #print(ann_result)
         pull = False
         if self.pull_extension:
             pull_parameter = 0.5

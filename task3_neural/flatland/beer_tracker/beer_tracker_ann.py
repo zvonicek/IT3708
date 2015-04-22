@@ -6,12 +6,17 @@ from ann.neuron import CtrnnNeuron
 
 
 class BeerTrackerAnnFactory(AbstractAnnFactory):
-    def create(self, pull_extension=False):
+    def create(self, pull_extension=False, wraparound=True):
         activation_func = SigmoidActivation()
         hidden_layer = []
         output_layer = []
 
-        for i in range(2):
+        if wraparound:
+            num_input_neurons = 2
+        else:
+            num_input_neurons = 4
+
+        for _ in range(num_input_neurons):
             # time constant: [1,2]
             hidden_layer.append(CtrnnNeuron(5, activation_func, 1, 2))
 
@@ -19,7 +24,8 @@ class BeerTrackerAnnFactory(AbstractAnnFactory):
             num_output_neurons = 3
         else:
             num_output_neurons = 2
-        for i in range(num_output_neurons):
+
+        for _ in range(num_output_neurons):
             # time constant: [1,2]
             output_layer.append(CtrnnNeuron(2, activation_func, 1, 2))
 
