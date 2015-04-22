@@ -62,14 +62,10 @@ class World():
             new_tracker_position = list(map(func, self.tracker_position))
             if all(0 <= x < self.world_width for x in new_tracker_position):
                 self.tracker_position = new_tracker_position
-                self.wall_on_right = False
-                self.wall_on_left = False
             elif any(x < 0 for x in new_tracker_position):
-                self.wall_on_left = True
-                self.wall_on_right = False
+                self.tracker_position = list(range(5))
             else:
-                self.wall_on_right = True
-                self.wall_on_left = False
+                self.tracker_position = list(range(self.world_width-5, self.world_width))
 
     def lower_object(self):
         """Simulate one tick and move the object down"""
@@ -99,6 +95,15 @@ class World():
             new_positions.append((self.world_height - 1, col))
         self.object_position = set(new_positions)
 
+    def deploy_wall_sensors(self):
+        if self.tracker_position[0] == 0:
+            self.wall_on_left = True
+        elif self.tracker_position[4] == self.world_width - 1:
+            self.wall_on_right = True
+        else:
+            self.wall_on_left = False
+            self.wall_on_right = False
+
     def simulate(self, ann, move_callback=None):
         """
         run 600-step simulation and return the fitness
@@ -113,7 +118,6 @@ class World():
             # check if the callback was set
             if move_callback:
                 move_callback(self)
-
 
             self.object_captured = False
             self.large_object_hit = False
@@ -145,7 +149,9 @@ class World():
 
             # use ANN to calculate move direction and magnitude
             ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
+
             if not self.wraparound:
+                self.deploy_wall_sensors()
                 ann_input += [self.wall_on_left, self.wall_on_right]
             ann_result = ann.compute(ann_input)
             direction, speed, pull = self.interpret_ann_result(ann_result)

@@ -7,7 +7,7 @@ class Direction:
 
 
 class World():
-    def __init__(self, pull_extension=True):
+    def __init__(self, fitness_params, pull_extension=True):
         self.world_width = 30
         self.world_height = 15
         self.simulate_steps = 600
@@ -16,15 +16,13 @@ class World():
         self.object_pulled = False
         self.object_captured = False
         self.large_object_hit = False
-<<<<<<< HEAD
-        self.tracker_position = []
-        self.object_position = []
-
-        self.initialize_world()
-=======
         self.wall_on_right = False
         self.wall_on_left = False
->>>>>>> origin/master
+        self.tracker_position = []
+        self.object_position = []
+        self.fitness_params = fitness_params
+
+        self.initialize_world()
 
     def initialize_world(self):
         # initialize tracker
@@ -64,14 +62,10 @@ class World():
             new_tracker_position = list(map(func, self.tracker_position))
             if all(0 <= x < self.world_width for x in new_tracker_position):
                 self.tracker_position = new_tracker_position
-                self.wall_on_right = False
-                self.wall_on_left = False
             elif any(x < 0 for x in new_tracker_position):
-                self.wall_on_left = True
-                self.wall_on_right = False
+                self.tracker_position = list(range(5))
             else:
-                self.wall_on_right = True
-                self.wall_on_left = False
+                self.tracker_position = list(range(self.world_width-5, self.world_width))
 
     def lower_object(self):
         """Simulate one tick and move the object down"""
@@ -101,7 +95,20 @@ class World():
             new_positions.append((self.world_height - 1, col))
         self.object_position = set(new_positions)
 
+<<<<<<< HEAD
+    def simulate(self, ann, move_callback=None):
+=======
+    def deploy_wall_sensors(self):
+        if self.tracker_position[0] == 0:
+            self.wall_on_left = True
+        elif self.tracker_position[4] == self.world_width - 1:
+            self.wall_on_right = True
+        else:
+            self.wall_on_left = False
+            self.wall_on_right = False
+
     def simulate(self, ann, move_callback=None, print_stats=False):
+>>>>>>> origin/master
         """
         run 600-step simulation and return the fitness
         :param ann ANN
@@ -110,16 +117,11 @@ class World():
         """
 
         fitness = 0
-        capture_reward = 4
-        avoidance_reward = 3
-        capture_punishment = 3
-        avoidance_punishment = 3.3
 
         for i in range(self.simulate_steps):
             # check if the callback was set
             if move_callback:
                 move_callback(self)
-
 
             self.object_captured = False
             self.large_object_hit = False
@@ -135,23 +137,25 @@ class World():
                 object_size = len(self.object_position)
 
                 if shadow_size == object_size and object_size <= 4:
-                    fitness += capture_reward
+                    fitness += self.fitness_params.capture_reward
                     self.object_captured = True
                 elif shadow_size == 0 and object_size > 4:
-                    fitness += avoidance_reward
+                    fitness += self.fitness_params.avoidance_reward
                 # object hit the tracker partially:
                 elif object_size > 4:
-                    fitness -= capture_punishment
+                    fitness -= self.fitness_params.capture_punishment
                     self.large_object_hit = True
                 else:
-                    fitness -= avoidance_punishment
+                    fitness -= self.fitness_params.avoidance_punishment
                 self.object_position = self.generate_object()
             else:
                 self.lower_object()
 
             # use ANN to calculate move direction and magnitude
             ann_input = [1 if x in object_position_y else 0 for x in self.tracker_position]
+
             if not self.wraparound:
+                self.deploy_wall_sensors()
                 ann_input += [self.wall_on_left, self.wall_on_right]
             ann_result = ann.compute(ann_input)
             direction, speed, pull = self.interpret_ann_result(ann_result)
@@ -161,8 +165,8 @@ class World():
                 self.object_pulled = True
 
         # normalize fitness to interval [0, 1]
-        min_value = (self.simulate_steps/self.world_height) * max(capture_punishment, avoidance_punishment) * -1
-        max_value = (self.simulate_steps/self.world_height) * max(avoidance_reward, capture_reward)
+        min_value = (self.simulate_steps/self.world_height) * max(self.fitness_params.capture_punishment, self.fitness_params.avoidance_punishment) * -1
+        max_value = (self.simulate_steps/self.world_height) * max(self.fitness_params.avoidance_reward, self.fitness_params.capture_reward)
         fitness = (fitness - min_value) / (max_value - min_value)
 
         self.initialize_world()
