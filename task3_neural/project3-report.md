@@ -54,7 +54,8 @@ The weights are from interval [-1, 1] and the initial values of the weights are 
 
 A lot of tweeking has been done regarding the fitness function. Our agent often suffered from looping around. We believe there is not much to be done about this problem as the ANN does not remember past states to detect and interrupt the looping. However, this problem was significantly reduced by lowering the punishment for eating a poinson from 5 to 1.
 
-We also tried to interpret output results in manner of "roulette selection", but this approach didn't work at all, since output values were quite close to each other and actions were chosen nearly randomly. 
+We also tried to interpret output results in manner of "roulette selection", but this approach didn't work at all since the output values were very close to each other and therefore the actions were chosen nearly randomly. 
+
 ## c) Performance
 
 ### 1) Static run, 1 scenario
