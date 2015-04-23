@@ -117,7 +117,7 @@ class BeerTrackerEA(EA):
         elitism_size = 5
         self.visualize_best = True
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
-                         generation_limit, 1.0, elitism_size)
+                         generation_limit, 100000.0, elitism_size)
 
     def fitness_parameters(self):
         capture_reward = 4
