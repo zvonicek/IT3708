@@ -22,7 +22,7 @@ class World():
         self.tracker_position = []
         self.object_position = []
         self.fitness_params = fitness_params
-        self.turn_wall_rewards_num = 3
+        self.turn_wall_rewards_num = 2
 
         self.initialize_world()
 
@@ -32,7 +32,7 @@ class World():
         for i in range(5, 10):
             self.tracker_position.append(i)
 
-        self.turn_wall_rewards_num = 3
+        self.turn_wall_rewards_num = 2
         # initialize object
         self.object_position = self.generate_object()
 
@@ -123,18 +123,22 @@ class World():
         if shadow_size == object_size and object_size <= 4:
             fitness += self.fitness_params.capture_reward
             self.object_captured = True
+            if self.object_pulled:
+                fitness += self.fitness_params.capture_reward
         elif shadow_size == 0 and object_size > 4:
             fitness += self.fitness_params.avoidance_reward
         # object hit the tracker partially:
         elif object_size > 4:
             fitness -= self.fitness_params.capture_punishment
+            if self.object_pulled:
+                fitness -= self.fitness_params.capture_punishment
             self.large_object_hit = True
         else:
             fitness -= self.fitness_params.avoidance_punishment
 
         return fitness
 
-    def simulate(self, ann, move_callback=None, turn_wall_reward=20):
+    def simulate(self, ann, move_callback=None, turn_wall_reward=15):
         """
         run 600-step simulation and return the fitness
         :param ann ANN
@@ -161,6 +165,7 @@ class World():
             if is_last_floor:
                 fitness = self.recompute_fitness(fitness)
                 self.object_position = self.generate_object()
+
             else:
                 self.lower_object()
 

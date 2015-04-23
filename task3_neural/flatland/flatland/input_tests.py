@@ -21,7 +21,7 @@ ann.set_weights(ann_weights)
 world = World(fitness_parameters(), False, True)
 
 # Pro testovani konkretnich vstupu pro ann, vypis na terminal (stavy zacinaji jako 0)
-ann_inputs = [[1,1,1,0,0], [1,1,1,0,0],[1,1,1,0,0]]
+"""ann_inputs = [[1,1,1,0,0], [1,1,1,0,0],[1,1,1,0,0]]
 
 
 for i in ann_inputs:
@@ -34,7 +34,7 @@ ann_inputs = [[0,0,1,1,1], [0,0,1,1,1],[0,0,1,1,1]]
 
 for i in ann_inputs:
     print(i, ann.compute(i))
-
+"""
 # Pro testovani konkretnich vstupu a konkretnich poc. stavu:
 """ann_inputs = [[1,1,0,0,0]]
 states_values = [-3,0,3]
@@ -49,9 +49,9 @@ for v in states_values:
 # Pro testovani ruznych stavu ann
 
 # Kdyz budeme chtit spustit gui s timto fentoypem
-"""
+
 tk = Tk()
 gui = GUI(tk)
 gui.play(world, ann, ([],[],[]))
 tk.mainloop()
-"""
+

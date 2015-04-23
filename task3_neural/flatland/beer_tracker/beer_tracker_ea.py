@@ -109,8 +109,11 @@ class BeerTrackerEA(EA):
         adult_selector = GenerationalMixingAdultSelector()
         parent_selector = SigmaScalingParentSelector()
         population_size = 30
-        generation_limit = 60
 
+        if not wraparound:
+            generation_limit = 50
+        else:
+            generation_limit = 40
         elitism_size = 5
         self.visualize_best = True
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
@@ -142,9 +145,7 @@ class BeerTrackerPullEA(BeerTrackerEA):
         super().__init__(True, True)
 
     def fitness_parameters(self):
-        capture_reward = 4
-        avoidance_reward = 3
-        capture_punishment = 3
+        capture_reward = 4.1
         avoidance_reward = 3.25
         capture_punishment = 3.1
         avoidance_punishment = 3.3
@@ -157,7 +158,7 @@ class BeerTrackerNoWrapEA(BeerTrackerEA):
         super().__init__(False, False)
 
     def fitness_parameters(self):
-        capture_reward = 4
+        capture_reward = 4.2
         avoidance_reward = 3
         capture_punishment = 3
         avoidance_punishment = 3.3
