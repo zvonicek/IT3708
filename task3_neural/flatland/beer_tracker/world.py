@@ -138,7 +138,7 @@ class World():
 
         return fitness
 
-    def simulate(self, ann, move_callback=None, turn_wall_reward=15):
+    def simulate(self, ann, move_callback=None, turn_wall_reward=20):
         """
         run 600-step simulation and return the fitness
         :param ann ANN
