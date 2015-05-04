@@ -1,7 +1,7 @@
 import getopt
 import sys
-from flatland.flatland_ann import FlatlandAnnFactory
-from flatland.flatland_ea import FlatlandEA
+from reinforcement_flatland.flatland_ann import FlatlandAnnFactory
+from reinforcement_flatland.flatland_ea import FlatlandEA
 
 
 dynamic = False
@@ -11,7 +11,7 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:], "ds:", ["dynamic", "scenarios="])
     except getopt.GetoptError as e:
-        print('main.py -d True -s 5')
+        print('main-f.py -d True -s 5')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-d':
