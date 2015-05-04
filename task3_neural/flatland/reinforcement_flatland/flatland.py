@@ -14,26 +14,65 @@ class Turn:
 
 
 class Flatland():
-    def __init__(self, length, fpd, agent_coord):
-        self.grid = [[Cell.Empty for _ in range(length)] for _ in range(length)]
-
+    def __init__(self, world, agent_coord, food_num, poison_num):
         self.agent_orientation = Orientation.Up
-        self.grid[agent_coord[0]][agent_coord[1]] = Cell.Agent
         self.agent_coord = agent_coord
-
-        food_positions = [(x, y) for x in range(length) for y in range(length) if x != y]
-        self.food_num = round(fpd[0] * length ** 2)
-        for pos in random.sample(food_positions, self.food_num):
-            self.grid[pos[0]][pos[1]] = Cell.Food
-
-        poison_positions = [(x, y) for x in range(length) for y in range(length) if
-                            x != y and self.grid[x][y] == Cell.Empty]
-        self.poison_num = round(fpd[1] * (length ** 2 - self.food_num))
-        for pos in random.sample(poison_positions, self.poison_num):
-            self.grid[pos[0]][pos[1]] = Cell.Poison
+        self.grid = world
+        self.food_num = food_num
+        self.poison_num = poison_num
 
         # copy the grid so as it can be restored for next generation
         self.start_grid = [x[:] for x in self.grid]
+
+    @classmethod
+    def random_world(cls, length, fpd, agent_coord):
+        grid = [[Cell.Empty for _ in range(length)] for _ in range(length)]
+
+        grid[agent_coord[0]][agent_coord[1]] = Cell.Agent
+
+        food_positions = [(x, y) for x in range(length) for y in range(length) if x != y]
+        food_num = round(fpd[0] * length ** 2)
+        for pos in random.sample(food_positions, food_num):
+            grid[pos[0]][pos[1]] = Cell.Food
+
+        poison_positions = [(x, y) for x in range(length) for y in range(length) if
+                            x != y and grid[x][y] == Cell.Empty]
+        poison_num = round(fpd[1] * (length ** 2 - food_num))
+        for pos in random.sample(poison_positions, poison_num):
+            grid[pos[0]][pos[1]] = Cell.Poison
+
+        return cls(grid, agent_coord, food_num, poison_num)
+
+    @classmethod
+    def from_file(cls, filename):
+        grid = []
+        food_num = 0
+        poison_num = 0
+        agent_coord = None
+
+        with open(filename, 'r') as f:
+            header = f.readline().split()
+            agent_coord = int(header[3]), int(header[2])
+
+            line = f.readline().split()
+            while line:
+                row = []
+                for cell in line:
+                    if cell == "-2":
+                        row.append(Cell.Agent)
+                    elif cell == "-1":
+                        row.append(Cell.Poison)
+                        poison_num += 1
+                    elif cell == "0":
+                        row.append(Cell.Empty)
+                    else:
+                        row.append(Cell.Food)
+                        food_num += 1
+
+                grid.append(row)
+                line = f.readline().split()
+
+        return cls(grid, agent_coord, food_num, poison_num)
 
     def reset(self):
         """resets the world to initial state"""

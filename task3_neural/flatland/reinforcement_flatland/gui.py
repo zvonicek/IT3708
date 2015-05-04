@@ -18,12 +18,12 @@ from reinforcement_flatland.flatland import Cell, Orientation, Flatland
 class GUI(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
-        self.sqsize = 50
+        self.sqsize = 30
         self.grid(row=0, column=0, padx=100)
         self.pack(fill=BOTH, expand=1)
         self.board = None
         self.queue = queue.Queue()
-
+        self.fitnes_plot = True
 
         self.mainframe = ttk.Frame(self, padding=(10, 10, 10, 10))
         self.mainframe.pack(side="top", fill="both", expand=True)
@@ -54,21 +54,8 @@ class GUI(Frame):
         self.master.after(100, self.poll_queue)
 
     def draw_grid(self, flatlands):
-        label = Label(self.bottom_frame, text="Scenario")
-        label.grid(row=0, column=0)
-
-        self.options = []
-        for i in range(len(flatlands)):
-            self.options.append("Scenario " + str(i+1))
-        self.options.append("Random scenario")
-
-        self.option_variable = StringVar(self.bottom_frame)
-        self.option_variable.set(self.options[0])
-        self.option = OptionMenu(self.bottom_frame, self.option_variable, *tuple(self.options))
-        self.option.grid(row=0, column=1)
-
         self.play = Button(self.bottom_frame, text="Play", command=self.play)
-        self.play.grid(row=0, column=2)
+        self.play.grid(row=0, column=1)
 
         label2 = Label(self.bottom_frame, text="Speed")
         label2.grid(row=1, column=0)
@@ -78,7 +65,7 @@ class GUI(Frame):
         self.scale.grid(row=1, column=1)
 
     def play(self):
-        selected_index = self.options.index(self.option_variable.get())
+        selected_index = 0
         if selected_index < len(self.flatlands):
             selected_flatland = self.flatlands[selected_index]
         else:
@@ -90,14 +77,12 @@ class GUI(Frame):
             self.running_thread.start()
             self.master.after(100, self.poll_queue)
 
-            self.option.config(state='disabled')
             self.scale.config(state='disabled')
             self.play.config(text="Stop")
         else:
             self.running_thread.stop()
 
     def did_stop(self):
-        self.option.config(state='normal')
         self.scale.config(state='normal')
         self.play.config(text="Play")
 
@@ -105,9 +90,10 @@ class GUI(Frame):
         f = Figure(figsize=(5, 5), dpi=70)
         a = f.add_subplot(111)
 
-        canvas = FigureCanvasTkAgg(f, master=self.mainframe)
-        canvas.show()
-        canvas.get_tk_widget().grid(row=1, column=4, padx=100)
+        if self.fitnes_plot:
+            canvas = FigureCanvasTkAgg(f, master=self.mainframe)
+            canvas.show()
+            canvas.get_tk_widget().grid(row=1, column=4, padx=100)
 
         a.plot(data[0])
         a.plot(data[1])
@@ -117,11 +103,11 @@ class GUI(Frame):
         a.legend(['best', 'average', 'std'], loc='lower right', prop=prop)
 
     def draw_flatland(self, flatland, content=True):
-        self.board = Canvas(self.mainframe, width=self.sqsize*len(flatland.grid), height=self.sqsize*len(flatland.grid), bg='white')
-        self.board.grid(row=1, column=0, columnspan=3, sticky=(N, S, E, W))
+        self.board = Canvas(self.mainframe, width=self.sqsize*len(flatland.grid[0]), height=self.sqsize*len(flatland.grid), bg='white')
+        self.board.grid(row=1, column=0, columnspan=3)
 
         for row in range(len(flatland.grid)):
-            for col in range(len(flatland.grid)):
+            for col in range(len(flatland.grid[0])):
                 top = row * self.sqsize
                 left = col * self.sqsize
                 bottom = row * self.sqsize + self.sqsize
@@ -138,7 +124,7 @@ class GUI(Frame):
                 elif cell == Cell.Poison:
                     fill = 'red'
                 elif cell == Cell.Agent:
-                    padding = 10
+                    padding = 5
                     if flatland.agent_orientation == Orientation.Up:
                         self.board.create_polygon((left + padding, bottom - padding, left + (right - left) / 2, top + padding, right - padding, bottom - padding), fill="blue")
                     elif flatland.agent_orientation == Orientation.Right:

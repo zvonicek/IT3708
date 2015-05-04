@@ -91,14 +91,14 @@ class FlatlandIndividualFactory(AbstractIndividualFactory):
 
 
 class FlatlandEA(EA):
-    def __init__(self, ann, dynamic=False, scenarios=1):
+    def __init__(self, ann, world_filename=None):
         # neural network for solving problem
         self.ann = ann
-        self.dynamic = dynamic
-        self.scenarios = scenarios
 
-        # initialize flatlands
-        self.flatlands = self.generate_flatlands()
+        if world_filename is None:
+            self.flatlands = [Flatland.random_world(40, (1/3, 1/3), (2, 3))]
+        else:
+            self.flatlands = [Flatland.from_file(world_filename)]
 
         individual_factory = FlatlandIndividualFactory(self.flatlands, self.ann)
         adult_selector = GenerationalMixingAdultSelector()
@@ -109,13 +109,6 @@ class FlatlandEA(EA):
         self.visualize_best = True
         super().__init__(individual_factory, adult_selector, parent_selector, population_size, True, False,
                          generation_limit, 1.0, elitism_size)
-
-    def generate_flatlands(self):
-        flatlands = []
-        for i in range(self.scenarios):
-            flatlands.append(Flatland(10, (1/3, 1/3), (2, 2)))
-
-        return flatlands
 
     def compute(self):
         super().compute()
@@ -128,10 +121,3 @@ class FlatlandEA(EA):
             gui = GUI(tk)
             gui.replay_scenarios(self.flatlands, self.ann, (self.plot_max, self.plot_avg, self.plot_sd))
             tk.mainloop()
-
-    def compute_generation(self):
-        super().compute_generation()
-
-        # in dynamic mode generate new worlds on each new generation
-        if self.dynamic:
-            self.flatlands[0:len(self.flatlands)] = self.generate_flatlands()
