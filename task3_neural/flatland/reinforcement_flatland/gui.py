@@ -12,7 +12,7 @@ from time import sleep
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from flatland.flatland import Cell, Orientation, Flatland
+from reinforcement_flatland.flatland import Cell, Orientation, Flatland
 
 
 class GUI(Frame):

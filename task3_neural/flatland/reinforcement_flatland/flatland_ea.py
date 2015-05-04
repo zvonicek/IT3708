@@ -2,8 +2,8 @@ import random
 import sys
 from tkinter import Tk
 
-from flatland.flatland import Flatland
-from flatland.gui import GUI
+from reinforcement_flatland.flatland import Flatland
+from reinforcement_flatland.gui import GUI
 
 
 sys.path.append('../../task2_evolution/evolutionary')

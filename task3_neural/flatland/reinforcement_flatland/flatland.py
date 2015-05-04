@@ -1,5 +1,4 @@
 import random
-import collections
 
 
 class Cell:
@@ -107,7 +106,7 @@ class Flatland():
 
     def simulate(self, ann, move_callback=None, print_stats=False):
         """
-        run 60-step simulation and return the fitness
+        run simulation and return the fitness
         :param ann ANN
         :param move_callback optional callback called on each tick
         :return fitness of the run
@@ -117,7 +116,7 @@ class Flatland():
         food_reward = 1
         poison_punishment = 1
 
-        # in assignment: 60 time step for moving in flatland
+        # TBD: while snezeny_poison == 0 and snezene_jidlo != len(jidlo) and position != start_position
         for i in range(60):
             sensor_output = self.sensor_output()
             food_input = list(map(lambda x: 1 if x == Cell.Food else 0, sensor_output))
@@ -149,45 +148,18 @@ class Flatland():
         return reward
 
     @staticmethod
-    def interpret_result(result, roulette_interpertation=False):
-        portions = Flatland.compute_portions(result)
+    def interpret_result(result):
         directions = [Turn.Left, Turn.Straight, Turn.Right]
-
-        if roulette_interpertation:
-            rnd = random.uniform(0, 1)
-
-            for d in directions:
-                if portions[d][0] <= rnd < portions[d][1]:
-                    return d
 
         # choose the maximum output, if there are more, then randomly
-        else:
-            max_o = max(result)
-            act = []
+        max_o = max(result)
+        act = []
 
-            for d in directions:
-                if result[d] == max_o:
-                    act.append(d)
+        for d in directions:
+            if result[d] == max_o:
+                act.append(d)
 
-            return random.choice(act)
-
-
-    @staticmethod
-    def compute_portions(sensor_output):
-        output_sum = sum(sensor_output)
-        prob_sum = 0
-        result = {}
-        directions = [Turn.Left, Turn.Straight, Turn.Right]
-
-        if output_sum == 0:
-            return [(0, 1/3), (1/3, 2/3), (2/3, 1)]
-
-        for o, d in zip(sensor_output, directions):
-            new_prob_sum = prob_sum + o/output_sum
-            result[d] = (prob_sum, new_prob_sum)
-            prob_sum = new_prob_sum
-
-        return result
+        return random.choice(act)
 
     def print_stats(self):
         food = 0
