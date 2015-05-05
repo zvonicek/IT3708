@@ -71,7 +71,8 @@ class QLearning():
             return 0
 
     def best_action(self, state):
-        return max(list(range(4)), key=lambda x: self.q.get((state, x), 0))
+        highest = max(list(range(4)), key=lambda x: self.q.get((state, x), 0))
+        return random.choice([k for k in range(4) if self.q.get((state, k), 0) == self.q.get((state, highest), 0)])
 
     def select_action(self):
         if random.uniform(0, 1) > self.p:
