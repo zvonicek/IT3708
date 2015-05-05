@@ -83,11 +83,11 @@ class Flatland():
         if turn == Turn.Up:
             new_row = (new_row - 1) % len(self.grid)
         elif turn == Turn.Right:
-            new_col = (new_col + 1) % len(self.grid)
+            new_col = (new_col + 1) % len(self.grid[0])
         elif turn == Turn.Down:
             new_row = (new_row + 1) % len(self.grid)
         elif turn == Turn.Left:
-            new_col = (new_col - 1) % len(self.grid)
+            new_col = (new_col - 1) % len(self.grid[0])
 
         cell_state = self.grid[new_row][new_col]
 
