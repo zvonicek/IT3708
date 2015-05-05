@@ -10,9 +10,7 @@ from time import sleep
 
 
 matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
-from reinforcement_flatland.flatland import Cell, Orientation, Flatland
+from reinforcement_flatland.flatland import Cell, Flatland
 
 
 class GUI(Frame):
@@ -31,17 +29,13 @@ class GUI(Frame):
         self.bottom_frame = ttk.Frame(self.mainframe, padding=(10, 10, 10, 10))
         self.bottom_frame.grid(row=2, column=1, padx=100)
 
-        self.flatlands = None
-        self.ann = None
         self.running_thread = None
 
-    def replay_scenarios(self, flatlands, ann, statistics):
-        self.draw_grid(flatlands)
-        self.draw_stats(statistics)
-        self.draw_flatland(flatlands[0], False)
+    def replay_scenarios(self, qlearning):
+        self.draw_grid(qlearning.flatland)
+        self.draw_flatland(qlearning.flatland, False)
 
-        self.flatlands = flatlands
-        self.ann = ann
+        self.qlearning = qlearning
 
     def poll_queue(self):
         try:
@@ -65,15 +59,9 @@ class GUI(Frame):
         self.scale.grid(row=1, column=1)
 
     def play(self):
-        selected_index = 0
-        if selected_index < len(self.flatlands):
-            selected_flatland = self.flatlands[selected_index]
-        else:
-            selected_flatland = Flatland(10, (1/3, 1/3), (2, 2))
-
         if self.running_thread is None or not self.running_thread.is_alive():
             self.queue = queue.Queue()
-            self.running_thread = ThreadedFlatlandTask(self.queue, 1-self.scale.get()/10, selected_flatland, self.ann, self)
+            self.running_thread = ThreadedFlatlandTask(self.queue, 1-self.scale.get()/10, self.qlearning, self)
             self.running_thread.start()
             self.master.after(100, self.poll_queue)
 
@@ -85,22 +73,6 @@ class GUI(Frame):
     def did_stop(self):
         self.scale.config(state='normal')
         self.play.config(text="Play")
-
-    def draw_stats(self, data):
-        f = Figure(figsize=(5, 5), dpi=70)
-        a = f.add_subplot(111)
-
-        if self.fitnes_plot:
-            canvas = FigureCanvasTkAgg(f, master=self.mainframe)
-            canvas.show()
-            canvas.get_tk_widget().grid(row=1, column=4, padx=100)
-
-        a.plot(data[0])
-        a.plot(data[1])
-        a.plot(data[2])
-        prop = FontProperties()
-        prop.set_size('small')
-        a.legend(['best', 'average', 'std'], loc='lower right', prop=prop)
 
     def draw_flatland(self, flatland, content=True):
         self.board = Canvas(self.mainframe, width=self.sqsize*len(flatland.grid[0]), height=self.sqsize*len(flatland.grid), bg='white')
@@ -125,14 +97,7 @@ class GUI(Frame):
                     fill = 'red'
                 elif cell == Cell.Agent:
                     padding = 5
-                    if flatland.agent_orientation == Orientation.Up:
-                        self.board.create_polygon((left + padding, bottom - padding, left + (right - left) / 2, top + padding, right - padding, bottom - padding), fill="blue")
-                    elif flatland.agent_orientation == Orientation.Right:
-                        self.board.create_polygon((left + padding, bottom - padding, left + padding, top + padding, right - padding, top + (bottom - top) / 2), fill="blue")
-                    elif flatland.agent_orientation == Orientation.Down:
-                        self.board.create_polygon((left + padding, top + padding, left + (right - left) / 2, bottom - padding, right - padding, top + padding), fill="blue")
-                    elif flatland.agent_orientation == Orientation.Left:
-                        self.board.create_polygon((right - padding, bottom - padding, right - padding, top + padding, left + padding, top + (bottom - top) / 2), fill="blue")
+                    self.board.create_polygon((left + padding, bottom - padding, left + (right - left) / 2, top + padding, right - padding, bottom - padding), fill="blue")
 
                 self.board.create_rectangle(left, top, right, bottom, outline='gray', fill=fill)
 
@@ -141,10 +106,9 @@ class GUI(Frame):
 
 
 class ThreadedFlatlandTask(threading.Thread):
-    def __init__(self, queue, delay, flatland, ann, parent):
+    def __init__(self, queue, delay, qlearning, parent):
         threading.Thread.__init__(self)
-        self.flatland = flatland
-        self.ann = ann
+        self.qlearning = qlearning
         self.queue = queue
         self.delay = delay
         self.parent = parent
@@ -154,7 +118,7 @@ class ThreadedFlatlandTask(threading.Thread):
         self.stop_flag = True
 
     def run(self):
-        self.flatland.simulate(self.ann, self.tick_callback, True)
+        self.qlearning.simulate(self.tick_callback)
         self.parent.did_stop()
 
     def tick_callback(self, flatland):
