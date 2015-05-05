@@ -87,7 +87,7 @@ class QLearning():
 
     def update_q(self, prev_state, new_state, action, reward):
         q_prev = self.q.get((prev_state, action), 0)
-        q_best_next = self.q.get(new_state, self.best_action(new_state))
+        q_best_next = self.q.get((new_state, self.best_action(new_state)), 0)
 
         self.q[prev_state, action] = q_prev + self.learning_rate * (reward + self.discount_rate*q_best_next - q_prev)
 
