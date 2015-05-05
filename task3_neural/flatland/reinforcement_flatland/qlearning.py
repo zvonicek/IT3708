@@ -70,6 +70,9 @@ class QLearning():
             return 5
         elif prev_artifact == Cell.Poison:
             return -5
+        elif self.flatland.agent_coord == self.flatland.agent_init and self.food_remaining == 0:
+            # reward for the finish state
+            return 5
         else:
             return 0
 
@@ -98,7 +101,9 @@ class QLearning():
         self.e[prev_state, action] = self.e.get((prev_state, action), 0) + 1
 
         for key in self.q:
-            self.q[key] += self.learning_rate * delta * self.e.get(key, 0)
+            # this prevents increasing _q_ twice for prev_state (it was already set in _update_q_ method)
+            if key != (prev_state, action):
+                self.q[key] += self.learning_rate * delta * self.e.get(key, 0)
             self.e[key] = self.discount_rate * self.trace_decay * self.e.get(key, 0)
 
     def simulate(self, move_callback):
