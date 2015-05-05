@@ -1,3 +1,4 @@
+from collections import defaultdict
 import random
 from reinforcement_flatland.flatland import Flatland, Cell
 
@@ -21,15 +22,15 @@ class QLearning():
         self.food_remaining = None
         self.poison_remaining = None
         # q values
-        self.q = {}
+        self.q = defaultdict(int)
         # eligibility values
-        self.e = {}
+        self.e = defaultdict(int)
         self.eaten = set()
 
     def q_learning(self):
-        self.q = {}
+        self.q = defaultdict(int)
 
-        for i in range(0, 99):
+        for i in range(0, 1):
             self.reset()
             while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
                 prev_state = self.current_state()
@@ -46,7 +47,7 @@ class QLearning():
                 # update array
                 self.update_q(prev_state, new_state, action, reward)
 
-        print(self.q)
+            print("generation", i, "done")
 
     def move(self, action):
         prev_artifact = self.flatland.move(action)
@@ -77,8 +78,8 @@ class QLearning():
             return 0
 
     def best_action(self, state):
-        highest = max(list(range(4)), key=lambda x: self.q.get((state, x), 0))
-        return random.choice([k for k in range(4) if self.q.get((state, k), 0) == self.q.get((state, highest), 0)])
+        highest = max(list(range(4)), key=lambda x: self.q[state, x])
+        return random.choice([k for k in range(4) if self.q[state, k] == self.q[state, highest]])
 
     def select_action(self):
         if random.uniform(0, 1) > self.p:
@@ -89,8 +90,8 @@ class QLearning():
         return selected_action
 
     def update_q(self, prev_state, new_state, action, reward):
-        q_prev = self.q.get((prev_state, action), 0)
-        q_best_next = self.q.get((new_state, self.best_action(new_state)), 0)
+        q_prev = self.q[prev_state, action]
+        q_best_next = self.q[new_state, self.best_action(new_state)]
 
         self.q[prev_state, action] = q_prev + self.learning_rate * (reward + self.discount_rate*q_best_next - q_prev)
 
@@ -98,13 +99,22 @@ class QLearning():
 
     def update_eligibility(self, prev_state, action, reward, q_best_next, q_prev):
         delta = reward + self.discount_rate * q_best_next - q_prev
-        self.e[prev_state, action] = self.e.get((prev_state, action), 0) + 1
+        self.e[prev_state, action] += 1
 
-        for key in self.q:
+        to_delete = []
+        for key in self.e:
             # this prevents increasing _q_ twice for prev_state (it was already set in _update_q_ method)
-            if key != (prev_state, action):
-                self.q[key] += self.learning_rate * delta * self.e.get(key, 0)
-            self.e[key] = self.discount_rate * self.trace_decay * self.e.get(key, 0)
+            if key != (prev_state, action) and delta != 0:
+                self.q[key] += self.learning_rate * delta * self.e[key]
+            self.e[key] *= self.discount_rate * self.trace_decay
+
+            # cleanup
+            if self.e[key] < 0.01:
+                to_delete.append(key)
+
+        # cleanup
+        for d in to_delete:
+            del self.e[d]
 
     def simulate(self, move_callback):
         self.reset()
