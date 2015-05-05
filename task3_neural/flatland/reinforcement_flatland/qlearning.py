@@ -27,7 +27,8 @@ class QLearning():
 
         for i in range(0, 99):
             self.reset()
-            while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
+            #while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init: temp
+            while self.food_remaining > 0:
                 prev_state = self.current_state()
 
                 # select action to do
@@ -88,7 +89,8 @@ class QLearning():
 
     def simulate(self, move_callback):
         self.reset()
-        while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
+        #while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init: temp
+        while self.food_remaining > 0:
             action = self.best_action(self.current_state())
             self.move(action)
             if move_callback:
