@@ -18,6 +18,8 @@ class QLearning():
         self.discount_rate = 0.9
         # λ
         self.trace_decay = 0.9
+        # number of iterations
+        self.iter_num = 200
 
         self.food_remaining = None
         self.poison_remaining = None
@@ -30,7 +32,7 @@ class QLearning():
     def q_learning(self):
         self.q = defaultdict(int)
 
-        for i in range(0, 1):
+        for i in range(0, self.iter_num):
             self.reset()
             while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
                 prev_state = self.current_state()
@@ -120,8 +122,12 @@ class QLearning():
         self.reset()
         if move_callback:
             move_callback(self.flatland)
+
+        step_counter = 0
         while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
             action = self.best_action(self.current_state())
             self.move(action)
+            step_counter += 1
             if move_callback:
                 move_callback(self.flatland)
+        print(step_counter, "steps")
