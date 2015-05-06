@@ -11,15 +11,15 @@ class QLearning():
             self.flatland = Flatland.from_file(world_filename)
 
         # probability of choosing random action
-        self.p = 0.1
+        self.p = 0.2
         # α
         self.learning_rate = 0.2
         # γ
         self.discount_rate = 0.9
         # λ
-        self.trace_decay = 0.9
+        self.trace_decay = 0.8
         # number of iterations
-        self.iter_num = 200
+        self.iter_num = 2000
 
         self.food_remaining = None
         self.poison_remaining = None
