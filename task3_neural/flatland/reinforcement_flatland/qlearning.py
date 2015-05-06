@@ -64,6 +64,7 @@ class QLearning():
         self.food_remaining = self.flatland.food_num
         self.poison_remaining = self.flatland.poison_num
         self.eaten = set()
+        self.e = defaultdict(int)
 
     def current_state(self):
         return self.flatland.agent_coord, frozenset(self.eaten)
