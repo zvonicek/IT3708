@@ -28,7 +28,10 @@ class QLearning():
         # eligibility values
         self.e = defaultdict(int)
         self.eaten = set()
+        # frozenset cache (perf)
         self.frozen_eaten = frozenset()
+        # best_state cache (perf)
+        self.best_action_cache = (None, None)
         # holds an information whether the current run was greedy or exploratory (random)
         self.greedy_run = False
 
@@ -86,6 +89,9 @@ class QLearning():
             return 0
 
     def best_action(self, state):
+        if self.best_action_cache[0] == state:
+            return self.best_action_cache[1]
+
         maximum = -float("inf")
         highest = []
         for x in range(4):
@@ -96,7 +102,10 @@ class QLearning():
             elif value == maximum:
                 highest.append(x)
 
-        return random.choice(highest)
+        choice = random.choice(highest)
+        self.best_action_cache = (state, choice)
+
+        return choice
 
     def select_action(self):
         if random.uniform(0, 1) > self.p:
