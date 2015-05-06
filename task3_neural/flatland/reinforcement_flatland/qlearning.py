@@ -137,16 +137,20 @@ class QLearning():
 
         to_delete = []
         for key in self.e:
+            val = self.e[key]
+
             # this prevents increasing _q_ twice for prev_state (it was already set in _update_q_ method)
-            if key != (prev_state, action) and delta != 0:
-                self.q[key] += self.learning_rate * delta * self.e[key]
-            self.e[key] *= self.discount_rate * self.trace_decay
+            if key != (prev_state, action) and reward > 0:
+                self.q[key] += self.learning_rate * delta * val
+            val *= self.discount_rate * self.trace_decay
 
-            # cleanup
-            if self.e[key] < 0.01:
+            # cleanup (perf)
+            if val < 0.01:
                 to_delete.append(key)
+            else:
+                self.e[key] = val
 
-        # cleanup
+        # cleanup (perf)
         for d in to_delete:
             del self.e[d]
 
