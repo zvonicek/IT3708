@@ -28,6 +28,8 @@ class QLearning():
         # eligibility values
         self.e = defaultdict(int)
         self.eaten = set()
+        # holds an information whether the current run was greedy or exploratory (random)
+        self.greedy_run = False
 
     def q_learning(self):
         self.q = defaultdict(int)
@@ -95,8 +97,10 @@ class QLearning():
 
     def select_action(self):
         if random.uniform(0, 1) > self.p:
+            self.greedy_run = True
             selected_action = self.best_action(self.current_state())
         else:
+            self.greedy_run = False
             selected_action = random.choice(range(4))
 
         return selected_action
@@ -110,6 +114,10 @@ class QLearning():
         self.update_eligibility(prev_state, action, reward, q_best_next, q_prev)
 
     def update_eligibility(self, prev_state, action, reward, q_best_next, q_prev):
+        # on exploratory runs it is recommended to clear the traces
+        if not self.greedy_run:
+            self.e = defaultdict(int)
+
         delta = reward + self.discount_rate * q_best_next - q_prev
         self.e[prev_state, action] += 1
 
