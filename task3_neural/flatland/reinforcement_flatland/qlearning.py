@@ -28,6 +28,7 @@ class QLearning():
         # eligibility values
         self.e = defaultdict(int)
         self.eaten = set()
+        self.frozen_eaten = frozenset()
         # holds an information whether the current run was greedy or exploratory (random)
         self.greedy_run = False
 
@@ -58,6 +59,7 @@ class QLearning():
         if prev_artifact == Cell.Food:
             self.food_remaining -= 1
             self.eaten.add(self.flatland.agent_coord)
+            self.frozen_eaten = frozenset(self.eaten)
 
         return prev_artifact
 
@@ -66,10 +68,11 @@ class QLearning():
         self.food_remaining = self.flatland.food_num
         self.poison_remaining = self.flatland.poison_num
         self.eaten = set()
+        self.frozen_eaten = frozenset()
         self.e = defaultdict(int)
 
     def current_state(self):
-        return self.flatland.agent_coord, frozenset(self.eaten)
+        return self.flatland.agent_coord, self.frozen_eaten
 
     def compute_reward(self, prev_artifact):
         if prev_artifact == Cell.Food:
