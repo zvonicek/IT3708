@@ -72,7 +72,7 @@ class QLearning():
         if prev_artifact == Cell.Food:
             return 5
         elif prev_artifact == Cell.Poison:
-            return -5
+            return -8
         elif self.flatland.agent_coord == self.flatland.agent_init and self.food_remaining == 0:
             # reward for the finish state
             return 5
