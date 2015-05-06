@@ -130,7 +130,7 @@ class QLearning():
     def simulate(self, move_callback):
         self.reset()
         if move_callback:
-            move_callback(self.flatland)
+            move_callback(self)
 
         step_counter = 0
         while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
@@ -138,5 +138,5 @@ class QLearning():
             self.move(action)
             step_counter += 1
             if move_callback:
-                move_callback(self.flatland)
+                move_callback(self)
         print(step_counter, "steps")
