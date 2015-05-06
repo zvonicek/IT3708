@@ -17,7 +17,7 @@ class QLearning():
         # γ
         self.discount_rate = 0.9
         # λ
-        self.trace_decay = 0.8
+        self.trace_decay = 0.1
         # number of iterations
         self.iter_num = 2000
 
@@ -56,6 +56,8 @@ class QLearning():
                 self.update_q(prev_state, new_state, action, reward)
 
             print("generation", i, "done")
+
+        self.simulate(None)
 
     def move(self, action):
         prev_artifact = self.flatland.move(action)
@@ -155,7 +157,7 @@ class QLearning():
 
         step_counter = 0
         poison_conter = 0
-        while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
+        while (self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init) and step_counter < 5000:
             action = self.best_action(self.current_state())
             artifact = self.move(action)
             if artifact == Cell.Poison:

@@ -14,6 +14,7 @@ q = QLearning("../../task5_q_learning/worlds/"+world_file)
 q.q_learning()
 
 tk = Tk()
+tk.wm_title(world_file)
 gui = GUI(tk)
 gui.replay_scenarios(q)
 tk.mainloop()
