@@ -154,10 +154,13 @@ class QLearning():
             move_callback(self)
 
         step_counter = 0
+        poison_conter = 0
         while self.food_remaining > 0 or self.flatland.agent_coord != self.flatland.agent_init:
             action = self.best_action(self.current_state())
-            self.move(action)
+            artifact = self.move(action)
+            if artifact == Cell.Poison:
+                poison_conter += 1
             step_counter += 1
             if move_callback:
                 move_callback(self)
-        print(step_counter, "steps")
+        print("steps:", step_counter, "poisons:", poison_conter)
