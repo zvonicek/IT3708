@@ -14,7 +14,7 @@ from reinforcement_flatland.flatland import Cell, Flatland, Turn
 
 
 class GUI(Frame):
-    def __init__(self, master, arrows=False):
+    def __init__(self, master):
         Frame.__init__(self, master)
         self.sqsize = 30
         self.grid(row=0, column=0, padx=100)
@@ -22,7 +22,6 @@ class GUI(Frame):
         self.board = None
         self.queue = queue.Queue()
         self.fitnes_plot = True
-        self.arrows = arrows
 
         self.mainframe = ttk.Frame(self, padding=(10, 10, 10, 10))
         self.mainframe.pack(side="top", fill="both", expand=True)
@@ -50,14 +49,18 @@ class GUI(Frame):
 
     def draw_grid(self, flatlands):
         self.play = Button(self.bottom_frame, text="Play", command=self.play)
-        self.play.grid(row=0, column=1)
+        self.play.grid(row=0, column=2, padx=20)
+
+        self.arrows = IntVar()
+        self.arrow_checkbox = Checkbutton(self.bottom_frame, text="Show arrows", variable=self.arrows)
+        self.arrow_checkbox.grid(row=0, column=3)
 
         label2 = Label(self.bottom_frame, text="Speed")
-        label2.grid(row=1, column=0)
+        label2.grid(row=0, column=0)
 
         self.scale = Scale(self.bottom_frame, from_=1, to=9, orient=HORIZONTAL)
         self.scale.set(9)
-        self.scale.grid(row=1, column=1)
+        self.scale.grid(row=0, column=1)
 
     def play(self):
         if self.running_thread is None or not self.running_thread.is_alive():
@@ -66,13 +69,13 @@ class GUI(Frame):
             self.running_thread.start()
             self.master.after(100, self.poll_queue)
 
-            self.scale.config(state='disabled')
+            #self.scale.config(state='disabled')
             self.play.config(text="Stop")
         else:
             self.running_thread.stop()
 
     def did_stop(self):
-        self.scale.config(state='normal')
+        #self.scale.config(state='normal')
         self.play.config(text="Play")
 
     def draw_flatland(self, qlearning, content=True):
@@ -102,17 +105,20 @@ class GUI(Frame):
 
                 self.board.create_rectangle(left, top, right, bottom, outline='gray', fill=fill)
 
-                if self.arrows:
+                if self.arrows.get():
                     padding = 5
                     orientation = qlearning.best_action(((row, col), frozenset(qlearning.eaten)))
-                    if orientation == Turn.Left:
-                        self.board.create_line(left + padding, top + (bottom - top) / 2, right - padding, bottom - (bottom - top) / 2, arrow="first")
-                    elif orientation == Turn.Up:
-                        self.board.create_line(left + (right - left) / 2, top + padding, right - (right - left) / 2, bottom - padding, arrow="first")
-                    elif orientation == Turn.Right:
-                        self.board.create_line(left + padding, top + (bottom - top) / 2, right - padding, bottom - (bottom - top) / 2, arrow="last")
-                    elif orientation == Turn.Down:
-                        self.board.create_line(left + (right - left) / 2, top + padding, right - (right - left) / 2, bottom - padding, arrow="last")
+                    nonset = [x for x in range(4) if qlearning.q[((row, col), frozenset(qlearning.eaten)), x] == 0]
+
+                    if len(nonset) < 4:
+                        if orientation == Turn.Left:
+                            self.board.create_line(left + padding, top + (bottom - top) / 2, right - padding, bottom - (bottom - top) / 2, arrow="first")
+                        elif orientation == Turn.Up:
+                            self.board.create_line(left + (right - left) / 2, top + padding, right - (right - left) / 2, bottom - padding, arrow="first")
+                        elif orientation == Turn.Right:
+                            self.board.create_line(left + padding, top + (bottom - top) / 2, right - padding, bottom - (bottom - top) / 2, arrow="last")
+                        elif orientation == Turn.Down:
+                            self.board.create_line(left + (right - left) / 2, top + padding, right - (right - left) / 2, bottom - padding, arrow="last")
 
 
         self.board.focus_set()
@@ -136,6 +142,8 @@ class ThreadedFlatlandTask(threading.Thread):
         self.parent.did_stop()
 
     def tick_callback(self, flatland):
+        self.delay = 1-self.parent.scale.get()/10
+
         if self.stop_flag:
             return
 
