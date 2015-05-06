@@ -10,11 +10,11 @@ from time import sleep
 
 
 matplotlib.use('TkAgg')
-from reinforcement_flatland.flatland import Cell, Flatland
+from reinforcement_flatland.flatland import Cell, Flatland, Turn
 
 
 class GUI(Frame):
-    def __init__(self, master):
+    def __init__(self, master, arrows=False):
         Frame.__init__(self, master)
         self.sqsize = 30
         self.grid(row=0, column=0, padx=100)
@@ -22,6 +22,7 @@ class GUI(Frame):
         self.board = None
         self.queue = queue.Queue()
         self.fitnes_plot = True
+        self.arrows = arrows
 
         self.mainframe = ttk.Frame(self, padding=(10, 10, 10, 10))
         self.mainframe.pack(side="top", fill="both", expand=True)
@@ -33,7 +34,7 @@ class GUI(Frame):
 
     def replay_scenarios(self, qlearning):
         self.draw_grid(qlearning.flatland)
-        self.draw_flatland(qlearning.flatland, False)
+        self.draw_flatland(qlearning, False)
 
         self.qlearning = qlearning
 
@@ -55,7 +56,7 @@ class GUI(Frame):
         label2.grid(row=1, column=0)
 
         self.scale = Scale(self.bottom_frame, from_=1, to=9, orient=HORIZONTAL)
-        self.scale.set(7)
+        self.scale.set(9)
         self.scale.grid(row=1, column=1)
 
     def play(self):
@@ -74,19 +75,19 @@ class GUI(Frame):
         self.scale.config(state='normal')
         self.play.config(text="Play")
 
-    def draw_flatland(self, flatland, content=True):
-        self.board = Canvas(self.mainframe, width=self.sqsize*len(flatland.grid[0]), height=self.sqsize*len(flatland.grid), bg='white')
+    def draw_flatland(self, qlearning, content=True):
+        self.board = Canvas(self.mainframe, width=self.sqsize*len(qlearning.flatland.grid[0]), height=self.sqsize*len(qlearning.flatland.grid), bg='white')
         self.board.grid(row=1, column=0, columnspan=3)
 
-        for row in range(len(flatland.grid)):
-            for col in range(len(flatland.grid[0])):
+        for row in range(len(qlearning.flatland.grid)):
+            for col in range(len(qlearning.flatland.grid[0])):
                 top = row * self.sqsize
                 left = col * self.sqsize
                 bottom = row * self.sqsize + self.sqsize
                 right = col * self.sqsize + self.sqsize
 
                 fill = ''
-                cell = flatland.grid[row][col]
+                cell = qlearning.flatland.grid[row][col]
 
                 if not content:
                     cell = Cell.Empty
@@ -100,6 +101,19 @@ class GUI(Frame):
                     self.board.create_polygon((left + padding, bottom - padding, left + (right - left) / 2, top + padding, right - padding, bottom - padding), fill="blue")
 
                 self.board.create_rectangle(left, top, right, bottom, outline='gray', fill=fill)
+
+                if self.arrows:
+                    padding = 5
+                    orientation = qlearning.best_action(((row, col), frozenset(qlearning.eaten)))
+                    if orientation == Turn.Left:
+                        self.board.create_line(left + padding, top + (bottom - top) / 2, right - padding, bottom - (bottom - top) / 2, arrow="first")
+                    elif orientation == Turn.Up:
+                        self.board.create_line(left + (right - left) / 2, top + padding, right - (right - left) / 2, bottom - padding, arrow="first")
+                    elif orientation == Turn.Right:
+                        self.board.create_line(left + padding, top + (bottom - top) / 2, right - padding, bottom - (bottom - top) / 2, arrow="last")
+                    elif orientation == Turn.Down:
+                        self.board.create_line(left + (right - left) / 2, top + padding, right - (right - left) / 2, bottom - padding, arrow="last")
+
 
         self.board.focus_set()
         self.mainframe.lift()
