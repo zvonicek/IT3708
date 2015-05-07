@@ -1,4 +1,5 @@
 from collections import defaultdict
+import copy
 import random
 from reinforcement_flatland.flatland import Flatland, Cell
 
@@ -34,6 +35,8 @@ class QLearning():
         self.best_action_cache = (None, None)
         # holds an information whether the current run was greedy or exploratory (random)
         self.greedy_run = False
+        # cache for the best performing q set
+        self.best_cache = None
 
     def q_learning(self):
         self.q = defaultdict(int)
@@ -157,6 +160,9 @@ class QLearning():
     def simulate(self, move_callback):
         self.reset()
         if move_callback:
+            if self.best_cache is not None:
+                self.q = self.best_cache[1]
+
             move_callback(self)
 
         step_counter = 0
@@ -169,4 +175,8 @@ class QLearning():
             step_counter += 1
             if move_callback:
                 move_callback(self)
+
+        if poison_conter == 0 and (self.best_cache is None or self.best_cache[0] > step_counter):
+            self.best_cache = (step_counter, copy.copy(self.q))
+
         print("steps:", step_counter, "poisons:", poison_conter)
