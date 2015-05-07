@@ -125,7 +125,7 @@ class QLearning():
 
         self.q[prev_state, action] = q_prev + self.learning_rate * (reward + self.discount_rate*q_best_next - q_prev)
 
-        self.update_eligibility(prev_state, action, reward, q_best_next, q_prev)
+        #self.update_eligibility(prev_state, action, reward, q_best_next, q_prev)
 
     def update_eligibility(self, prev_state, action, reward, q_best_next, q_prev):
         # on exploratory runs it is recommended to clear the traces
