@@ -47,7 +47,7 @@ class QLearning():
                 prev_state = self.current_state()
 
                 # select action to do
-                action = self.select_action(i)
+                action = self.select_action()
 
                 # update game
                 prev_artifact = self.move(action)
@@ -58,7 +58,9 @@ class QLearning():
                 # update array
                 self.update_q(prev_state, new_state, action, reward)
 
-            print("generation", i, "done")
+            if i % 50 == 0:
+                print("generation", i)
+                self.simulate(None)
 
         self.simulate(None)
 
@@ -112,24 +114,7 @@ class QLearning():
 
         return choice
 
-    def fitness_proporionate(self, state):
-        vals = list(map(lambda x: self.q[state, x], range(4)))
-        vals = list(filter(lambda x: x >= 0, vals))
-        vals = list(map(lambda x: x + abs(min(vals))+1, vals))
-
-        max = sum(vals)
-        pick = random.uniform(0, max)
-        current = 0
-        for key, value in enumerate(vals):
-            current += value
-            if current > pick:
-                return key
-
-    def select_action(self, run):
-        #simulated annealing
-        #prob = 1 - run/self.iter_num
-        #prob = max(math.exp(-0.1 - run*0.01), 0.5)
-
+    def select_action(self):
         if random.uniform(0, 1) > self.p:
             self.greedy_run = True
             selected_action = self.best_action(self.current_state())
