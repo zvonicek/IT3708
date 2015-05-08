@@ -5,7 +5,7 @@ from reinforcement_flatland.flatland import Flatland, Cell
 
 
 class QLearning():
-    def __init__(self, world_filename):
+    def __init__(self, world_filename, iterations):
         if world_filename is None:
             self.flatland = Flatland.random_world(40, (1/3, 1/3), (2, 3))
         else:
@@ -20,7 +20,7 @@ class QLearning():
         # λ
         self.trace_decay = 0.1
         # number of iterations
-        self.iter_num = 2000
+        self.iter_num = iterations
 
         self.food_remaining = None
         self.poison_remaining = None

@@ -5,12 +5,14 @@ from reinforcement_flatland.qlearning import QLearning
 from tkinter import Tk
 
 world_file = "1-simple.txt"
+iterations = 2000
 
 if __name__ == '__main__':
-    if len(sys.argv) >= 2:
+    if len(sys.argv) >= 3:
         world_file = sys.argv[1]
+        iterations = int(sys.argv[2])
 
-q = QLearning("../../task5_q_learning/worlds/"+world_file)
+q = QLearning("../../task5_q_learning/worlds/"+world_file, iterations)
 q.q_learning()
 
 tk = Tk()
