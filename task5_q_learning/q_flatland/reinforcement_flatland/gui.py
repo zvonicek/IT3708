@@ -16,7 +16,7 @@ from reinforcement_flatland.flatland import Cell, Flatland, Turn
 class GUI(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
-        self.sqsize = 30
+        self.sqsize = 25
         self.grid(row=0, column=0, padx=100)
         self.pack(fill=BOTH, expand=1)
         self.board = None

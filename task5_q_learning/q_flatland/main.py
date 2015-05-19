@@ -12,7 +12,7 @@ if __name__ == '__main__':
         world_file = sys.argv[1]
         iterations = int(sys.argv[2])
 
-q = QLearning("../../task5_q_learning/worlds/"+world_file, iterations)
+q = QLearning("../worlds/"+world_file, iterations)
 q.q_learning()
 
 tk = Tk()
