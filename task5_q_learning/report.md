@@ -18,7 +18,7 @@ Other key methods are:
 - *update_q*, which updates the *q value*
 - *update_eligibility*, which is a realization of the TD($\lambda$) backup scheme
 
-Q[s,a] pairs are stored as a standard Python dictionary. The key is a (s,a) tuple and the value is the weight, by default initialized to zero. The state (*s*) is a tuple of position and a *Set* of eaten food. The action (*a*) is an integer value describing direction. The dictionary structure makes it easy to query for *$max_a$Q[s,a]*. If we want to fetch the maximum value, we will go through the four values – *Q[s, Left]*, *Q[s, Top]*, *Q[s, Right]*, *Q[s, Down]* and select the maximum from these.
+Q[s,a] pairs are stored as a standard Python dictionary. The key is a (s,a) tuple and the value is the weight, by default initialized to zero. The state (*s*) is a tuple of position and a *Set* of eaten food. The action (*a*) is an integer value describing direction. The dictionary structure makes it easy to query for *$max_a$Q[s,a]*. If we want to fetch the maximum value, we will go through the four values – *Q[s, Left]*, *Q[s, Top]*, *Q[s, Right]*, *Q[s, Down]* and select the maximum of these.
 
 ### Parameters
 
@@ -26,7 +26,7 @@ The used parameters are the following:
 
 - $\alpha$ (learning rate) = 0.2, the computed problem is stochastic, thus the low learning rate is needed
 - $\gamma$ (discount rate) = 0.9, we prefer log-term high rewards to current rewards, thus the discount rate is high
-- $\lambda$ (trace decay) = 0.1, long traces are not desired when food is densily spaced, my experiments shown it has bad impact on performance
+- $\lambda$ (trace decay) = 0.1, long traces are not desired when food is densily spaced, my experiments showed it has bad impact on performance
 - $p$ (probability of random action) = 0.2, the value was chosen by experiment and provided best results
 
 ## b) Action selection
