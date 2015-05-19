@@ -1,0 +1,6 @@
+world2: 26
+world3: 48
+world4: 166
+world5: 220
+world6: 92
+world7: 282
